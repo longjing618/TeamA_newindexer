@@ -43,12 +43,15 @@ public class Runner {
 		
 		try {
 			for (String cat : catDirectories) {
-				dir = new File(cat);
+				dir = new File(ipDir+ File.separator+ cat);
 				files = dir.list();
+				
+				if (files == null)
+					continue;
 				
 				for (String f : files) {
 					try {
-						d = Parser.parse(f);
+						d = Parser.parse(dir.getAbsolutePath() + File.separator +f);
 						writer.addDocument(d);
 					} catch (ParserException e) {
 						// TODO Auto-generated catch block

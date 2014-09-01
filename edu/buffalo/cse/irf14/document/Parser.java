@@ -36,9 +36,18 @@ public class Parser {
 			//Set category with directory name
 			ret.setField(FieldNames.CATEGORY, DirName);
 			
+			int isTitle = 0;
 			while ((current = br.readLine()) != null) 
 			{
-				System.out.println(current);
+				if(current.length() > 0)
+				{
+					if(isTitle == 0)
+					{
+						ret.setField(FieldNames.TITLE,current);
+						isTitle = 1;
+					}
+					
+				}
 			}
 		} 
 		catch (IOException e) 

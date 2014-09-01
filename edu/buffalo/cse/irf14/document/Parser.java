@@ -43,6 +43,7 @@ public class Parser {
 			Matcher m;
 			int isTitle = 0;
 			int isAuthor = 0;
+			int isPlace = 0;
 			while ((current = br.readLine()) != null) 
 			{
 				if(current.length() > 0)
@@ -54,15 +55,25 @@ public class Parser {
 					}
 					if(isAuthor == 0)
 					{
-						
 						m = r.matcher(current);
 						if (m.find())
 						{
 							ret.setField(FieldNames.AUTHOR,m.group(2).split(" and "));
 							if(m.group(4) != null)
 								ret.setField(FieldNames.AUTHORORG, m.group(4));
-							isAuthor = 1;
 						}
+						isAuthor = 1;
+					}
+					if(isPlace == 0)
+					{
+						pattern = "\\s+(.+),\\.?\\s+(.+)\\s+-";
+						m = r.matcher(current);
+						if (m.find())
+						{
+							ret.setField(FieldNames.PLACE, m.group(1));
+							ret.setField(FieldNames.NEWSDATE, m.group(2));
+						}
+						isPlace = 1;
 					}
 				}
 			}

@@ -38,7 +38,7 @@ public class Parser {
 			//Set category with directory name
 			ret.setField(FieldNames.CATEGORY, DirName);
 			
-			String pattern = "<AUTHOR>\\s+By\\s+(.+)</AUTHOR>";
+			String pattern = "<AUTHOR>\\s+(By|by|BY)\\s+(.+)</AUTHOR>";
 			Pattern r = Pattern.compile(pattern);
 			Matcher m;
 			int isTitle = 0;
@@ -58,7 +58,7 @@ public class Parser {
 						m = r.matcher(current);
 						if (m.find())
 						{
-							ret.setField(FieldNames.AUTHOR,m.group(1));
+							ret.setField(FieldNames.AUTHOR,m.group(2));
 							isAuthor = 1;
 						}
 					}

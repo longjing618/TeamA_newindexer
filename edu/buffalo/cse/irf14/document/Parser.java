@@ -7,6 +7,8 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * @author nikhillo
@@ -36,7 +38,11 @@ public class Parser {
 			//Set category with directory name
 			ret.setField(FieldNames.CATEGORY, DirName);
 			
+			String pattern = "<AUTHOR>\\s+By\\s+(.+)</AUTHOR>";
+			Pattern r = Pattern.compile(pattern);
+			Matcher m;
 			int isTitle = 0;
+			int isAuthor = 0;
 			while ((current = br.readLine()) != null) 
 			{
 				if(current.length() > 0)
@@ -46,7 +52,16 @@ public class Parser {
 						ret.setField(FieldNames.TITLE,current);
 						isTitle = 1;
 					}
-					
+					if(isAuthor == 0)
+					{
+						
+						m = r.matcher(current);
+						if (m.find())
+						{
+							ret.setField(FieldNames.AUTHOR,m.group(1));
+							isAuthor = 1;
+						}
+					}
 				}
 			}
 		} 

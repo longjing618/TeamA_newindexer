@@ -44,6 +44,8 @@ public class Parser {
 			int isTitle = 0;
 			int isAuthor = 0;
 			int isPlace = 0;
+			
+			String content = "";
 			while ((current = br.readLine()) != null) 
 			{
 				if(current.length() > 0)
@@ -75,8 +77,10 @@ public class Parser {
 						}
 						isPlace = 1;
 					}
+					content += current;
 				}
 			}
+			ret.setField(FieldNames.CONTENT, content.split(" "));
 		} 
 		catch (IOException e) 
 		{
@@ -96,5 +100,4 @@ public class Parser {
 		}
 		return ret;
 	}
-
 }

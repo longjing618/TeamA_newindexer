@@ -89,6 +89,7 @@ public class Parser {
 						}
 					}
 					content += current + " ";
+					//This is a test
 				}
 			}
 			ret.setField(FieldNames.CONTENT, content);

@@ -41,21 +41,23 @@ public class Parser {
 			String pattern = "<AUTHOR>\\s+(By|by|BY)\\s+([^,]+)(,\\s+(.+))?</AUTHOR>";
 			Pattern r = Pattern.compile(pattern);
 			Matcher m;
-			int isTitle = 0;
-			int isAuthor = 0;
-			int isPlace = 0;
+
+			boolean isplace = false;
 			
+			//not include the rest text of the place line
+			//rewrite code first line title, second line author or place
 			String content = "";
+			int lines = 0;
 			while ((current = br.readLine()) != null) 
 			{
 				if(current.length() > 0)
 				{
-					if(isTitle == 0)
+					lines++;
+					if(lines == 1)
 					{
 						ret.setField(FieldNames.TITLE,current);
-						isTitle = 1;
 					}
-					if(isAuthor == 0)
+					if(lines == 2)
 					{
 						m = r.matcher(current);
 						if (m.find())
@@ -64,9 +66,19 @@ public class Parser {
 							if(m.group(4) != null)
 								ret.setField(FieldNames.AUTHORORG, m.group(4));
 						}
-						isAuthor = 1;
+						else
+						{
+							pattern = "\\s+(.+),\\.?\\s+(.+)\\s+-";
+							m = r.matcher(current);
+							if (m.find())
+							{
+								ret.setField(FieldNames.PLACE, m.group(1));
+								ret.setField(FieldNames.NEWSDATE, m.group(2));
+								isplace = true;
+							}
+						}
 					}
-					if(isPlace == 0)
+					if(lines == 3 && isplace == false)
 					{
 						pattern = "\\s+(.+),\\.?\\s+(.+)\\s+-";
 						m = r.matcher(current);
@@ -75,12 +87,11 @@ public class Parser {
 							ret.setField(FieldNames.PLACE, m.group(1));
 							ret.setField(FieldNames.NEWSDATE, m.group(2));
 						}
-						isPlace = 1;
 					}
-					content += current;
+					content += current + " ";
 				}
 			}
-			ret.setField(FieldNames.CONTENT, content.split(" "));
+			ret.setField(FieldNames.CONTENT, content);
 		} 
 		catch (IOException e) 
 		{

@@ -46,7 +46,7 @@ public class Parser {
 			
 			//not include the rest text of the place line
 			//rewrite code first line title, second line author or place
-			String content = "";
+			StringBuilder content = new StringBuilder("");
 			int lines = 0;
 			while ((current = br.readLine()) != null) 
 			{
@@ -88,11 +88,11 @@ public class Parser {
 							ret.setField(FieldNames.NEWSDATE, m.group(2));
 						}
 					}
-					content += current + " ";
+					content.append(current.trim()).append(" ");
 					//This is a test
 				}
 			}
-			ret.setField(FieldNames.CONTENT, content);
+			ret.setField(FieldNames.CONTENT, content.toString());
 		} 
 		catch (IOException e) 
 		{

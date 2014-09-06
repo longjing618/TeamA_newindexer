@@ -90,6 +90,11 @@ public class Token {
 	@Override
 	public String toString() {
 		//TODO: YOU MUST IMPLEMENT THIS METHOD
+		if(termText != null){
+			//if(!specialTerm){
+				return termText;
+			//}
+		}
 		return null;
 	}
 }

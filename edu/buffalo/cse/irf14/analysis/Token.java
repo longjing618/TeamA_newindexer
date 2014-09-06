@@ -67,6 +67,12 @@ public class Token {
 	 */
 	protected void merge(Token...tokens) {
 		//TODO : YOU MUST IMPLEMENT THIS METHOD
+		StringBuilder mergedContent = new StringBuilder(termText);
+		for(Token token : tokens){
+			mergedContent.append(" ").append(token.toString());
+		}
+		this.termText = mergedContent.toString();
+		this.termBuffer = this.termText.toCharArray();
 	}
 	
 	/**

@@ -3,10 +3,10 @@
  */
 package edu.buffalo.cse.irf14.analysis;
 
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.ListIterator;
+import java.util.StringTokenizer;
 
 /**
  * @author nikhillo
@@ -96,5 +96,31 @@ public class TokenStream implements Iterator<Token>{
 		}else 
 			return false;
 	}
+
+	//Constructor
+	public TokenStream() {
+		super();
+	}
+	
+	/**
+	 * Populates the tokenList.
+	 * @param: str : This is the string to be tokenized.
+	 * @param: delim : The delimiter to be used.
+	 */
+	public void init(String str, String delim){
+		//Using StringTokenizer in place of String.split() 
+		//as String.split() considers the argument to be a regex
+		//If the delimiter is a valid regex my mistake, like ".",
+		//then we will have issues.
+		StringTokenizer st = new StringTokenizer(str, delim);
+		while(st.hasMoreTokens()){
+			Token token = new Token();
+			token.setTermText(st.nextToken());
+			tokenList.add(token);
+		}
+	}
+	
+	
+	
 	
 }

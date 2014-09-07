@@ -11,8 +11,9 @@ public class Tokenizer {
 	/**
 	 * Default constructor. Assumes tokens are whitespace delimited
 	 */
+	String delim = " ";
 	public Tokenizer() {
-		//TODO : YOU MUST IMPLEMENT THIS METHOD
+		this.delim = " ";
 	}
 	
 	/**
@@ -20,7 +21,7 @@ public class Tokenizer {
 	 * @param delim : The delimiter to be used
 	 */
 	public Tokenizer(String delim) {
-		//TODO : YOU MUST IMPLEMENT THIS METHOD
+		this.delim = delim;
 	}
 	
 	/**
@@ -39,6 +40,10 @@ public class Tokenizer {
 	 */
 	public TokenStream consume(String str) throws TokenizerException {
 		//TODO : YOU MUST IMPLEMENT THIS METHOD
-		return null;
+		TokenStream tokenStream = new TokenStream();
+		if(str != null && str.length() > 0)
+			tokenStream.init(str, delim);
+		//If str is null of empty, returning a TokenStream with an empty tokenList
+		return tokenStream;
 	}
 }

@@ -68,28 +68,29 @@ public class Parser {
 						}
 						else
 						{
-							pattern = "\\s+(.+),\\.?\\s+(.+)\\s+-";
+							pattern = "\\s+(.+),\\.?\\s+(.+)\\s+-\\s+(.+)";
 							m = r.matcher(current);
 							if (m.find())
 							{
 								ret.setField(FieldNames.PLACE, m.group(1));
 								ret.setField(FieldNames.NEWSDATE, m.group(2));
+								content.append(m.group(3).trim()).append(" ");
 								isplace = true;
 							}
 						}
 					}
 					if(lines == 3 && isplace == false)
 					{
-						pattern = "\\s+(.+),\\.?\\s+(.+)\\s+-";
+						pattern = "\\s+(.+),\\.?\\s+(.+)\\s+-\\s+(.+)";
 						m = r.matcher(current);
 						if (m.find())
 						{
 							ret.setField(FieldNames.PLACE, m.group(1));
 							ret.setField(FieldNames.NEWSDATE, m.group(2));
+							content.append(m.group(3).trim()).append(" ");
 						}
 					}
 					content.append(current.trim()).append(" ");
-					//This is a test
 				}
 			}
 			ret.setField(FieldNames.CONTENT, content.toString());

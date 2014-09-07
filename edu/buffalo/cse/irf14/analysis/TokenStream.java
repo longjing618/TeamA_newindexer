@@ -3,7 +3,10 @@
  */
 package edu.buffalo.cse.irf14.analysis;
 
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.ListIterator;
 
 /**
  * @author nikhillo
@@ -19,10 +22,18 @@ public class TokenStream implements Iterator<Token>{
 	 * DOES NOT ADVANCE THE POINTER
 	 * @return true if at least one Token exists, false otherwise
 	 */
+	
+	//ArrayList<Token> tokenList = new ArrayList<Token>();
+	//Using linked list as we need to delete elements also and traversal is faster
+	//Implementation with Arraylist is easier, but there will be a lot
+	//of stopwords. Will use the iterator provided by the LinkedList itself
+	LinkedList<Token> tokenList = new LinkedList<Token>();
+	ListIterator<Token> tokenIterator = tokenList.listIterator();
+	
 	@Override
 	public boolean hasNext() {
 		// TODO YOU MUST IMPLEMENT THIS
-		return false;
+		return tokenIterator.hasNext();
 	}
 
 	/**
@@ -35,7 +46,7 @@ public class TokenStream implements Iterator<Token>{
 	@Override
 	public Token next() {
 		// TODO YOU MUST IMPLEMENT THIS
-		return null;
+		return tokenIterator.next();
 	}
 	
 	/**
@@ -47,7 +58,7 @@ public class TokenStream implements Iterator<Token>{
 	@Override
 	public void remove() {
 		// TODO YOU MUST IMPLEMENT THIS
-		
+		tokenIterator.remove();
 	}
 	
 	/**
@@ -57,6 +68,7 @@ public class TokenStream implements Iterator<Token>{
 	 */
 	public void reset() {
 		//TODO : YOU MUST IMPLEMENT THIS
+		this.tokenIterator = this.tokenList.listIterator();
 	}
 	
 	/**
@@ -70,6 +82,17 @@ public class TokenStream implements Iterator<Token>{
 	 */
 	public void append(TokenStream stream) {
 		//TODO : YOU MUST IMPLEMENT THIS
+		//Need to test the case when the iterator is at the end.
+		if(!stream.isEmpty())
+			tokenList.addAll(stream.tokenList);
+	}
+	
+	//Just a utility method.
+	public boolean isEmpty(){
+		if(tokenList != null){
+			return tokenList.isEmpty();
+		}else 
+			return false;
 	}
 	
 }

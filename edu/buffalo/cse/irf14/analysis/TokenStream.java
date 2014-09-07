@@ -46,6 +46,8 @@ public class TokenStream implements Iterator<Token>{
 	@Override
 	public Token next() {
 		// TODO YOU MUST IMPLEMENT THIS
+		if(tokenIterator.nextIndex() == tokenList.size())
+			return null;
 		return tokenIterator.next();
 	}
 	

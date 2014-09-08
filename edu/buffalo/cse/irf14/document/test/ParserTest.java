@@ -118,8 +118,13 @@ public class ParserTest {
 	}
 	
 	private void validatePlace(Document d, int count){
+		try{
 		assertEquals(places[count],
 				d.getField(FieldNames.PLACE)[0]);
+		}catch(NullPointerException ne){
+			System.out.println(d.getField(FieldNames.FILEID)[0]);
+			throw ne;
+		}
 	}
 	
 	private void validateNewsDate(Document d, int count){

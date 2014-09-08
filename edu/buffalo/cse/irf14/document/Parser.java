@@ -106,6 +106,7 @@ public class Parser {
 		catch (IOException e) 
 		{
 			e.printStackTrace();
+			throw new ParserException();
 		} 
 		finally 
 		{

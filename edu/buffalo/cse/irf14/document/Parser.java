@@ -96,7 +96,7 @@ public class Parser {
 			}
 			ret.setField(FieldNames.CONTENT, content.toString());
 
-			docMap.add(filename);
+			ret.setField(FieldNames.DOCID, Long.toString(docMap.add(filename)));
 		} 
 		catch (IOException e) 
 		{

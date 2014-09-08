@@ -11,10 +11,11 @@ class DocumentMap
 	{
 		docMap = new HashMap<Long, String>();
 	}
-	public void add(String fileId)
+	public long add(String fileId)
 	{
-		docMap.put(docId, fileId);
-		docId++;
+		//docId++;
+		docMap.put(++docId, fileId);
+		return docId;		
 	}
 	
 	public Set<Long> getKeySet(){

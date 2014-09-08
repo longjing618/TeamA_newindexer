@@ -4,6 +4,7 @@
 package edu.buffalo.cse.irf14.analysis;
 
 
+
 /**
  * Factory class for instantiating a given TokenFilter
  * @author nikhillo
@@ -34,8 +35,27 @@ public class TokenFilterFactory {
 	 * @param stream: The TokenStream instance to be wrapped
 	 * @return The built {@link TokenFilter} instance
 	 */
-	public TokenFilter getFilterByType(TokenFilterType type, TokenStream stream) {
+	public TokenFilter getFilterByType(TokenFilterType type, TokenStream stream){
 		//TODO : YOU MUST IMPLEMENT THIS METHOD
+		switch(type)
+		{
+		case SYMBOL:
+			return new TokenFilter_SYMBOL(stream);
+		case DATE:
+			return new TokenFilter_DATE(stream);
+		case NUMERIC:
+			return new TokenFilter_NUMERIC(stream);
+		case CAPITALIZATION:
+			return new TokenFilter_CAPITALIZATION(stream);
+		case STOPWORD:
+			return new TokenFilter_STOPWORD(stream);
+		case STEMMER:
+			return new TokenFilter_STEMMER(stream);
+		case ACCENT:
+			return new TokenFilter_ACCENT(stream);
+		case SPECIALCHARS:
+			return new TokenFilter_SPECIALCHARS(stream);
+		}
 		return null;
 	}
 }

@@ -12,9 +12,11 @@ public class TokenFilter_CAPITALIZATION extends TokenFilter{
 		length = copy.tokenList.size();
 	}
 
-	public void increment() throws TokenizerException
+	public boolean increment() throws TokenizerException
 	{
 		
+		
+		return false;//need to discuss what to do with it
 	}
 	public TokenStream getStream()
 	{

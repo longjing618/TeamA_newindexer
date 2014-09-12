@@ -120,7 +120,9 @@ public class TokenStream implements Iterator<Token>{
 		}
 	}
 	
-	
-	
+	public void previous(){
+		if(this.tokenIterator.hasPrevious())
+			this.tokenIterator.previous();
+	}
 	
 }

@@ -7,7 +7,6 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.StringTokenizer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -36,7 +35,6 @@ public class Parser {
 			File f = new File(filename);
 			br = new BufferedReader(new FileReader(f));
 			
-			
 			//Set FILEID with filename
 			ret.setField(FieldNames.FILEID, f.getName());
 			String DirName = f.getParentFile().getName();
@@ -44,11 +42,9 @@ public class Parser {
 			//Set category with directory name
 			ret.setField(FieldNames.CATEGORY, DirName);
 			
-			String authorRegex = "<AUTHOR>\\s+(By|by|BY)\\s+([^,]+)(,\\s+(.+))?</AUTHOR>";
-			Pattern authorPattern = Pattern.compile(authorRegex);
+			String pattern = "<AUTHOR>\\s+(By|by|BY)\\s+([^,]+)(,\\s+(.+))?</AUTHOR>";
+			Pattern r = Pattern.compile(pattern);
 			Matcher m;
-			String placeDateRegex = "\\s+(.+),\\.?\\s+(.+)\\s+-\\s+(.+)";
-			Pattern placeDatePattern = Pattern.compile(placeDateRegex);
 
 			boolean isplace = false;
 			
@@ -67,7 +63,7 @@ public class Parser {
 					}
 					if(lines == 2)
 					{
-						m = authorPattern.matcher(current);
+						m = r.matcher(current);
 						if (m.find())
 						{
 							ret.setField(FieldNames.AUTHOR,m.group(2).split(" and "));
@@ -76,8 +72,9 @@ public class Parser {
 						}
 						else
 						{
-							
-							m = placeDatePattern.matcher(current);
+							pattern = "\\s+(.+),\\.?\\s+(.+)\\s+-\\s+(.+)";
+							r = Pattern.compile(pattern);
+							m = r.matcher(current);
 							if (m.find())
 							{
 								ret.setField(FieldNames.PLACE, m.group(1));
@@ -89,7 +86,9 @@ public class Parser {
 					}
 					if(lines == 3 && isplace == false)
 					{
-						m = placeDatePattern.matcher(current);
+						pattern = "\\s+(.+),\\.?\\s+(.+)\\s+-\\s+(.+)";
+						r = Pattern.compile(pattern);
+						m = r.matcher(current);
 						if (m.find())
 						{
 							ret.setField(FieldNames.PLACE, m.group(1));

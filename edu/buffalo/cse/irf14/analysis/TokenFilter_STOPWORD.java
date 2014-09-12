@@ -20,7 +20,10 @@ public class TokenFilter_STOPWORD extends TokenFilter{
 		if(stopWordList.isEmpty())
 			init();
 		while(copy.hasNext()){
-			
+			String token = copy.next().getTermText();
+			if(stopWordList.contains(token)){
+				copy.remove();
+			}
 		}
 		
 		return true;

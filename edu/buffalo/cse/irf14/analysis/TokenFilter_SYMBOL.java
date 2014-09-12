@@ -16,7 +16,7 @@ public class TokenFilter_SYMBOL extends TokenFilter
 		length = copy.tokenList.size();
 	}
 
-	public void increment() throws TokenizerException
+	public boolean increment() throws TokenizerException
 	{
 		if(count < length)
 		{
@@ -62,7 +62,10 @@ public class TokenFilter_SYMBOL extends TokenFilter
 			tempToken.setTermText(currentTokenString);
 			copy.tokenList.set(count, tempToken);
 			count++;
+			return true;
 		}
+		else
+			return false;
 	}
 	
 	public TokenStream getStream()

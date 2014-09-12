@@ -29,6 +29,7 @@ public class TokenStream implements Iterator<Token>{
 	//of stopwords. Will use the iterator provided by the LinkedList itself
 	LinkedList<Token> tokenList = new LinkedList<Token>();
 	ListIterator<Token> tokenIterator = tokenList.listIterator();
+	Token current = null;
 	
 	@Override
 	public boolean hasNext() {
@@ -48,7 +49,8 @@ public class TokenStream implements Iterator<Token>{
 		// TODO YOU MUST IMPLEMENT THIS
 		if(tokenIterator.nextIndex() == tokenList.size())
 			return null;
-		return tokenIterator.next();
+		current = tokenIterator.next();
+		return current;
 	}
 	
 	/**
@@ -120,9 +122,12 @@ public class TokenStream implements Iterator<Token>{
 		}
 	}
 	
-	public void previous(){
-		if(this.tokenIterator.hasPrevious())
-			this.tokenIterator.previous();
+	public Token previous(){
+		if(this.tokenIterator.hasPrevious()){
+			current = tokenIterator.previous();
+		}
+		
+		return current;
 	}
 	
 	/**
@@ -135,7 +140,7 @@ public class TokenStream implements Iterator<Token>{
 	 */
 	public Token getCurrent() {
 		//TODO: YOU MUST IMPLEMENT THIS
-		return null;
+		return current;
 	}
 	
 }

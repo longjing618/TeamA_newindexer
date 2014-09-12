@@ -23,6 +23,11 @@ public class TokenFilter_ACCENT extends TokenFilter{
 			currentTokenString = copy.tokenList.get(count).toString();
 			currentTokenString = Normalizer.normalize(currentTokenString, Normalizer.Form.NFD);
 			currentTokenString = pattern.matcher(currentTokenString).replaceAll("");
+			
+			//Update the current token and move the pointer to the next token
+			tempToken = new Token();
+			tempToken.setTermText(currentTokenString);
+			copy.tokenList.set(count, tempToken);
 			count++;
 			return true;
 		}

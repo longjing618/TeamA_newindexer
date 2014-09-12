@@ -12,9 +12,22 @@ public class TokenFilter_SPECIALCHARS extends TokenFilter{
 		length = copy.tokenList.size();
 	}
 
-	public void increment() throws TokenizerException
+	public boolean increment() throws TokenizerException
 	{
-		
+		if(count < length)
+		{
+			currentTokenString = copy.tokenList.get(count).toString();
+			currentTokenString.replaceAll("[^\\w\\s]","");
+			
+			//Update the current token and move the pointer to the next token
+			tempToken = new Token();
+			tempToken.setTermText(currentTokenString);
+			copy.tokenList.set(count, tempToken);
+			count++;
+			return true;
+		}
+		else
+			return false;
 	}
 	public TokenStream getStream()
 	{

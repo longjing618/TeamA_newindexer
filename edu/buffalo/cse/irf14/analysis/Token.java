@@ -17,6 +17,8 @@ public class Token {
 	//The char array backing termText
 	private char[] termBuffer;
 	
+	private boolean isStartOfSentence = false;
+	
 	/**
 	 * Method to set the termText to given text.
 	 * This is a sample implementation and you CAN change this
@@ -96,5 +98,13 @@ public class Token {
 			//}
 		}
 		return null;
+	}
+
+	public boolean isStartOfSentence() {
+		return isStartOfSentence;
+	}
+
+	public void setStartOfSentence(boolean isStartOfSentence) {
+		this.isStartOfSentence = isStartOfSentence;
 	}
 }

@@ -1,2 +1,3 @@
 *.class
 edu/buffalo/cse/irf14/document/test/junit-4.10.jar
+.settings

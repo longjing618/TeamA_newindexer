@@ -141,4 +141,10 @@ public class TokenStream implements Iterator<Token>{
 		return current;
 	}
 	
+	public Token viewNext(){
+		if(tokenIterator.hasNext())
+			return tokenList.get(tokenIterator.nextIndex());
+		return null;
+	}
+	
 }

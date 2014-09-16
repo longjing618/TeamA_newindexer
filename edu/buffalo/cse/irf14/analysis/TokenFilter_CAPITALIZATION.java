@@ -9,6 +9,7 @@ public class TokenFilter_CAPITALIZATION extends TokenFilter{
 	public TokenFilter_CAPITALIZATION(TokenStream stream) {
 		super(stream);
 		copy = stream;
+		copy.tokenList.get(0).setStartOfSentence(true);
 		length = copy.tokenList.size();
 	}
 	private boolean wholeSentenceInCaps = true;

@@ -44,6 +44,7 @@ public class Tokenizer {
 		if(str != null && str.length() > 0)
 			tokenStream.init(str, delim);
 		//If str is null of empty, returning a TokenStream with an empty tokenList
+		tokenStream.tokenList.get(0).setStartOfSentence(true);
 		return tokenStream;
 	}
 }

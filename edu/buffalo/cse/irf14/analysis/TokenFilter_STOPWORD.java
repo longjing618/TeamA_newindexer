@@ -13,20 +13,20 @@ public class TokenFilter_STOPWORD extends TokenFilter{
 		super(stream);
 		copy = stream;
 		length = copy.tokenList.size();
+		init();
 	}
 
 	public boolean increment() throws TokenizerException
 	{
-		if(stopWordList.isEmpty())
-			init();
-		while(copy.hasNext()){
-			String token = copy.next().getTermText();
-			if(stopWordList.contains(token)){
-				copy.remove();
-			}
+		process();
+		return copy.hasNext();
+	}
+	
+	private void process(){
+		String token = copy.next().getTermText();
+		if(stopWordList.contains(token.toLowerCase())){
+			copy.remove();
 		}
-		
-		return true;
 	}
 	public TokenStream getStream()
 	{

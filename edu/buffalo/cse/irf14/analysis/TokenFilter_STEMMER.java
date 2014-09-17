@@ -12,12 +12,23 @@ public class TokenFilter_STEMMER extends TokenFilter{
 		length = copy.tokenList.size();
 	}
 
-	public void increment() throws TokenizerException
+	public boolean increment() throws TokenizerException
 	{
-		
+		Token token = copy.next();
+		process(token);
+		return copy.hasNext();
 	}
 	public TokenStream getStream()
 	{
 		return copy;
+	}
+	
+	private void process(Token token){
+		if(token.getTermText().matches("[a-zA-Z]+")){
+			Stemmer stemmer = new Stemmer();
+			stemmer.add(token.getTermBuffer(), token.getTermBuffer().length);
+			stemmer.stem();
+			token.setTermText(stemmer.toString());
+		}
 	}
 }

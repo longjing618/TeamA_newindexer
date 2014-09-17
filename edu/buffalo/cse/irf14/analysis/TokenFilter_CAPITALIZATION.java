@@ -45,7 +45,7 @@ public class TokenFilter_CAPITALIZATION extends TokenFilter{
 				token.setTermText(token.getTermText().toLowerCase());
 			}
 		}else{
-			if(isAllCaps(token.getTermBuffer())){
+			if(isAllCaps(token.getTermBuffer())&&wholeSentenceInCaps){
 				token.setTermText(token.getTermText().toLowerCase());
 			}else if(Character.isUpperCase(token.getTermBuffer()[0])){
 				mergeFisrtLetterCapital(token);

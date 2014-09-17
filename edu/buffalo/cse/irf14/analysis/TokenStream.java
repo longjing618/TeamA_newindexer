@@ -29,7 +29,7 @@ public class TokenStream implements Iterator<Token>{
 	//of stopwords. Will use the iterator provided by the LinkedList itself
 	LinkedList<Token> tokenList = new LinkedList<Token>();
 	ListIterator<Token> tokenIterator = tokenList.listIterator();
-	Token previous = null;
+	//Token previous = null;
 	Token current = null;
 	
 	@Override
@@ -48,11 +48,15 @@ public class TokenStream implements Iterator<Token>{
 	@Override
 	public Token next() {
 		// TODO YOU MUST IMPLEMENT THIS
-		if(tokenIterator.nextIndex() == tokenList.size())
-			return null;
-		previous = current;
-		current = tokenIterator.next();
+		//if(tokenIterator.nextIndex() == tokenList.size())
+		//	return null;
+		if(tokenIterator.hasNext()){
+			current = tokenIterator.next();
+		}else{
+		current = null;
+		}
 		return current;
+		
 	}
 	
 	/**
@@ -64,7 +68,10 @@ public class TokenStream implements Iterator<Token>{
 	@Override
 	public void remove() {
 		// TODO YOU MUST IMPLEMENT THIS
+		if((!isValidRemove())&&current==null)
+			return;
 		tokenIterator.remove();
+		current = null;
 	}
 	
 	/**
@@ -89,8 +96,23 @@ public class TokenStream implements Iterator<Token>{
 	public void append(TokenStream stream) {
 		//TODO : YOU MUST IMPLEMENT THIS
 		//Need to test the case when the iterator is at the end.
-		if(!stream.isEmpty())
+		if(stream == null)
+			return;
+		
+		
+		if(!stream.isEmpty()){
+			int nextIndex = tokenIterator.nextIndex();
 			tokenList.addAll(stream.tokenList);
+			tokenIterator = tokenList.listIterator();
+			if(nextIndex == 0)
+				return;
+			while(true){
+				//Token token = tokenIterator.next();
+				tokenIterator.next();
+				if(tokenIterator.nextIndex() == nextIndex)
+					break;
+			}
+		}
 	}
 	
 	//Just a utility method.
@@ -122,10 +144,12 @@ public class TokenStream implements Iterator<Token>{
 			token.setTermText(st.nextToken());
 			tokenList.add(token);
 		}
+		tokenIterator = tokenList.listIterator();
 	}
 	
 	public Token getPrevious(){
-		return previous;
+		tokenIterator.previous();
+		return tokenIterator.next();
 	}
 	
 	/**
@@ -138,7 +162,21 @@ public class TokenStream implements Iterator<Token>{
 	 */
 	public Token getCurrent() {
 		//TODO: YOU MUST IMPLEMENT THIS
+//		if(!tokenIterator.hasNext())
+//			return null;
+//		if(tokenIterator.hasPrevious()){
+//			tokenIterator.previous();
+//			return tokenIterator.next();
+//		}
 		return current;
+	}
+	public boolean isValidRemove(){
+		if(!tokenIterator.hasNext())
+			return false;
+		if(tokenIterator.hasPrevious()){
+			return true;
+		}
+		return false;
 	}
 	
 	public Token viewNext(){

@@ -5,8 +5,15 @@ import java.util.List;
 
 public class AnalyzerContent extends AbstractAnalyzer {
 
+	private TokenStream stream;
+	
+	public AnalyzerContent(TokenStream stream) {
+		super();
+		this.stream = stream;
+	}
+
 	@Override
-	protected List<TokenFilter> getFilterList(TokenStream stream) {
+	protected List<TokenFilter> getFilterList() {
 		// TODO Auto-generated method stub
 		ArrayList<TokenFilter> filterList = new ArrayList<TokenFilter>();
 		filterList.add(TokenFilterFactory.getInstance().getFilterByType(TokenFilterType.SYMBOL, stream));

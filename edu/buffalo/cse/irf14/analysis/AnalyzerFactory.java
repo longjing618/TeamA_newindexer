@@ -42,9 +42,9 @@ public class AnalyzerFactory {
 	public Analyzer getAnalyzerForField(FieldNames name, TokenStream stream) {
 		//TODO : YOU NEED TO IMPLEMENT THIS METHOD
 		if(name == FieldNames.CONTENT){
-			return new AnalyzerContent();
+			return new AnalyzerContent(stream);
 		}else if(name == FieldNames.TITLE){
-			return new AnalyzerTitle();
+			return new AnalyzerTitle(stream);
 		}
 		return null;
 	}

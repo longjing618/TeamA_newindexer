@@ -43,7 +43,7 @@ public class TokenFilter_SPECIALCHARS extends TokenFilter{
 			String [] tokens = tokenText.split("@");
 			token.setTermText(tokens[0]);
 			Token newToken = new Token();
-			token.setTermText(tokens[1]);
+			newToken.setTermText(tokens[1]);
 			copy.tokenIterator.add(newToken);
 			return;
 		}

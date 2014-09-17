@@ -21,9 +21,11 @@ public class AnalyzerFactory {
 	 * during instantiation
 	 * @return An instance of the factory
 	 */
+	
+	private static AnalyzerFactory AFF = new AnalyzerFactory();
 	public static AnalyzerFactory getInstance() {
 		//TODO: YOU NEED TO IMPLEMENT THIS METHOD
-		return null;
+		return AFF;
 	}
 	
 	/**
@@ -39,6 +41,11 @@ public class AnalyzerFactory {
 	 */
 	public Analyzer getAnalyzerForField(FieldNames name, TokenStream stream) {
 		//TODO : YOU NEED TO IMPLEMENT THIS METHOD
+		if(name == FieldNames.CONTENT){
+			return new AnalyzerContent();
+		}else if(name == FieldNames.TITLE){
+			return new AnalyzerTitle();
+		}
 		return null;
 	}
 }

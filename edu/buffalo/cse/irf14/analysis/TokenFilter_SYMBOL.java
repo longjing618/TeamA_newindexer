@@ -71,7 +71,8 @@ public class TokenFilter_SYMBOL extends TokenFilter
 		contraction.put("there'd've", "there would have");
 		contraction.put("there're", "there are");
 		contraction.put("there's", "there is");
-		contraction.put("they'd", "there had");
+		contraction.put("they'd", "they had");
+		contraction.put("they'd", "they would");
 		contraction.put("they'd've", "there would have");
 		contraction.put("they'll", "they will");
 		contraction.put("they're", "they are");
@@ -110,6 +111,100 @@ public class TokenFilter_SYMBOL extends TokenFilter
 		contraction.put("you'll", "you will");
 		contraction.put("you're", "you are");
 		contraction.put("you've", "you have");
+		
+		contraction.put("Ain't", "Am not");
+		contraction.put("Aren't", "Are not");
+		contraction.put("Can't", "Cannot");
+		contraction.put("Could've", "Could have");
+		contraction.put("Couldn't", "Could not");
+		contraction.put("Couldn't've", "Could not have");
+		contraction.put("Didn't", "Did not");
+		contraction.put("Doesn't", "Does not");
+		contraction.put("Don't", "Do not");
+		contraction.put("Hadn't", "Had not");
+		contraction.put("Hadn't've", "Had not have");
+		contraction.put("Hasn't", "Has not");
+		contraction.put("Haven't", "Have not");
+		contraction.put("He'd", "He had");
+		contraction.put("He'd've", "He would have");
+		contraction.put("He'll", "He will");
+		contraction.put("He's", "He is");
+		contraction.put("How'd", "How did");
+		contraction.put("How'll", "How will");
+		contraction.put("How's", "How is");
+		contraction.put("I'd", "I had");
+		contraction.put("I'd've", "I would have");
+		contraction.put("I'll", "I will");
+		contraction.put("I'm", "I am");
+		contraction.put("I've", "I have");
+		contraction.put("Isn't", "Is not");
+		contraction.put("It'd", "Is had");
+		contraction.put("It'd've", "It would have");
+		contraction.put("It'll", "It will");
+		contraction.put("It's", "It is");
+		contraction.put("Let's", "Let us");
+		contraction.put("Ma'am", "Madam");
+		contraction.put("Mightn't", "Moght not");
+		contraction.put("Mightn't've", "Might not have");
+		contraction.put("Might've", "Might have");
+		contraction.put("Mustn't", "Must not");
+		contraction.put("Mustn've", "Must have");
+		contraction.put("Needn't", "Need not");
+		contraction.put("Not've", "Not have");
+		contraction.put("O'clock", "Of the clock");
+		contraction.put("Shan't", "Shall not");
+		contraction.put("She'd", "She had");
+		contraction.put("She'd've", "She would have");
+		contraction.put("She'll", "She will");
+		contraction.put("She's", "She is");
+		contraction.put("Should've", "Should have");
+		contraction.put("Shouldn't", "Should not");
+		contraction.put("Shouldn't've", "Should not have");
+		contraction.put("That's", "That is");
+		contraction.put("There'd", "There had");
+		contraction.put("There'd've", "There would have");
+		contraction.put("There're", "There are");
+		contraction.put("There's", "There is");
+		contraction.put("They'd", "They had");
+		contraction.put("They'd", "They would");
+		contraction.put("They'd've", "There would have");
+		contraction.put("They'll", "They will");
+		contraction.put("They're", "They are");
+		contraction.put("They've", "They have");
+		contraction.put("Wasn't", "Was not");
+		contraction.put("We'd", "We had");
+		contraction.put("We'd've", "We would have");
+		contraction.put("We'll", "We will");
+		contraction.put("We're", "We are");
+		contraction.put("We've", "We have");
+		contraction.put("Weren't", "Were not");
+		contraction.put("What'll", "What will");
+		contraction.put("What're", "What are");
+		contraction.put("What's", "What is");
+		contraction.put("What've", "What have");
+		contraction.put("When's", "When is");
+		contraction.put("Where'd", "Where did");
+		contraction.put("Where's", "Where is");
+		contraction.put("Where've", "Where have");
+		contraction.put("Who'd", "Who had");
+		contraction.put("Who'll", "Who will");
+		contraction.put("Who're", "Who are");
+		contraction.put("Who's", "Who is");
+		contraction.put("Who've", "Who have");
+		contraction.put("Why'll", "Why will");
+		contraction.put("Why're", "Why are");
+		contraction.put("Why's", "Why is");
+		contraction.put("Won't", "Will not");
+		contraction.put("Would've", "Would have");
+		contraction.put("Wouldn't", "Would not");
+		contraction.put("Wouldn't've", "Would not have");
+		contraction.put("Y'all", "You all");
+		contraction.put("Y'all'd've", "You all should have");
+		contraction.put("Y'd", "You had");
+		contraction.put("You'd've", "You would have");
+		contraction.put("You'll", "You will");
+		contraction.put("You're", "You are");
+		contraction.put("You've", "You have");
 	}
 
 	public boolean increment() throws TokenizerException
@@ -130,6 +225,8 @@ public class TokenFilter_SYMBOL extends TokenFilter
 			 */
 			currentTokenString = currentTokenString.replaceAll("(\\.|!|\\?)+$", "");
 			
+			currentTokenString = currentTokenString.replaceAll(" \\'ve$", " have");
+			currentTokenString = currentTokenString.replaceAll("\\'em$", "them");
 			
 			/**
 			 * Any possessive apostrophes should be removed (‘s s’ or just ‘ at the end of a word).
@@ -140,9 +237,6 @@ public class TokenFilter_SYMBOL extends TokenFilter
 			
 			currentTokenString = currentTokenString.replaceAll("s\\'$", "s");
 			currentTokenString = currentTokenString.replaceAll("\\'", "");
-			
-			currentTokenString = currentTokenString.replaceAll("'ve$", " have");
-			
 			
 			/**
 			 * If a hyphen occurs within a alphanumeric token
@@ -161,7 +255,9 @@ public class TokenFilter_SYMBOL extends TokenFilter
 		    	else currentTokenString = currentTokenString.replaceAll("-", " ");
 		    }
 			//Do we need to remove the space here?
-			currentTokenString = currentTokenString.replaceAll("( -|- | - )", " ");
+		    currentTokenString = currentTokenString.replaceAll(" (-)+ ", " ");
+		    currentTokenString = currentTokenString.replaceAll(" (-)+", " ");
+			currentTokenString = currentTokenString.replaceAll("(-)+ ", " ");
 			
 			//Update the current token and move the pointer to the next token
 			tempToken = new Token();

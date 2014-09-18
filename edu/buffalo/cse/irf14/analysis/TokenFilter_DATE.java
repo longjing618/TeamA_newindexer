@@ -14,6 +14,7 @@ public class TokenFilter_DATE extends TokenFilter{
 		super(stream);
 		copy = stream;
 		length = copy.tokenList.size();
+		month = new HashMap<String,String>();
 		month.put("January", "01");
 		month.put("February", "02");
 		month.put("March", "03");
@@ -36,9 +37,9 @@ public class TokenFilter_DATE extends TokenFilter{
 		{
 			currentTokenString = copy.tokenList.get(count).toString();
 			
-			String[] date = currentTokenString.split(" ");
-			if(month.containsKey(date[0]))
+			if(month.containsKey(currentTokenString))
 			{
+				//This is a month string
 				currentTokenString = "";
 				currentTokenString += month.get(date[0]);
 				date[1] = date[1].replace(",",""); //trim the comma Ex. January 1, 1900
@@ -62,5 +63,11 @@ public class TokenFilter_DATE extends TokenFilter{
 	public TokenStream getStream()
 	{
 		return copy;
+	}
+	
+	public String[] getDateArray(int monthIndex)
+	{
+		String[] ret = {copy.tokenList.get(monthIndex-1).toString(),copy.tokenList.get(monthIndex+1).toString(),copy.tokenList.get(monthIndex+2).toString()};
+		return ret;
 	}
 }

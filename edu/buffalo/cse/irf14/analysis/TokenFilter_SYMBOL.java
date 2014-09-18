@@ -263,9 +263,6 @@ public class TokenFilter_SYMBOL extends TokenFilter
 		    {
 		    	//Do we need to remove the space here?
 			    currentTokenString = currentTokenString.replaceAll("\\s?-\\s?", "");
-			    currentTokenString = currentTokenString.replaceAll(" - ", " ");
-			    currentTokenString = currentTokenString.replaceAll("\\s(-)+", " ");
-				currentTokenString = currentTokenString.replaceAll("(-)+\\s+", " ");
 		    }
 			
 			//Update the current token and move the pointer to the next token

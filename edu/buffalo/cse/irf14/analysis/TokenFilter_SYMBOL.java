@@ -12,6 +12,8 @@ public class TokenFilter_SYMBOL extends TokenFilter
 	TokenStream copy;
 	Token tempToken;
 	HashMap<String, String> contraction;
+	Pattern p;
+	Matcher m;
 	public TokenFilter_SYMBOL(TokenStream stream) {
 		super(stream);
 		copy = stream;
@@ -250,14 +252,21 @@ public class TokenFilter_SYMBOL extends TokenFilter
 		    Matcher m = r.matcher(currentTokenString);
 		    if (m.find( )) 
 		    {
-		    	if(isNumber(m.group(1)) || isNumber(m.group(2)))
+		    	if(m.group(1).matches(".*\\d.*") || m.group(2).matches(".*\\d.*"))
 		    		;
-		    	else currentTokenString = currentTokenString.replaceAll("-", " ");
+		    	else 
+		    	{
+		    		currentTokenString = currentTokenString.replaceAll("-", " ");
+		    	}
 		    }
-			//Do we need to remove the space here?
-		    currentTokenString = currentTokenString.replaceAll(" (-)+ ", " ");
-		    currentTokenString = currentTokenString.replaceAll(" (-)+", " ");
-			currentTokenString = currentTokenString.replaceAll("(-)+ ", " ");
+		    else
+		    {
+		    	//Do we need to remove the space here?
+			    currentTokenString = currentTokenString.replaceAll("\\s?-\\s?", "");
+			    currentTokenString = currentTokenString.replaceAll(" - ", " ");
+			    currentTokenString = currentTokenString.replaceAll("\\s(-)+", " ");
+				currentTokenString = currentTokenString.replaceAll("(-)+\\s+", " ");
+		    }
 			
 			//Update the current token and move the pointer to the next token
 			tempToken = new Token();
@@ -275,12 +284,4 @@ public class TokenFilter_SYMBOL extends TokenFilter
 		return copy;
 	}
 	
-	public boolean isNumber(String str) {
-	    try { 
-	        Integer.parseInt(str); 
-	    } catch(NumberFormatException e) { 
-	        return false; 
-	    }
-	    return true;
-	}
 }

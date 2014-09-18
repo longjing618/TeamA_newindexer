@@ -18,6 +18,7 @@ public class Token {
 	private char[] termBuffer;
 	
 	private boolean isStartOfSentence = false;
+	private boolean isEndOfSentence = false;
 	
 	/**
 	 * Method to set the termText to given text.
@@ -26,7 +27,7 @@ public class Token {
 	 * @param text
 	 */
 	protected void setTermText(String text) {
-		termText = text;
+		termText = text.trim();
 		termBuffer = (termText != null) ? termText.toCharArray() : null;
 	}
 	
@@ -106,5 +107,13 @@ public class Token {
 
 	public void setStartOfSentence(boolean isStartOfSentence) {
 		this.isStartOfSentence = isStartOfSentence;
+	}
+
+	public boolean isEndOfSentence() {
+		return isEndOfSentence;
+	}
+
+	public void setEndOfSentence(boolean isEndOfSentence) {
+		this.isEndOfSentence = isEndOfSentence;
 	}
 }

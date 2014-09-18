@@ -185,4 +185,12 @@ public class TokenStream implements Iterator<Token>{
 		return null;
 	}
 	
+	public void removeNode(int count)
+	{
+		if(count >= tokenList.size())
+			return;
+		tokenList.remove(count);
+		reset();
+	}
+	
 }

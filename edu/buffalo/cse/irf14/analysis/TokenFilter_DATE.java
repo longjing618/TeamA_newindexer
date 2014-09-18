@@ -61,12 +61,22 @@ public class TokenFilter_DATE extends TokenFilter{
 						{
 							d = date[0];
 							y = date[1];
+							copy.removeNode(count-1);
+							count--;
+							copy.removeNode(count+1);
+							length = copy.tokenList.size();
 						}
 						else if(date[1].length()<3)
 						{
 							d = date[1];
+							copy.removeNode(count+1);
+							length = copy.tokenList.size();
 							if(isNumber(date[2]) && date[2].length() == 4)
+							{
 								y = date[2];
+								copy.removeNode(count+2);
+								length = copy.tokenList.size();
+							}
 						}
 					}		
 				}
@@ -102,7 +112,10 @@ public class TokenFilter_DATE extends TokenFilter{
 	
 	public String[] getDateArray(int monthIndex)
 	{
-		String[] ret = {copy.tokenList.get(monthIndex-1).toString(),copy.tokenList.get(monthIndex+1).toString(),copy.tokenList.get(monthIndex+2).toString()};
+		String tmp1 = copy.tokenList.get(monthIndex-1).toString().replaceAll(",", "");
+		String tmp2 = copy.tokenList.get(monthIndex+1).toString().replaceAll(",", "");
+		String tmp3 = copy.tokenList.get(monthIndex+2).toString().replaceAll(",","");
+		String[] ret = {tmp1,tmp2,tmp3};
 		return ret;
 	}
 	

@@ -8,7 +8,10 @@ public class TokenFilter_DATE extends TokenFilter{
 	String currentTokenString;
 	TokenStream copy;
 	Token tempToken;
-	String defaultyear;
+
+	String d;
+	String m;
+	String y;
 	HashMap<String,String> month;
 	public TokenFilter_DATE(TokenStream stream) {
 		super(stream);
@@ -28,7 +31,9 @@ public class TokenFilter_DATE extends TokenFilter{
 		month.put("November", "11");
 		month.put("December", "12");
 		
-		defaultyear = "1900";
+		y = "1900";
+		m = "01";
+		d = "01";
 	}
 
 	public boolean increment() throws TokenizerException
@@ -39,16 +44,46 @@ public class TokenFilter_DATE extends TokenFilter{
 			
 			if(month.containsKey(currentTokenString))
 			{
-				//This is a month string
-				currentTokenString = "";
-				currentTokenString += month.get(date[0]);
-				date[1] = date[1].replace(",",""); //trim the comma Ex. January 1, 1900
-				currentTokenString += String.format("%02d", Integer.parseInt(date[1]));
-				if(date.length == 3)
-					currentTokenString += date[2];
-				else
-					currentTokenString += defaultyear;
+				//currentTokenString is a month string
+				String[] date = getDateArray(count);
+				/*
+				 * date[0] is the possible day
+				 * date[1] is the possible day or year
+				 * date[2] is the possible year
+				 */
+				//1 January 1978
+				//December 7, 1941
+				if(isNumber(date[0]))
+				{
+					if(isNumber(date[1]))
+					{
+						if(date[1].length() == 4)
+						{
+							d = date[0];
+							y = date[1];
+						}
+						else if(date[1].length()<3)
+						{
+							d = date[1];
+							if(isNumber(date[2]) && date[2].length() == 4)
+								y = date[2];
+						}
+					}		
+				}
+				else if(date[1].length()<3)
+				{
+					d = date[1];
+					if(isNumber(date[2]) && date[2].length() == 4)
+						y = date[2];
+				}
+					
+				currentTokenString = getDay(y,m,d);
+				
 			}
+			
+			//Handle year 
+			
+			//Handle time
 			
 			//Update the current token and move the pointer to the next token
 			tempToken = new Token();
@@ -68,6 +103,24 @@ public class TokenFilter_DATE extends TokenFilter{
 	public String[] getDateArray(int monthIndex)
 	{
 		String[] ret = {copy.tokenList.get(monthIndex-1).toString(),copy.tokenList.get(monthIndex+1).toString(),copy.tokenList.get(monthIndex+2).toString()};
+		return ret;
+	}
+	
+	public boolean isNumber(String str) {
+	    try { 
+	        Integer.parseInt(str); 
+	    } catch(NumberFormatException e) { 
+	        return false; 
+	    }
+	    return true;
+	}
+	
+	public String getDay(String y, String m, String d)
+	{
+		String ret = "";
+		ret += String.format("%04d", Integer.parseInt(y));
+		ret += String.format("%02d", Integer.parseInt(m));
+		ret += String.format("%02d", Integer.parseInt(d));
 		return ret;
 	}
 }

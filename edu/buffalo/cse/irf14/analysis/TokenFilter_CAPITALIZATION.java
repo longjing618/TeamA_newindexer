@@ -79,7 +79,7 @@ public class TokenFilter_CAPITALIZATION extends TokenFilter{
 				isStentenceAllCaps = false;
 				break;
 			}
-			if(token.getTermText().endsWith("."))
+			if(token.isEndOfSentence())
 				break;
 		}
 		Token token = copy.tokenIterator.previous();

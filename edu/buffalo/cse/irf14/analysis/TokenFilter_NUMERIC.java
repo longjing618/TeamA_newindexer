@@ -1,7 +1,5 @@
 package edu.buffalo.cse.irf14.analysis;
 
-import java.util.ArrayList;
-import java.util.regex.Pattern;
 
 public class TokenFilter_NUMERIC extends TokenFilter{
 	int length;

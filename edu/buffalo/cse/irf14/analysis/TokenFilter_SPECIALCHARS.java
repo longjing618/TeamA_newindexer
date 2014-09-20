@@ -39,14 +39,14 @@ public class TokenFilter_SPECIALCHARS extends TokenFilter{
 	
 	private void removeSpecailChars(Token token){
 		String tokenText = token.getTermText();
-		if(tokenText.contains("@")){
-			String [] tokens = tokenText.split("@");
-			token.setTermText(tokens[0]);
-			Token newToken = new Token();
-			newToken.setTermText(tokens[1]);
-			copy.tokenIterator.add(newToken);
-			return;
-		}
+//		if(tokenText.contains("@")){
+//			String [] tokens = tokenText.split("@");
+//			token.setTermText(tokens[0]);
+//			Token newToken = new Token();
+//			newToken.setTermText(tokens[1]);
+//			copy.tokenIterator.add(newToken);
+//			return;
+//		}
 		if(tokenText.matches(".*[a-zA-Z]+-[a-zA-Z]+.*")){
 			token.setTermText(tokenText.replaceAll("[\\W_&&[^\\.]]", ""));
 		}else{

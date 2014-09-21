@@ -45,6 +45,7 @@ public class TokenFilter_DATE extends TokenFilter{
 			if(month.containsKey(currentTokenString))
 			{
 				//currentTokenString is a month string
+				m = month.get(currentTokenString);
 				String[] date = getDateArray(count);
 				/*
 				 * date[0] is the possible day
@@ -66,29 +67,35 @@ public class TokenFilter_DATE extends TokenFilter{
 							copy.removeNode(count+1);
 							length = copy.tokenList.size();
 						}
-						else if(date[1].length()<3)
+						else if(date[1].length()<4)
 						{
 							d = date[1];
 							copy.removeNode(count+1);
 							length = copy.tokenList.size();
-							if(isNumber(date[2]) && date[2].length() == 4)
+							if(isNumber(date[2]) && trimcomma(date[2]).length() == 4)
 							{
 								y = date[2];
-								copy.removeNode(count+2);
+								copy.removeNode(count+1);
 								length = copy.tokenList.size();
 							}
 						}
 					}		
 				}
-				else if(date[1].length()<3)
+				else if(date[1].length()<4)
 				{
 					d = date[1];
-					if(isNumber(date[2]) && date[2].length() == 4)
+					copy.removeNode(count+1);
+					length = copy.tokenList.size();
+					
+					if(isNumber(date[2]) && trimcomma(date[2]).length() == 4)
+					{
 						y = date[2];
+						copy.removeNode(count+1);
+						length = copy.tokenList.size();
+					}	
 				}
 					
 				currentTokenString = getDay(y,m,d);
-				
 			}
 			
 			//Handle year 
@@ -112,15 +119,16 @@ public class TokenFilter_DATE extends TokenFilter{
 	
 	public String[] getDateArray(int monthIndex)
 	{
-		String tmp1 = copy.tokenList.get(monthIndex-1).toString().replaceAll(",", "");
-		String tmp2 = copy.tokenList.get(monthIndex+1).toString().replaceAll(",", "");
-		String tmp3 = copy.tokenList.get(monthIndex+2).toString().replaceAll(",","");
+		String tmp1 = copy.tokenList.get(monthIndex-1).toString();
+		String tmp2 = copy.tokenList.get(monthIndex+1).toString();
+		String tmp3 = copy.tokenList.get(monthIndex+2).toString();
 		String[] ret = {tmp1,tmp2,tmp3};
 		return ret;
 	}
 	
 	public boolean isNumber(String str) {
 	    try { 
+	    	str = str.replaceAll(",", "");
 	        Integer.parseInt(str); 
 	    } catch(NumberFormatException e) { 
 	        return false; 
@@ -131,9 +139,17 @@ public class TokenFilter_DATE extends TokenFilter{
 	public String getDay(String y, String m, String d)
 	{
 		String ret = "";
-		ret += String.format("%04d", Integer.parseInt(y));
-		ret += String.format("%02d", Integer.parseInt(m));
-		ret += String.format("%02d", Integer.parseInt(d));
+		ret += String.format("%04d", Integer.parseInt(y.replaceAll(",", "")));
+		ret += String.format("%02d", Integer.parseInt(m.replaceAll(",", "")));
+		if(d.indexOf(",") == -1)
+			ret += String.format("%02d", Integer.parseInt(d));
+		else
+			ret += String.format("%02d", Integer.parseInt(d.replaceAll(",",""))) + ",";
 		return ret;
+	}
+	
+	public String trimcomma(String str)
+	{
+		return str.replaceAll(",","");
 	}
 }

@@ -9,7 +9,7 @@ public class TokenFilter_SYMBOL extends TokenFilter
 	int length;
 	int count = 0;
 	String currentTokenString;
-	TokenStream copy;
+	//TokenStream copy;
 	Token tempToken;
 	HashMap<String, String> contraction;
 	Pattern p;

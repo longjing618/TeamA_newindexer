@@ -7,7 +7,7 @@ public class TokenFilter_ACCENT extends TokenFilter{
 	int length;
 	int count = 0;
 	String currentTokenString;
-	TokenStream copy;
+	//TokenStream copy;
 	Token tempToken;
 	Pattern pattern = Pattern.compile("\\p{InCombiningDiacriticalMarks}+");
 	public TokenFilter_ACCENT(TokenStream stream) {

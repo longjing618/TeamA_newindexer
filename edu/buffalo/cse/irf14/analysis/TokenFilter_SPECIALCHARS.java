@@ -4,7 +4,7 @@ public class TokenFilter_SPECIALCHARS extends TokenFilter{
 	int length;
 	int count = 0;
 	String currentTokenString;
-	TokenStream copy;
+	//TokenStream copy;
 	Token tempToken;
 	public TokenFilter_SPECIALCHARS(TokenStream stream) {
 		super(stream);

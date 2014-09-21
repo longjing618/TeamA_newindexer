@@ -6,7 +6,7 @@ public class TokenFilter_STOPWORD extends TokenFilter{
 	int length;
 	int count = 0;
 	String currentTokenString;
-	TokenStream copy;
+	//TokenStream copy;
 	Token tempToken;
 	HashSet<String> stopWordList = new HashSet<String>();
 	public TokenFilter_STOPWORD(TokenStream stream) {

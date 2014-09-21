@@ -6,7 +6,7 @@ public class TokenFilter_DATE extends TokenFilter{
 	int length;
 	int count = 0;
 	String currentTokenString;
-	TokenStream copy;
+	//TokenStream copy;
 	Token tempToken;
 
 	String d;

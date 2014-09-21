@@ -5,20 +5,20 @@ import java.util.Set;
 
 class DocumentMap
 {
-	private long docId = 0;
-	private HashMap<Long, String> docMap;
+	private int docId = 0;
+	private HashMap<Integer, String> docMap;
 	public DocumentMap()
 	{
-		docMap = new HashMap<Long, String>();
+		docMap = new HashMap<Integer, String>();
 	}
-	public long add(String fileId)
+	public int add(String fileId)
 	{
 		//docId++;
 		docMap.put(++docId, fileId);
 		return docId;		
 	}
 	
-	public Set<Long> getKeySet(){
+	public Set<Integer> getKeySet(){
 		return docMap.keySet();
 	}
 }

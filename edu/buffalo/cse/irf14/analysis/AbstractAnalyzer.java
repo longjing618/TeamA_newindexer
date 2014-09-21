@@ -9,11 +9,10 @@ public abstract class AbstractAnalyzer implements Analyzer {
 		// TODO Auto-generated method stub
 		List<TokenFilter> filterList = getFilterList();
 		for(TokenFilter tokenFilter: filterList){
-			tokenFilter.getStream().reset();
+			tokenFilter.reset();
 			while(tokenFilter.increment()){
 				
 			}
-			//stream.reset();
 		}
 		return false;
 	}

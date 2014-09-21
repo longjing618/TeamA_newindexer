@@ -1,13 +1,11 @@
 package edu.buffalo.cse.irf14.analysis;
 
-import java.util.ArrayList;
-import java.util.regex.Pattern;
 
 public class TokenFilter_NUMERIC extends TokenFilter{
 	int length;
 	int count = 0;
 	String currentTokenString;
-	TokenStream copy;
+	//TokenStream copy;
 	Token tempToken;
 	//private ArrayList<Pattern> patternList;
 	public TokenFilter_NUMERIC(TokenStream stream) {

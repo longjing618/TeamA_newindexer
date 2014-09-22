@@ -3,8 +3,18 @@
  */
 package edu.buffalo.cse.irf14.index;
 
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+
+import edu.buffalo.cse.irf14.analysis.Analyzer;
+import edu.buffalo.cse.irf14.analysis.AnalyzerFactory;
+import edu.buffalo.cse.irf14.analysis.Token;
+import edu.buffalo.cse.irf14.analysis.TokenStream;
+import edu.buffalo.cse.irf14.analysis.Tokenizer;
+import edu.buffalo.cse.irf14.analysis.TokenizerException;
+import edu.buffalo.cse.irf14.document.FieldNames;
+import edu.buffalo.cse.irf14.document.Parser;
 
 /**
  * @author nikhillo
@@ -18,8 +28,12 @@ public class IndexReader {
 	 * you make subdirectories etc., you will have to handle it accordingly.
 	 * @param type The {@link IndexType} to read from
 	 */
+	private String indexDir;
+	private IndexType type;
 	public IndexReader(String indexDir, IndexType type) {
 		//TODO
+		this.indexDir = indexDir;
+		this.type = type;
 	}
 	
 	/**
@@ -29,7 +43,7 @@ public class IndexReader {
 	 */
 	public int getTotalKeyTerms() {
 		//TODO : YOU MUST IMPLEMENT THIS
-		return -1;
+		return IndexContainer.termMap.getSize();
 	}
 	
 	/**
@@ -52,7 +66,38 @@ public class IndexReader {
 	 */
 	public Map<String, Integer> getPostings(String term) {
 		//TODO:YOU MUST IMPLEMENT THIS
+		Map<String, Integer> postingMap = null;
+		Tokenizer tokenizer = new Tokenizer();
+		try {
+			TokenStream tokenStream = tokenizer.consume(term);
+			Analyzer analyzer = AnalyzerFactory.getInstance().getAnalyzerForField(FieldNames.CONTENT, tokenStream);
+			while(analyzer.increment()){
+				
+			}
+			tokenStream.reset();
+			while(tokenStream.hasNext()){
+				Token token = tokenStream.next();
+				String tokenText = token.toString();
+				List<Posting> postingList = IndexContainer.indexer.getPostingList(tokenText);
+				if(postingList == null || postingList.isEmpty())
+					continue;
+				if(postingMap == null){
+					postingMap = new LinkedHashMap<String, Integer>();
+				}
+				for(Posting posting: postingList){
+					String fileId = Parser.docMap.getFileId(posting.getDocId());
+					postingMap.put(fileId, posting.getPositionLsit().size());
+				}
+				
+			}
+			return postingMap;
+		} catch (TokenizerException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 		return null;
+		
 	}
 	
 	/**

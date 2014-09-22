@@ -1,5 +1,9 @@
 package edu.buffalo.cse.irf14.index;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 public class Indexer {
 	// Index buckets
 	private Index aIndex = new Index();
@@ -98,5 +102,24 @@ public class Indexer {
 	public Index getIndex(byte indexId){
 		char ch = (char) (indexId + 96);
 		return getIndexBucket(Character.toString(ch));
+	}
+	
+	public List<Posting> getPostingList(String termText){
+		Index index = getIndexBucket(termText);
+		return index.getPostings(termText);
+	}
+	
+	public List<String> getTopK(int k){
+		List<Integer> globalTopList = new ArrayList<Integer>(27*k);
+		for(byte i = 0; i < 27; i++){
+			globalTopList.addAll(getIndex(i).getTopK(k));
+		}
+		Collections.sort(globalTopList);
+		List<String> topKTerms = new ArrayList<String>(k);
+		for(int i = 0; i < k; i++){
+			String termText = IndexContainer.termMap.getTermText(globalTopList.get(i));
+			topKTerms.add(termText);
+		}
+		return topKTerms;
 	}
 }

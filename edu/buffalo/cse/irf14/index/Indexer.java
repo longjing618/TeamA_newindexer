@@ -109,6 +109,11 @@ public class Indexer {
 		
 	}
 	
+	public Index getIndex(byte indexId){
+		char ch = (char) (indexId + 96);
+		return getIndexBucket(Character.toString(ch));
+	}
+	
 	public List<Posting> getPostingList(String termText){
 		Index index = getIndexBucket(termText);
 		return index.getPostings(termText);

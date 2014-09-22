@@ -94,4 +94,14 @@ public class Indexer {
 		Index index = getIndexBucket(termText);
 		index.add(term);
 	}
+	
+	public void serializeBucket(byte index, String indexDir)
+	{
+		
+	}
+	
+	public void deSerializeBucket(String indexDir)
+	{
+		
+	}
 }

@@ -20,9 +20,9 @@ public class IndexWriter {
 	 * Default constructor
 	 * @param indexDir : The root directory to be sued for indexing
 	 */
-	private static Indexer indexer  = new Indexer(); 
+	
 	private String indexDir = ""; 
-	private static TermMap termMap = new TermMap();
+	
 	public IndexWriter(String indexDir) {
 		this.indexDir = indexDir;
 	}
@@ -45,7 +45,7 @@ public class IndexWriter {
 			HashMap<String, LinkedList<Integer>> termMap = termMapArray.get(index);
 			for(String termText : termMap.keySet()){
 				LinkedList<Integer> positionLsit = termMap.get(termText);
-				int termId = IndexWriter.termMap.getTermId(termText);
+				int termId = IndexContainer.termMap.getTermId(termText);
 				Term term = new Term();
 				term.setTermId(termId);
 				term.setNumberOfDocuments(1);
@@ -58,7 +58,7 @@ public class IndexWriter {
 				
 				term.setPostingList(postingList);
 				
-				indexer.addTerm(termText, term);
+				IndexContainer.indexer.addTerm(termText, term);
 				
 			}
 		}
@@ -72,5 +72,6 @@ public class IndexWriter {
 	 */
 	public void close() throws IndexerException {
 		//TODO
+		
 	}
 }

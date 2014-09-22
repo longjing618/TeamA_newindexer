@@ -1,9 +1,14 @@
 package edu.buffalo.cse.irf14.index;
 
+import java.io.Serializable;
 import java.util.LinkedList;
 import java.util.List;
 
-public class Term {
+public class Term implements Serializable{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 8930369869009602270L;
 	private int termId;
 	private int numberOfDocuments;
 	private int totalCount;

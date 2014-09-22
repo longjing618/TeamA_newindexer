@@ -3,7 +3,13 @@
  */
 package edu.buffalo.cse.irf14.index;
 
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+
+import edu.buffalo.cse.irf14.analysis.TokenizerException;
 import edu.buffalo.cse.irf14.document.Document;
+import edu.buffalo.cse.irf14.document.FieldNames;
 
 /**
  * @author nikhillo
@@ -14,8 +20,11 @@ public class IndexWriter {
 	 * Default constructor
 	 * @param indexDir : The root directory to be sued for indexing
 	 */
+	private static Indexer indexer  = new Indexer(); 
+	private String indexDir = ""; 
+	private static TermMap termMap = new TermMap();
 	public IndexWriter(String indexDir) {
-		//TODO : YOU MUST IMPLEMENT THIS
+		this.indexDir = indexDir;
 	}
 	
 	/**
@@ -25,9 +34,35 @@ public class IndexWriter {
 	 * for each indexable field within the document. 
 	 * @param d : The Document to be added
 	 * @throws IndexerException : In case any error occurs
+	 * @throws TokenizerException 
 	 */
 	public void addDocument(Document d) throws IndexerException {
 		//TODO : YOU MUST IMPLEMENT THIS
+		List<HashMap<String, LinkedList<Integer>>> termMapArray = IndexWriterUtil.processDocumet(d, FieldNames.CONTENT);
+		int docId = Integer.parseInt(d.getField(FieldNames.DOCID)[0]);
+		//the part below can be multithreaded
+		for(byte index = 0; index < 27; index++){
+			HashMap<String, LinkedList<Integer>> termMap = termMapArray.get(index);
+			for(String termText : termMap.keySet()){
+				LinkedList<Integer> positionLsit = termMap.get(termText);
+				int termId = IndexWriter.termMap.getTermId(termText);
+				Term term = new Term();
+				term.setTermId(termId);
+				term.setNumberOfDocuments(1);
+				
+				LinkedList<Posting> postingList = new LinkedList<Posting>();
+				Posting posting = new Posting();
+				posting.setDocId(docId);
+				posting.setPositionLsit(positionLsit);
+				postingList.add(posting);
+				
+				term.setPostingList(postingList);
+				
+				indexer.addTerm(termText, term);
+				
+			}
+		}
+		
 	}
 	
 	/**

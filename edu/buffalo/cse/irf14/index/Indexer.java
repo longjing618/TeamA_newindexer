@@ -94,4 +94,9 @@ public class Indexer {
 		Index index = getIndexBucket(termText);
 		index.add(term);
 	}
+	
+	private Index getIndex(byte indexId){
+		char ch = (char) (indexId + 96);
+		return getIndexBucket(Character.toString(ch));
+	}
 }

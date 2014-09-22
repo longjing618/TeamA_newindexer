@@ -99,9 +99,14 @@ public class Indexer {
 		index.add(term);
 	}
 	
-	public Index getIndex(byte indexId){
-		char ch = (char) (indexId + 96);
-		return getIndexBucket(Character.toString(ch));
+	public void serializeBucket(byte index, String indexDir)
+	{
+		
+	}
+	
+	public void deSerializeBucket(String indexDir)
+	{
+		
 	}
 	
 	public List<Posting> getPostingList(String termText){

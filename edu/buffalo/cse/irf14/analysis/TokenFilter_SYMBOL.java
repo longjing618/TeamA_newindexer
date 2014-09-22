@@ -266,29 +266,37 @@ public class TokenFilter_SYMBOL extends TokenFilter
 		 * Any other hyphens padded by spaces on either or both sides should be removed.
 		 */
 		//How about multiple hyphen
-		String pattern = "([^-]+)-([^-]+)";
+		String pattern = "(.+)-(.+)";
 	    Pattern r = Pattern.compile(pattern);
-	    Matcher m = r.matcher(currentTokenString);
-	    if (m.find( )) 
-	    {
-	    	if(m.group(1).matches(".*\\d.*") || m.group(2).matches(".*\\d.*"))
-	    		;
-	    	else 
-	    	{
-	    		currentTokenString = currentTokenString.replaceAll("-", " ");
-	    	}
-	    }
-	    else
-	    {
-	    	//Do we need to remove the space here?
-		    currentTokenString = currentTokenString.replaceAll("\\s?-\\s?", "");
-	    }
+
+	    currentTokenString = handleHyphen(r,currentTokenString);
 		
 		//Update the current token and move the pointer to the next token
 		tempToken = new Token();
 		tempToken.setTermText(currentTokenString);
 		copy.tokenList.set(count, tempToken);
 		count++;
+	}
+	
+	public static String handleHyphen(Pattern r, String currentTokenString)
+	{
+	    Matcher m = r.matcher(currentTokenString);
+	    if (m.find( )) 
+	    {
+	    	if(m.group(1).matches(".*\\d.*") || m.group(2).matches(".*\\d.*"))
+	    	{
+	    		currentTokenString = handleHyphen(r,m.group(1)) + '-' + handleHyphen(r,m.group(2));
+	    	}
+	    	else
+	    	{
+	    		currentTokenString = handleHyphen(r,m.group(1)) + ' ' + handleHyphen(r,m.group(2));
+	    	}
+	    }
+	    else
+	    {
+		    currentTokenString = currentTokenString.replaceAll("\\s?-\\s?", "");
+	    }
+	    return currentTokenString;
 	}
 	
 }

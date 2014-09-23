@@ -101,10 +101,11 @@ public class TokenStream implements Iterator<Token>{
 		
 		
 		if(!stream.isEmpty()){
-			int index = tokenList.size();
-			for(Token token : stream.tokenList){
-				token.position = ++index;
-			}
+			//Commenting to remove positional tracking
+//			int index = tokenList.size();
+//			for(Token token : stream.tokenList){
+//				token.position = ++index;
+//			}
 			int nextIndex = tokenIterator.nextIndex();
 			tokenList.addAll(stream.tokenList);
 			tokenIterator = tokenList.listIterator();
@@ -142,12 +143,14 @@ public class TokenStream implements Iterator<Token>{
 		//as String.split() considers the argument to be a regex
 		//If the delimiter is a valid regex my mistake, like ".",
 		//then we will have issues.
-		int index = 0;
+		//Commenting to remove positional tracking
+		//int index = 0;
 		StringTokenizer st = new StringTokenizer(str, delim);
 		while(st.hasMoreTokens()){
 			Token token = new Token();
 			token.setTermText(st.nextToken());
-			token.position = ++index;
+			//Commenting to remove positional tracking
+			//token.position = ++index;
 			tokenList.add(token);
 		}
 		tokenIterator = tokenList.listIterator();

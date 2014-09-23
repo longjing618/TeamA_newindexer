@@ -3,7 +3,7 @@ package edu.buffalo.cse.irf14.document;
 import java.util.HashMap;
 import java.util.Set;
 
-class DocumentMap
+public class DocumentMap
 {
 	private int docId = 0;
 	private HashMap<Integer, String> docMap;
@@ -20,5 +20,9 @@ class DocumentMap
 	
 	public Set<Integer> getKeySet(){
 		return docMap.keySet();
+	}
+	
+	public String getFileId(int docId){
+		return docMap.get(docId);
 	}
 }

@@ -19,8 +19,8 @@ public class Token {
 	
 	private boolean isStartOfSentence = false;
 	private boolean isEndOfSentence = false;
-	
-	public int position;
+	//Commenting to remove positional tracking
+	//public int position;
 	/**
 	 * Method to set the termText to given text.
 	 * This is a sample implementation and you CAN change this

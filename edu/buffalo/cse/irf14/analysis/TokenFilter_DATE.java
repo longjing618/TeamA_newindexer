@@ -1,6 +1,8 @@
 package edu.buffalo.cse.irf14.analysis;
 
 import java.util.HashMap;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class TokenFilter_DATE extends TokenFilter{
 	int length;
@@ -12,6 +14,8 @@ public class TokenFilter_DATE extends TokenFilter{
 	String d;
 	String m;
 	String y;
+	String t;
+		
 	HashMap<String,String> month;
 	public TokenFilter_DATE(TokenStream stream) {
 		super(stream);
@@ -34,6 +38,7 @@ public class TokenFilter_DATE extends TokenFilter{
 		y = "1900";
 		m = "01";
 		d = "01";
+		t = "00";
 	}
 
 	public boolean increment() throws TokenizerException
@@ -42,65 +47,23 @@ public class TokenFilter_DATE extends TokenFilter{
 		{
 			currentTokenString = copy.tokenList.get(count).toString();
 			
+			//Handle month
 			if(month.containsKey(currentTokenString))
 			{
-				//currentTokenString is a month string
-				m = month.get(currentTokenString);
-				String[] date = getDateArray(count);
-				/*
-				 * date[0] is the possible day
-				 * date[1] is the possible day or year
-				 * date[2] is the possible year
-				 */
-				//1 January 1978
-				//December 7, 1941
-				if(isNumber(date[0]))
-				{
-					if(isNumber(date[1]))
-					{
-						if(date[1].length() == 4)
-						{
-							d = date[0];
-							y = date[1];
-							copy.removeNode(count-1);
-							count--;
-							copy.removeNode(count+1);
-							length = copy.tokenList.size();
-						}
-						else if(date[1].length()<4)
-						{
-							d = date[1];
-							copy.removeNode(count+1);
-							length = copy.tokenList.size();
-							if(isNumber(date[2]) && trimcomma(date[2]).length() == 4)
-							{
-								y = date[2];
-								copy.removeNode(count+1);
-								length = copy.tokenList.size();
-							}
-						}
-					}		
-				}
-				else if(date[1].length()<4)
-				{
-					d = date[1];
-					copy.removeNode(count+1);
-					length = copy.tokenList.size();
-					
-					if(isNumber(date[2]) && trimcomma(date[2]).length() == 4)
-					{
-						y = date[2];
-						copy.removeNode(count+1);
-						length = copy.tokenList.size();
-					}	
-				}
-					
-				currentTokenString = getDay(y,m,d);
+				currentTokenString = handleMonth(currentTokenString);
 			}
 			
 			//Handle year 
-			
+			if(isNumber(currentTokenString) && currentTokenString.length() == 4)
+			{
+				currentTokenString = handleYear(currentTokenString);
+			}
+				
 			//Handle time
+			if(currentTokenString.indexOf(':') != -1)
+			{
+				currentTokenString = handleTime(currentTokenString);
+			}
 			
 			//Update the current token and move the pointer to the next token
 			tempToken = new Token();
@@ -126,6 +89,11 @@ public class TokenFilter_DATE extends TokenFilter{
 		return ret;
 	}
 	
+	public String getMeridiem(int timeIndex)
+	{
+		return copy.tokenList.get(timeIndex + 1).toString();
+	}
+	
 	public boolean isNumber(String str) {
 	    try { 
 	    	str = str.replaceAll(",", "");
@@ -135,7 +103,121 @@ public class TokenFilter_DATE extends TokenFilter{
 	    }
 	    return true;
 	}
+
+	public String handleMonth(String currentTokenString)
+	{
+		//currentTokenString is a month string
+		m = month.get(currentTokenString);
+		String[] date = getDateArray(count);
+		/*
+		 * date[0] is the possible day
+		 * date[1] is the possible day or year
+		 * date[2] is the possible year
+		 */
+		//1 January 1978
+		//December 7, 1941
+		if(isNumber(date[0]))
+		{
+			if(isNumber(date[1]))
+			{
+				if(date[1].length() == 4)
+				{
+					d = date[0];
+					y = date[1];
+					copy.removeNode(count-1);
+					count--;
+					copy.removeNode(count+1);
+					length = copy.tokenList.size();
+				}
+				else if(date[1].length()<4)
+				{
+					d = date[1];
+					copy.removeNode(count+1);
+					length = copy.tokenList.size();
+					if(isNumber(date[2]) && trimcomma(date[2]).length() == 4)
+					{
+						y = date[2];
+						copy.removeNode(count+1);
+						length = copy.tokenList.size();
+					}
+				}
+			}		
+		}
+		else if(date[1].length()<4)
+		{
+			d = date[1];
+			copy.removeNode(count+1);
+			length = copy.tokenList.size();
+			
+			if(isNumber(date[2]) && trimcomma(date[2]).length() == 4)
+			{
+				y = date[2];
+				copy.removeNode(count+1);
+				length = copy.tokenList.size();
+			}	
+		}
+		currentTokenString = getDay(y,m,d);
+		return currentTokenString;
+	}
 	
+	public String handleYear(String currentTokenString)
+	{
+		return currentTokenString + "0101";
+	}
+	
+	public String handleTime(String currentTokenString)
+	{
+		String temp = currentTokenString.toLowerCase();
+		String time = "";
+		String meridiem = "";
+		if(temp.indexOf("am") > 0 || temp.indexOf("pm") > 0)
+		{
+			String pattern = "(.*)(am|pm)";
+			Pattern r = Pattern.compile(pattern);
+		    Matcher m = r.matcher(temp);
+		    if (m.find( ))
+		    {
+		    	time = m.group(1);
+		    	meridiem = m.group(2);
+		    }
+		}
+		else
+		{
+			meridiem = getMeridiem(count);
+			meridiem = meridiem.toLowerCase();
+			if(isAM(meridiem) || isPM(meridiem))
+			{
+				copy.removeNode(count + 1);
+				length = copy.tokenList.size();
+			}
+		}
+
+		currentTokenString = formatTime(time,meridiem);
+		return currentTokenString;
+	}
+	
+	public String formatTime(String time, String meridiem)
+	{
+		String ret = "";
+		int h = 0;
+		int m = 0;
+		int s = 0;
+		String[] timecomponent = time.split(":");
+		if(timecomponent.length >= 2)
+		{
+			h = Integer.parseInt(timecomponent[0]);
+			m = Integer.parseInt(timecomponent[1]);
+		}
+		if(timecomponent.length == 3)
+			s = Integer.parseInt(timecomponent[2]);
+		if(isAM(meridiem) || h == 12)
+			h = 0;
+		if(isPM(meridiem) || h != 12)
+			h += 12;
+		ret = getTime(h,m,s);
+		return ret;
+	}
+
 	public String getDay(String y, String m, String d)
 	{
 		String ret = "";
@@ -146,6 +228,30 @@ public class TokenFilter_DATE extends TokenFilter{
 		else
 			ret += String.format("%02d", Integer.parseInt(d.replaceAll(",",""))) + ",";
 		return ret;
+	}
+	
+	public String getTime(int h, int m, int s)
+	{
+		String ret = "";
+		ret += String.format("%02d", h);
+		ret += ':';
+		ret += String.format("%02d", m);
+		ret += ':';
+		ret += String.format("%02d", s);
+			
+		return ret;
+	}
+	
+	public boolean isAM(String str)
+	{
+		str = str.toLowerCase();
+		return str.indexOf("am") != -1;
+	}
+	
+	public boolean isPM(String str)
+	{
+		str = str.toLowerCase();
+		return str.indexOf("pm") != -1;
 	}
 	
 	public String trimcomma(String str)

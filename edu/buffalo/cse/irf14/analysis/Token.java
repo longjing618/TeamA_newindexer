@@ -117,4 +117,8 @@ public class Token {
 	public void setEndOfSentence(boolean isEndOfSentence) {
 		this.isEndOfSentence = isEndOfSentence;
 	}
+	
+	public void mergeTokens(Token...tokens){
+		merge(tokens);
+	}
 }

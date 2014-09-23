@@ -41,10 +41,12 @@ public class AnalyzerFactory {
 	 */
 	public Analyzer getAnalyzerForField(FieldNames name, TokenStream stream) {
 		//TODO : YOU NEED TO IMPLEMENT THIS METHOD
-		if(name == FieldNames.CONTENT){
-			return new AnalyzerContent(stream);
-		}else if(name == FieldNames.TITLE){
-			return new AnalyzerTitle(stream);
+		if(name == FieldNames.CONTENT || name == FieldNames.TITLE){
+			return new AnalyzerTerm(stream);
+		}else if(name == FieldNames.AUTHOR){
+			return new AnalyzerAuthor(stream);
+		}else if(name == FieldNames.PLACE){
+			return new AnalyzerPlace(stream);
 		}
 		return null;
 	}

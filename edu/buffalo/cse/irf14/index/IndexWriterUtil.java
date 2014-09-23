@@ -16,8 +16,8 @@ import edu.buffalo.cse.irf14.document.FieldNames;
 
 public class IndexWriterUtil {
 	
-	public static List<HashMap<String, Integer>> processDocumet(Document d, FieldNames filedName) throws IndexerException{
-		ArrayList<HashMap<String, Integer>> termMapArray = new ArrayList<HashMap<String,Integer>>(27);
+	public static List<HashMap<String, IntegerCounter>> processDocumet(Document d, FieldNames filedName) throws IndexerException{
+		ArrayList<HashMap<String, IntegerCounter>> termMapArray = new ArrayList<HashMap<String,IntegerCounter>>(27);
 		//index 0 is for non alphabetic group
 		try{
 		if (d == null)
@@ -25,29 +25,49 @@ public class IndexWriterUtil {
 		
 		
 		Tokenizer tokenizer = new Tokenizer();
-		TokenStream tokenStream = tokenizer.consume(d.getField(filedName)[0]);
-		Analyzer contentAnalyzer = AnalyzerFactory.getInstance().getAnalyzerForField(filedName, tokenStream);
+		TokenStream tokenStream;
+		if(filedName == FieldNames.AUTHOR){
+			TokenStream authorTokenStream = null;
+			for(String str : d.getField(filedName)){
+				TokenStream tempTokenStream = tokenizer.consume(str);
+				Token first = tempTokenStream.next();
+				while(tempTokenStream.hasNext()){
+					Token temp = tempTokenStream.next();
+					first.mergeTokens(temp);
+					tempTokenStream.remove();
+				}
+				if(authorTokenStream == null){
+					authorTokenStream = tempTokenStream;
+				}else{
+					authorTokenStream.append(tempTokenStream);
+				}
+			}
+			
+			tokenStream = authorTokenStream;
+		}else
+			tokenStream = tokenizer.consume(d.getField(filedName)[0]);
+		Analyzer analyzer = AnalyzerFactory.getInstance().getAnalyzerForField(filedName, tokenStream);
 		
-		while(contentAnalyzer.increment()){
+		while(analyzer.increment()){
 			
 		}
 		tokenStream.reset();
 		for(int i = 0; i < 27; i++){
-			termMapArray.set(i, new HashMap<String, Integer>());
+			termMapArray.set(i, new HashMap<String, IntegerCounter>());
 		}
 		while(tokenStream.hasNext()){
 			Token token = tokenStream.next();
 			String tokenString = token.toString();
 			if(tokenString == null || tokenString.equals(""))
 				continue;
-			Map<String, Integer> termMap = termMapArray.get(tokenString.toLowerCase().charAt(0) - 96);
+			Map<String, IntegerCounter> termMap = termMapArray.get(tokenString.toLowerCase().charAt(0) - 96);
 			if(termMap.containsKey(tokenString)){
-				termMap.put(tokenString, termMap.get(tokenString) + 1);
+				termMap.get(tokenString).incrementCounter();
 			}else{
 				//Commenting to remove positional tracking
 				//LinkedList<Integer> positionsList = new LinkedList<Integer>();
 				//positionsList.add(token.position);
-				termMap.put(tokenString, 1);
+				termMap.put(tokenString, new IntegerCounter());
 			}
 		}
 		}catch(TokenizerException e){

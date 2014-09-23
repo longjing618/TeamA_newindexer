@@ -86,7 +86,7 @@ public class IndexReader {
 				}
 				for(Posting posting: postingList){
 					String fileId = Parser.docMap.getFileId(posting.getDocId());
-					postingMap.put(fileId, posting.getPositionLsit().size());
+					postingMap.put(fileId, posting.getTermCountInDoc());
 				}
 				
 			}

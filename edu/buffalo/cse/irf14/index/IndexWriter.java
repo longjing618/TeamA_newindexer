@@ -38,22 +38,22 @@ public class IndexWriter {
 	 */
 	public void addDocument(Document d) throws IndexerException {
 		//TODO : YOU MUST IMPLEMENT THIS
-		List<HashMap<String, LinkedList<Integer>>> termMapArray = IndexWriterUtil.processDocumet(d, FieldNames.CONTENT);
+		List<HashMap<String, Integer>> termMapArray = IndexWriterUtil.processDocumet(d, FieldNames.CONTENT);
 		int docId = Integer.parseInt(d.getField(FieldNames.DOCID)[0]);
 		//the part below can be multithreaded
 		for(byte index = 0; index < 27; index++){
-			HashMap<String, LinkedList<Integer>> termMap = termMapArray.get(index);
+			HashMap<String, Integer> termMap = termMapArray.get(index);
 			for(String termText : termMap.keySet()){
-				LinkedList<Integer> positionList = termMap.get(termText);
+				Integer termCountInDoc = termMap.get(termText);
 				int termId = IndexContainer.termMap.getTermId(termText);
 				Term term = new Term();
 				term.setTermId(termId);
 				term.setNumberOfDocuments(1);
-				term.setTotalCount(positionList.size());
+				term.setTotalCount(termCountInDoc);
 				LinkedList<Posting> postingList = new LinkedList<Posting>();
 				Posting posting = new Posting();
 				posting.setDocId(docId);
-				posting.setPositionLsit(positionList);
+				posting.setTermCountInDoc(termCountInDoc);
 				postingList.add(posting);
 				
 				term.setPostingList(postingList);

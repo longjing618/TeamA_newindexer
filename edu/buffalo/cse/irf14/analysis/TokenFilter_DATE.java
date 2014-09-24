@@ -1,5 +1,6 @@
 package edu.buffalo.cse.irf14.analysis;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -103,6 +104,10 @@ public class TokenFilter_DATE extends TokenFilter{
 	    }
 	    return true;
 	}
+	
+	public boolean isNumberChar(char str) {
+		return str >=0 && str <=9;
+	}
 
 	public String handleMonth(String currentTokenString)
 	{
@@ -134,7 +139,7 @@ public class TokenFilter_DATE extends TokenFilter{
 					d = date[1];
 					copy.removeNode(count+1);
 					length = copy.tokenList.size();
-					if(isNumber(date[2]) && trimcomma(date[2]).length() == 4)
+					if(isNumber(date[2]) && trim(date[2]).length() == 4)
 					{
 						y = date[2];
 						copy.removeNode(count+1);
@@ -149,7 +154,7 @@ public class TokenFilter_DATE extends TokenFilter{
 			copy.removeNode(count+1);
 			length = copy.tokenList.size();
 			
-			if(isNumber(date[2]) && trimcomma(date[2]).length() == 4)
+			if(isNumber(date[2]) && trim(date[2]).length() == 4)
 			{
 				y = date[2];
 				copy.removeNode(count+1);
@@ -168,9 +173,9 @@ public class TokenFilter_DATE extends TokenFilter{
 	public String handleTime(String currentTokenString)
 	{
 		String temp = currentTokenString.toLowerCase();
-		String time = "";
+		String time = trim(temp);
 		String meridiem = "";
-		if(temp.indexOf("am") > 0 || temp.indexOf("pm") > 0)
+		if(temp.indexOf("am") > -1 || temp.indexOf("pm") > -1)
 		{
 			String pattern = "(.*)(am|pm)";
 			Pattern r = Pattern.compile(pattern);
@@ -192,7 +197,13 @@ public class TokenFilter_DATE extends TokenFilter{
 			}
 		}
 
-		currentTokenString = formatTime(time,meridiem);
+		temp = formatTime(time,meridiem);
+		if (endChar(currentTokenString.charAt(temp.length()-1)))
+			temp += currentTokenString.charAt(temp.length()-1);
+		if (endChar(meridiem.charAt(meridiem.length()-1)))
+			temp += meridiem.charAt(meridiem.length()-1);
+				
+		currentTokenString = temp;	
 		return currentTokenString;
 	}
 	
@@ -210,9 +221,9 @@ public class TokenFilter_DATE extends TokenFilter{
 		}
 		if(timecomponent.length == 3)
 			s = Integer.parseInt(timecomponent[2]);
-		if(isAM(meridiem) || h == 12)
+		if(isAM(meridiem) && h == 12)
 			h = 0;
-		if(isPM(meridiem) || h != 12)
+		if(isPM(meridiem) && h != 12)
 			h += 12;
 		ret = getTime(h,m,s);
 		return ret;
@@ -254,8 +265,23 @@ public class TokenFilter_DATE extends TokenFilter{
 		return str.indexOf("pm") != -1;
 	}
 	
-	public String trimcomma(String str)
+	public String trim(String str)
 	{
-		return str.replaceAll(",","");
+		str = str.replaceAll(",","");
+		str = str.replaceAll(".","");
+		return str;
+	}
+	
+	public boolean endChar(char c)
+	{
+		if(!isChar(c) || !isNumberChar(c))
+				return true;
+		else
+			return false;
+	}
+	
+	public boolean isChar(char c)
+	{
+		return Character.isLetter(c);
 	}
 }

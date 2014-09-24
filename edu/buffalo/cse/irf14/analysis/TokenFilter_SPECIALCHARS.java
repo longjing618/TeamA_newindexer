@@ -1,11 +1,15 @@
 package edu.buffalo.cse.irf14.analysis;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 public class TokenFilter_SPECIALCHARS extends TokenFilter{
 	int length;
 	int count = 0;
-	String currentTokenString;
+	//String currentTokenString;
 	//TokenStream copy;
 	Token tempToken;
+	Pattern normalWordPattern = Pattern.compile("[a-zA-Z0-9]*");
 	public TokenFilter_SPECIALCHARS(TokenStream stream) {
 		super(stream);
 		copy = stream;
@@ -47,6 +51,11 @@ public class TokenFilter_SPECIALCHARS extends TokenFilter{
 //			copy.tokenIterator.add(newToken);
 //			return;
 //		}
+//		if(tokenText.matches("[a-zA-Z0-9]*"))
+//			return;
+		Matcher matcher = normalWordPattern.matcher(tokenText);
+		if(matcher.matches())
+			return;
 		if(tokenText.matches(".*[a-zA-Z]+-[a-zA-Z]+.*")){
 			token.setTermText(tokenText.replaceAll("[\\W_&&[^\\.]]", ""));
 		}else{

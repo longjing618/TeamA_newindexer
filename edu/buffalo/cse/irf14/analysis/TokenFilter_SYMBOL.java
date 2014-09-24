@@ -8,18 +8,19 @@ public class TokenFilter_SYMBOL extends TokenFilter
 {
 	int length;
 	int count = 0;
-	String currentTokenString;
+	//String currentTokenString;
 	//TokenStream copy;
 	Token tempToken;
 	HashMap<String, String> contraction;
 	Pattern p;
+	Pattern normalWord;
 	Matcher m;
 	private boolean isEndOfSentence = false;
 	public TokenFilter_SYMBOL(TokenStream stream) {
 		super(stream);
 		copy = stream;
 		length = copy.tokenList.size();
-		
+		normalWord = Pattern.compile("[a-zA-Z0-9]*");
 		contraction = new HashMap<String,String>();
 		contraction.put("ain't", "am not");
 		contraction.put("aren't", "are not");
@@ -227,8 +228,10 @@ public class TokenFilter_SYMBOL extends TokenFilter
 			token.setEndOfSentence(true);
 			isEndOfSentence = false;
 		}
-		currentTokenString = token.toString();
-		
+		String currentTokenString = token.getTermText();
+		Matcher matcher = normalWord.matcher(currentTokenString);
+		if(matcher.matches())
+			return;
 		//Handle contraction
 		if(contraction.containsKey(currentTokenString))
 			currentTokenString = contraction.get(currentTokenString);

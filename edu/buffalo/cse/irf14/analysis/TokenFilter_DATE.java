@@ -16,6 +16,7 @@ public class TokenFilter_DATE extends TokenFilter{
 	String m;
 	String y;
 	String t;
+	char endChar;
 		
 	HashMap<String,String> month;
 	public TokenFilter_DATE(TokenStream stream) {
@@ -40,6 +41,7 @@ public class TokenFilter_DATE extends TokenFilter{
 		m = "01";
 		d = "01";
 		t = "00";
+		endChar = ' ';
 	}
 
 	public boolean increment() throws TokenizerException
@@ -83,9 +85,32 @@ public class TokenFilter_DATE extends TokenFilter{
 	
 	public String[] getDateArray(int monthIndex)
 	{
-		String tmp1 = copy.tokenList.get(monthIndex-1).toString();
+		String tmp1;
+		if(monthIndex > 0)
+			tmp1 = copy.tokenList.get(monthIndex-1).toString();
+		else
+			tmp1 = "";
 		String tmp2 = copy.tokenList.get(monthIndex+1).toString();
 		String tmp3 = copy.tokenList.get(monthIndex+2).toString();
+		if(tmp1 != "")
+			if(endChar(tmp1.charAt(tmp1.length()-1)))
+		{
+			if(tmp1.length() > 4)
+				endChar = tmp1.charAt(tmp1.length()-1);
+			tmp1 = trim(tmp1);
+		}
+		if(endChar(tmp2.charAt(tmp2.length()-1)))
+		{
+			if(tmp2.length() > 4)
+				endChar = tmp2.charAt(tmp2.length()-1);
+			tmp2 = trim(tmp2);
+		}
+		if(endChar(tmp3.charAt(tmp3.length()-1)))
+		{
+			if(tmp3.length() > 4)
+				endChar = tmp3.charAt(tmp3.length()-1);
+			tmp3 = trim(tmp3);
+		}
 		String[] ret = {tmp1,tmp2,tmp3};
 		return ret;
 	}
@@ -106,11 +131,12 @@ public class TokenFilter_DATE extends TokenFilter{
 	}
 	
 	public boolean isNumberChar(char str) {
-		return str >=0 && str <=9;
+		return str >='0' && str <='9';
 	}
 
 	public String handleMonth(String currentTokenString)
 	{
+		endChar = ' ';
 		//currentTokenString is a month string
 		m = month.get(currentTokenString);
 		String[] date = getDateArray(count);
@@ -161,7 +187,13 @@ public class TokenFilter_DATE extends TokenFilter{
 				length = copy.tokenList.size();
 			}	
 		}
+		
 		currentTokenString = getDay(y,m,d);
+		if(endChar != ' ')
+		{
+			currentTokenString += endChar;
+			
+		}
 		return currentTokenString;
 	}
 	
@@ -198,8 +230,8 @@ public class TokenFilter_DATE extends TokenFilter{
 		}
 
 		temp = formatTime(time,meridiem);
-		if (endChar(currentTokenString.charAt(temp.length()-1)))
-			temp += currentTokenString.charAt(temp.length()-1);
+		if (endChar(currentTokenString.charAt(currentTokenString.length()-1)))
+			temp += currentTokenString.charAt(currentTokenString.length()-1);
 		if (endChar(meridiem.charAt(meridiem.length()-1)))
 			temp += meridiem.charAt(meridiem.length()-1);
 				
@@ -268,13 +300,13 @@ public class TokenFilter_DATE extends TokenFilter{
 	public String trim(String str)
 	{
 		str = str.replaceAll(",","");
-		str = str.replaceAll(".","");
+		str = str.replaceAll("\\.","");
 		return str;
 	}
 	
 	public boolean endChar(char c)
 	{
-		if(!isChar(c) || !isNumberChar(c))
+		if(!isChar(c) && !isNumberChar(c))
 				return true;
 		else
 			return false;

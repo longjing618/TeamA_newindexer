@@ -38,13 +38,41 @@ public class IndexWriter {
 	 */
 	public void addDocument(Document d) throws IndexerException {
 		//TODO : YOU MUST IMPLEMENT THIS
-		List<HashMap<String, Integer>> termMapArray = IndexWriterUtil.processDocumet(d, FieldNames.CONTENT);
 		int docId = Integer.parseInt(d.getField(FieldNames.DOCID)[0]);
+		List<HashMap<String, IntegerCounter>> termMapArray = IndexWriterUtil.processDocumet(d, FieldNames.CONTENT);
+		addToIndex(docId, termMapArray, IndexContainer.termIndexer);
+		termMapArray = IndexWriterUtil.processDocumet(d, FieldNames.TITLE);
+		addToIndex(docId, termMapArray, IndexContainer.termIndexer);
+		termMapArray = IndexWriterUtil.processDocumet(d, FieldNames.PLACE);
+		addToIndex(docId, termMapArray, IndexContainer.placeIndexer);
+		termMapArray = IndexWriterUtil.processDocumet(d, FieldNames.CATEGORY);
+		addToIndex(docId, termMapArray, IndexContainer.categoryIndexer);
+		termMapArray = IndexWriterUtil.processDocumet(d, FieldNames.AUTHOR);
+		addToIndex(docId, termMapArray, IndexContainer.authorIndexer);
 		//the part below can be multithreaded
+		
+		
+	}
+	
+	/**
+	 * Method that indicates that all open resources must be closed
+	 * and cleaned and that the entire indexing operation has been completed.
+	 * @throws IndexerException : In case any error occurs
+	 */
+	public void close() throws IndexerException {
+		//TODO
+		for(byte indexId = 0; indexId < 27; indexId++){
+			Index index = IndexContainer.termIndexer.getIndex(indexId);
+			index.sort();
+			//call serialization methods here.
+		}
+	}
+	
+	private void addToIndex(int docId, List<HashMap<String, IntegerCounter>> termMapArray, Indexer indexer){
 		for(byte index = 0; index < 27; index++){
-			HashMap<String, Integer> termMap = termMapArray.get(index);
+			HashMap<String, IntegerCounter> termMap = termMapArray.get(index);
 			for(String termText : termMap.keySet()){
-				Integer termCountInDoc = termMap.get(termText);
+				Integer termCountInDoc = termMap.get(termText).getCount();
 				int termId = IndexContainer.termMap.getTermId(termText);
 				Term term = new Term();
 				term.setTermId(termId);
@@ -58,24 +86,9 @@ public class IndexWriter {
 				
 				term.setPostingList(postingList);
 				
-				IndexContainer.indexer.addTerm(termText, term);
+				IndexContainer.termIndexer.addTerm(termText, term);
 				
 			}
-		}
-		
-	}
-	
-	/**
-	 * Method that indicates that all open resources must be closed
-	 * and cleaned and that the entire indexing operation has been completed.
-	 * @throws IndexerException : In case any error occurs
-	 */
-	public void close() throws IndexerException {
-		//TODO
-		for(byte indexId = 0; indexId < 27; indexId++){
-			Index index = IndexContainer.indexer.getIndex(indexId);
-			index.sort();
-			//call serialization methods here.
 		}
 	}
 }

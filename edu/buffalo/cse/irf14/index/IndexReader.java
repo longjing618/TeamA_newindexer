@@ -30,10 +30,20 @@ public class IndexReader {
 	 */
 	private String indexDir;
 	private IndexType type;
+	private Indexer indexer;
 	public IndexReader(String indexDir, IndexType type) {
 		//TODO
 		this.indexDir = indexDir;
 		this.type = type;
+		if(type == IndexType.TERM){
+			indexer = IndexContainer.termIndexer;
+		}else if(type == IndexType.PLACE){
+			indexer = IndexContainer.placeIndexer;
+		}else if(type == IndexType.CATEGORY){
+			indexer = IndexContainer.categoryIndexer;
+		}else{
+			indexer = IndexContainer.authorIndexer;
+		}
 	}
 	
 	/**
@@ -70,7 +80,16 @@ public class IndexReader {
 		Tokenizer tokenizer = new Tokenizer();
 		try {
 			TokenStream tokenStream = tokenizer.consume(term);
-			Analyzer analyzer = AnalyzerFactory.getInstance().getAnalyzerForField(FieldNames.CONTENT, tokenStream);
+			Analyzer analyzer;
+			if(type == IndexType.TERM){
+				analyzer = AnalyzerFactory.getInstance().getAnalyzerForField(FieldNames.CONTENT, tokenStream);
+			}else if(type == IndexType.PLACE){
+				analyzer = AnalyzerFactory.getInstance().getAnalyzerForField(FieldNames.PLACE, tokenStream);
+			}else if(type == IndexType.CATEGORY){
+				analyzer = AnalyzerFactory.getInstance().getAnalyzerForField(FieldNames.CATEGORY, tokenStream);
+			}else{
+				analyzer = AnalyzerFactory.getInstance().getAnalyzerForField(FieldNames.AUTHOR, tokenStream);
+			}
 			while(analyzer.increment()){
 				
 			}
@@ -78,7 +97,7 @@ public class IndexReader {
 			while(tokenStream.hasNext()){
 				Token token = tokenStream.next();
 				String tokenText = token.toString();
-				List<Posting> postingList = IndexContainer.indexer.getPostingList(tokenText);
+				List<Posting> postingList = indexer.getPostingList(tokenText);
 				if(postingList == null || postingList.isEmpty())
 					continue;
 				if(postingMap == null){

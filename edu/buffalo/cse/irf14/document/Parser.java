@@ -54,6 +54,7 @@ public class Parser {
 			int lines = 0;
 			while ((current = br.readLine()) != null) 
 			{
+				current = current.trim();
 				if(current.length() > 0)
 				{
 					lines++;

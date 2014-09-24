@@ -17,8 +17,10 @@ public class TokenFilter_CAPITALIZATION extends TokenFilter{
 	public boolean increment() throws TokenizerException
 	{
 		Token token = copy.next();
+
 		if(token.isStartOfSentence())
 			isStartOfSentance = true;
+		
 		analyze(token);
 		return copy.hasNext();
 	}
@@ -45,10 +47,12 @@ public class TokenFilter_CAPITALIZATION extends TokenFilter{
 				token.setTermText(token.getTermText().toLowerCase());
 			}
 		}else{
+			if(token.getTermBuffer().length > 0){
 			if(isAllCaps(token.getTermBuffer())&&wholeSentenceInCaps){
 				token.setTermText(token.getTermText().toLowerCase());
 			}else if(Character.isUpperCase(token.getTermBuffer()[0])){
 				mergeFisrtLetterCapital(token);
+			}
 			}
 		}
 		
@@ -58,6 +62,7 @@ public class TokenFilter_CAPITALIZATION extends TokenFilter{
 	private void mergeFisrtLetterCapital(Token base){
 		while(copy.hasNext()){
 			Token token = copy.next();
+			if(!token.getTermText().trim().equals("")){
 			if(!Character.isUpperCase(token.getTermBuffer()[0]) || token.isStartOfSentence()){
 				copy.tokenIterator.previous();
 				copy.tokenIterator.previous();
@@ -66,6 +71,7 @@ public class TokenFilter_CAPITALIZATION extends TokenFilter{
 			}else{
 				base.merge(token);
 				copy.remove();
+			}
 			}
 		}
 	}
@@ -88,9 +94,13 @@ public class TokenFilter_CAPITALIZATION extends TokenFilter{
 			if(isStentenceAllCaps)
 				token.setTermText(token.getTermText().toLowerCase());
 		}
+		if(!copy.tokenIterator.hasPrevious())
+			return isStentenceAllCaps;
 		while(!token.isStartOfSentence()){
 			token = copy.tokenIterator.previous();
 			token.setTermText(token.getTermText().toLowerCase());
+			if(!copy.tokenIterator.hasPrevious())
+				break;
 		}
 		token = copy.next();
 		return isStentenceAllCaps;

@@ -55,7 +55,15 @@ public class TokenFilter_DATE extends TokenFilter{
 		currentTokenString = util.trim(currentTokenString);
 		if(currentTokenString.length() >=2)
 			ADBC = currentTokenString.substring(currentTokenString.length()-2);
-
+		
+		if(currentTokenString.indexOf("-") != -1)
+		{
+			String[] multiyear = currentTokenString.split("-");
+			if(multiyear.length == 2)
+				if(util.isNumber(multiyear[0]) && util.isNumber(multiyear[1]))
+					if(multiyear[0].length()<5 && multiyear[1].length() < 5)
+						return 6;
+		}
 		if(month.containsKey(currentTokenString))
 			return 1; //monthtype
 		else if(util.isNumber(currentTokenString))
@@ -70,7 +78,7 @@ public class TokenFilter_DATE extends TokenFilter{
 				currentTokenString = currentTokenString.substring(0, currentTokenString.length()-2);
 				return 3; //yearwithADBC
 			}
-			ADBC = copy.tokenList.get(count+1).toString();
+			ADBC = copy.tokenList.get(count+1).toString();//handle .
 			if(ADBC.equals("BC") || ADBC.equals("AD"))
 			{
 				copy.tokenList.remove(count+1);
@@ -106,7 +114,12 @@ public class TokenFilter_DATE extends TokenFilter{
 				break;
 			case 5:
 				currentTokenString = handleTime(currentTokenString); 
-
+				break;
+			case 6:
+				String[] Arr = currentTokenString.split("-");
+				if(Arr[1].length() == 2)
+					Arr[1] = Arr[0].substring(0, 2) + Arr[1];
+				currentTokenString = util.trim(handleYear(Arr[0],ADBC)) + '-' + handleYear(Arr[1],ADBC);
 			}			
 			
 			//Update the current token and move the pointer to the next token
@@ -123,7 +136,6 @@ public class TokenFilter_DATE extends TokenFilter{
 	{
 		return copy;
 	}
-
 	
 	public String handleMonth(String currentTokenString)
 	{

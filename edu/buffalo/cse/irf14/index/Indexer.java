@@ -1,5 +1,9 @@
 package edu.buffalo.cse.irf14.index;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -112,12 +116,41 @@ public class Indexer {
 	
 	public void serializeBucket(byte index, String indexDir)
 	{
+		String fileName = indexDir + '/' + index;
+		String stringIndex = "";
+		Index i = getIndex(index);
 		
+		
+		writeDisk(fileName,stringIndex);
 	}
 	
 	public void deSerializeBucket(String indexDir)
 	{
 		
+	}
+	
+	public void writeDisk(String fileName, String stringIndex)
+	{
+		try 
+		{
+			//String content = "This is the content to write into file";
+			
+			//Open the index file. Create the index file if does not exist. 
+			File file = new File(fileName);
+			if (!file.exists()) {
+				file.createNewFile();
+			}
+	 
+			FileWriter Fwriter = new FileWriter(file.getAbsoluteFile());
+			BufferedWriter Bwriter = new BufferedWriter(Fwriter);
+			Bwriter.write(content);
+			Bwriter.close();
+ 
+		} 
+		catch (IOException e) 
+		{
+			e.printStackTrace();
+		}
 	}
 	
 	public Index getIndex(byte indexId){

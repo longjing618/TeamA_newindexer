@@ -1,8 +1,18 @@
 package edu.buffalo.cse.irf14.index;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Collections;
+
 import java.util.Comparator;
+
+import java.util.HashMap;
+
 import java.util.List;
 
 public class Indexer {
@@ -111,14 +121,67 @@ public class Indexer {
 		index.add(term);
 	}
 	
-	public void serializeBucket(byte index, String indexDir)
+	public void serializeBucket(byte i, String indexDir)
 	{
-		
+		String fileName = indexDir + '/' + i;
+		Index index = getIndex(i);
+		writeDisk(fileName,index.getIndexMap());
 	}
 	
-	public void deSerializeBucket(String indexDir)
+	public void deSerializeBucket(byte i, String indexDir)
 	{
-		
+		String fileName = indexDir + '/' + i;
+		HashMap<Integer, Term> indexMap = readDisk(fileName);
+		Index index = getIndex(i);
+		index = new Index(indexMap);
+	}
+
+	public HashMap<Integer,Term> readDisk(String fileName)
+	{
+		HashMap<Integer, Term> indexMap = null;
+	    try
+	    {
+	    	FileInputStream fInput = new FileInputStream(fileName);
+	        ObjectInputStream oInput = new ObjectInputStream(fInput);
+	        indexMap = (HashMap<Integer,Term>) oInput.readObject();
+	        oInput.close();
+	        fInput.close();
+	        return indexMap;
+	    }
+	    catch(IOException e)
+	    {
+	    	e.printStackTrace();
+	        return null;
+	    }
+	    catch(ClassNotFoundException c)
+	    {
+	    	System.out.println("Class not found");
+	    	c.printStackTrace();
+	    	return null;
+	    }
+	}
+	
+	public void writeDisk(String fileName, HashMap<Integer, Term> indexMap)
+	{
+		try 
+		{
+			//Open the index file. Create the index file if does not exist. 
+			File file = new File(fileName);
+			if (!file.exists()) {
+				file.createNewFile();
+			}
+	 
+            FileOutputStream fWriter = new FileOutputStream(file,false);
+            ObjectOutputStream oWriter = new ObjectOutputStream(fWriter);
+			oWriter.writeObject(indexMap);
+			oWriter.close();
+			fWriter.close();
+ 
+		} 
+		catch (IOException e) 
+		{
+			e.printStackTrace();
+		}
 	}
 	
 	public Index getIndex(byte indexId){

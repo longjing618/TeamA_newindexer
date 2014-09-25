@@ -8,6 +8,16 @@ import java.util.List;
 
 public class Index {
 	private HashMap<Integer, Term> indexMap = new HashMap<Integer, Term>();
+	//Construct function used for deserializeBucket
+	public Index(HashMap<Integer, Term> IM)
+	{
+		indexMap = IM;
+	}
+	//Default construct function
+	public Index()
+	{
+		indexMap = null;
+	}
 	//The term will need to be prepared earlier.
 	public void add(Term term){
 		if(indexMap.containsKey(term.getTermId())){
@@ -59,5 +69,10 @@ public class Index {
 			topKList.add(termList.get(i).getTotalCount());
 		}
 		return topKList;
+	}
+	
+	public HashMap<Integer, Term> getIndexMap()
+	{
+		return indexMap;
 	}
 }

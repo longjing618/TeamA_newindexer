@@ -1,8 +1,10 @@
 package edu.buffalo.cse.irf14.index;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -122,9 +124,37 @@ public class Indexer {
 		writeDisk(fileName,index.getIndexMap());
 	}
 	
-	public void deSerializeBucket(String indexDir)
+	public void deSerializeBucket(byte i, String indexDir)
 	{
-		
+		String fileName = indexDir + '/' + i;
+		HashMap<Integer, Term> indexMap = readDisk(fileName);
+		Index index = getIndex(i);
+		index = new Index(indexMap);
+	}
+
+	public HashMap<Integer,Term> readDisk(String fileName)
+	{
+		HashMap<Integer, Term> indexMap = null;
+	    try
+	    {
+	    	FileInputStream fInput = new FileInputStream(fileName);
+	        ObjectInputStream oInput = new ObjectInputStream(fInput);
+	        indexMap = (HashMap<Integer,Term>) oInput.readObject();
+	        oInput.close();
+	        fInput.close();
+	        return indexMap;
+	    }
+	    catch(IOException e)
+	    {
+	    	e.printStackTrace();
+	        return null;
+	    }
+	    catch(ClassNotFoundException c)
+	    {
+	    	System.out.println("Class not found");
+	    	c.printStackTrace();
+	    	return null;
+	    }
 	}
 	
 	public void writeDisk(String fileName, HashMap<Integer, Term> indexMap)

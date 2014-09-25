@@ -2,6 +2,7 @@ package edu.buffalo.cse.irf14.index;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 public class Indexer {
@@ -135,9 +136,18 @@ public class Indexer {
 		for(byte i = 0; i < 27; i++){
 			globalTopList.addAll(getIndex(i).getTopK(k));
 		}
-		Collections.sort(globalTopList);
+		Comparator<Integer> intDescComparator = new Comparator<Integer>() {
+
+			@Override
+			public int compare(Integer o1, Integer o2) {
+				// TODO Auto-generated method stub
+				return o2.compareTo(o1);
+			}
+		};
+		Collections.sort(globalTopList, intDescComparator);
 		List<String> topKTerms = new ArrayList<String>(k);
-		for(int i = 0; i < k; i++){
+		int endIndex = globalTopList.size() > k ? k : globalTopList.size();
+		for(int i = 0; i < endIndex; i++){
 			String termText = termMap.getTermText(globalTopList.get(i));
 			topKTerms.add(termText);
 		}

@@ -40,6 +40,8 @@ public class Index {
 	
 	public List<Integer> getTopK(int k){
 		List<Term> termList = new ArrayList<Term>(indexMap.values());
+		if(termList.isEmpty())
+			return new ArrayList<Integer>(0);
 		Comparator<Term> termComparator = new Comparator<Term>() {
 
 			@Override
@@ -52,7 +54,8 @@ public class Index {
 		};
 		Collections.sort(termList, termComparator);
 		List<Integer> topKList = new ArrayList<Integer>(k);
-		for(int i = 0; i < k; i++){
+		int endIndex = topKList.size() > k ? k : topKList.size();
+		for(int i = 0; i < endIndex; i++){
 			topKList.add(termList.get(i).getTotalCount());
 		}
 		return topKList;

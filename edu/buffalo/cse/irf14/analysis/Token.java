@@ -16,7 +16,7 @@ public class Token {
 	private String termText;
 	//The char array backing termText
 	private char[] termBuffer;
-	
+	private boolean isDate = false;
 	private boolean isStartOfSentence = false;
 	private boolean isEndOfSentence = false;
 	//Commenting to remove positional tracking
@@ -116,6 +116,16 @@ public class Token {
 
 	public void setEndOfSentence(boolean isEndOfSentence) {
 		this.isEndOfSentence = isEndOfSentence;
+	}
+	
+	public void setIsDate(boolean isDate)
+	{
+		this.isDate = isDate;
+	}
+	
+	public boolean isDate()
+	{
+		return isDate;
 	}
 	
 	public void mergeTokens(Token...tokens){

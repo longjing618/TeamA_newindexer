@@ -14,7 +14,7 @@ public class TokenFilter_DATE extends TokenFilter{
 	String currentTokenString;
 	//TokenStream copy;
 	Token tempToken;
-
+	boolean isDate;
 	String d;
 	String m;
 	String y;
@@ -40,7 +40,7 @@ public class TokenFilter_DATE extends TokenFilter{
 		month.put("October", "10");
 		month.put("November", "11");
 		month.put("December", "12");
-		
+		isDate = false;
 		y = "1900";
 		m = "01";
 		d = "01";
@@ -105,17 +105,21 @@ public class TokenFilter_DATE extends TokenFilter{
 			switch(type)
 			{
 			case 1:
+				isDate = true;
 				currentTokenString = handleMonth(currentTokenString);
 				break;
 			case 2:
 			case 3:
 			case 4:
+				isDate = true;
 				currentTokenString = handleYear(currentTokenString,ADBC);
 				break;
 			case 5:
+				isDate = true;
 				currentTokenString = handleTime(currentTokenString); 
 				break;
 			case 6:
+				isDate = true;
 				String[] Arr = currentTokenString.split("-");
 				if(Arr[1].length() == 2)
 					Arr[1] = Arr[0].substring(0, 2) + Arr[1];
@@ -125,6 +129,7 @@ public class TokenFilter_DATE extends TokenFilter{
 			//Update the current token and move the pointer to the next token
 			tempToken = new Token();
 			tempToken.setTermText(currentTokenString);
+			tempToken.setIsDate(isDate);
 			copy.tokenList.set(count, tempToken);
 			count++;
 			return true;

@@ -1,11 +1,14 @@
 package edu.buffalo.cse.irf14.analysis;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import edu.buffalo.cse.irf14.analysis.lib.utils;
+
 public class TokenFilter_DATE extends TokenFilter{
+	
+	utils util;
 	int length;
 	int count = 0;
 	String currentTokenString;
@@ -16,6 +19,7 @@ public class TokenFilter_DATE extends TokenFilter{
 	String m;
 	String y;
 	String t;
+	String ADBC;
 	char endChar;
 		
 	HashMap<String,String> month;
@@ -42,31 +46,68 @@ public class TokenFilter_DATE extends TokenFilter{
 		d = "01";
 		t = "00";
 		endChar = ' ';
+		util = new utils();
 	}
 
+	public int getType(String str)
+	{
+		endChar = util.getEndChar(currentTokenString);
+		currentTokenString = util.trim(currentTokenString);
+		if(currentTokenString.length() >=2)
+			ADBC = currentTokenString.substring(currentTokenString.length()-2);
+
+		if(month.containsKey(currentTokenString))
+			return 1; //monthtype
+		else if(util.isNumber(currentTokenString))
+		{
+			if(currentTokenString.length() == 4)
+			{
+				ADBC = "";
+				return 2; //pure year
+			}
+			else if(ADBC.equals("BC") || ADBC.equals("AD"))
+			{
+				currentTokenString = currentTokenString.substring(0, currentTokenString.length()-2);
+				return 3; //yearwithADBC
+			}
+			ADBC = copy.tokenList.get(count+1).toString();
+			if(ADBC.equals("BC") || ADBC.equals("AD"))
+			{
+				copy.tokenList.remove(count+1);
+				length = copy.tokenList.size();
+				return 4; //year and ADBC
+			}
+		}
+		else if(currentTokenString.indexOf(':') != -1)
+		{
+			return 5; //time
+		}
+		if(endChar == ',' || endChar == '.')
+			currentTokenString += endChar;
+		return 0; // not a date time token
+	}
+	
 	public boolean increment() throws TokenizerException
 	{
 		if(count < length)
 		{
 			currentTokenString = copy.tokenList.get(count).toString();
 			
-			//Handle month
-			if(month.containsKey(currentTokenString))
+			int type = getType(currentTokenString);
+			switch(type)
 			{
+			case 1:
 				currentTokenString = handleMonth(currentTokenString);
-			}
-			
-			//Handle year 
-			if(isNumber(currentTokenString) && currentTokenString.length() == 4)
-			{
-				currentTokenString = handleYear(currentTokenString);
-			}
-				
-			//Handle time
-			if(currentTokenString.indexOf(':') != -1)
-			{
-				currentTokenString = handleTime(currentTokenString);
-			}
+				break;
+			case 2:
+			case 3:
+			case 4:
+				currentTokenString = handleYear(currentTokenString,ADBC);
+				break;
+			case 5:
+				currentTokenString = handleTime(currentTokenString); 
+
+			}			
 			
 			//Update the current token and move the pointer to the next token
 			tempToken = new Token();
@@ -82,58 +123,8 @@ public class TokenFilter_DATE extends TokenFilter{
 	{
 		return copy;
 	}
-	
-	public String[] getDateArray(int monthIndex)
-	{
-		String tmp1;
-		if(monthIndex > 0)
-			tmp1 = copy.tokenList.get(monthIndex-1).toString();
-		else
-			tmp1 = "";
-		String tmp2 = copy.tokenList.get(monthIndex+1).toString();
-		String tmp3 = copy.tokenList.get(monthIndex+2).toString();
-		if(tmp1 != "")
-			if(endChar(tmp1.charAt(tmp1.length()-1)))
-		{
-			if(tmp1.length() > 4)
-				endChar = tmp1.charAt(tmp1.length()-1);
-			tmp1 = trim(tmp1);
-		}
-		if(endChar(tmp2.charAt(tmp2.length()-1)))
-		{
-			if(tmp2.length() > 4)
-				endChar = tmp2.charAt(tmp2.length()-1);
-			tmp2 = trim(tmp2);
-		}
-		if(endChar(tmp3.charAt(tmp3.length()-1)))
-		{
-			if(tmp3.length() > 4)
-				endChar = tmp3.charAt(tmp3.length()-1);
-			tmp3 = trim(tmp3);
-		}
-		String[] ret = {tmp1,tmp2,tmp3};
-		return ret;
-	}
-	
-	public String getMeridiem(int timeIndex)
-	{
-		return copy.tokenList.get(timeIndex + 1).toString();
-	}
-	
-	public boolean isNumber(String str) {
-	    try { 
-	    	str = str.replaceAll(",", "");
-	        Integer.parseInt(str); 
-	    } catch(NumberFormatException e) { 
-	        return false; 
-	    }
-	    return true;
-	}
-	
-	public boolean isNumberChar(char str) {
-		return str >='0' && str <='9';
-	}
 
+	
 	public String handleMonth(String currentTokenString)
 	{
 		endChar = ' ';
@@ -147,10 +138,12 @@ public class TokenFilter_DATE extends TokenFilter{
 		 */
 		//1 January 1978
 		//December 7, 1941
-		if(isNumber(date[0]))
+		if(util.isNumber(date[0]))
 		{
-			if(isNumber(date[1]))
+			if(util.isNumber(date[1]))
 			{
+				endChar = util.getEndChar(date[1]);
+				date[1] = util.trim(date[1]);
 				if(date[1].length() == 4)
 				{
 					d = date[0];
@@ -165,7 +158,9 @@ public class TokenFilter_DATE extends TokenFilter{
 					d = date[1];
 					copy.removeNode(count+1);
 					length = copy.tokenList.size();
-					if(isNumber(date[2]) && trim(date[2]).length() == 4)
+					endChar = util.getEndChar(date[2]);
+					date[2] = util.trim(date[2]);
+					if(util.isNumber(date[2]) && date[2].length() == 4)
 					{
 						y = date[2];
 						copy.removeNode(count+1);
@@ -176,11 +171,13 @@ public class TokenFilter_DATE extends TokenFilter{
 		}
 		else if(date[1].length()<4)
 		{
+			date[1] = util.trim(date[1]);
 			d = date[1];
 			copy.removeNode(count+1);
 			length = copy.tokenList.size();
-			
-			if(isNumber(date[2]) && trim(date[2]).length() == 4)
+			endChar = util.getEndChar(date[2]);
+			date[2] = util.trim(date[2]);
+			if(util.isNumber(date[2]) && date[2].length() == 4)
 			{
 				y = date[2];
 				copy.removeNode(count+1);
@@ -188,30 +185,35 @@ public class TokenFilter_DATE extends TokenFilter{
 			}	
 		}
 		
-		currentTokenString = getDay(y,m,d);
-		if(endChar != ' ')
-		{
+		currentTokenString = util.getDay(y,m,d);
+		if(endChar == ',' || endChar == '.')
 			currentTokenString += endChar;
-			
-		}
 		return currentTokenString;
 	}
 	
-	public String handleYear(String currentTokenString)
+	public String handleYear(String currentTokenString, String ADBC)
 	{
-		return currentTokenString + "0101";
+		int num = Integer.parseInt(currentTokenString);
+		if(ADBC.equals("BC"))
+			currentTokenString = "-" + String.format("%04d",num) + "0101";
+		else
+		{
+			currentTokenString = String.format("%04d",num) + "0101";
+		}
+		if(endChar == ',' || endChar == '.')
+			currentTokenString += endChar;
+		return currentTokenString;
 	}
 	
 	public String handleTime(String currentTokenString)
 	{
-		String temp = currentTokenString.toLowerCase();
-		String time = trim(temp);
+		String time = currentTokenString;
 		String meridiem = "";
-		if(temp.indexOf("am") > -1 || temp.indexOf("pm") > -1)
+		if(util.containsAMPM(time))
 		{
-			String pattern = "(.*)(am|pm)";
+			String pattern = "(.*)(am|pm|AM|PM)";
 			Pattern r = Pattern.compile(pattern);
-		    Matcher m = r.matcher(temp);
+		    Matcher m = r.matcher(time);
 		    if (m.find( ))
 		    {
 		    	time = m.group(1);
@@ -222,20 +224,18 @@ public class TokenFilter_DATE extends TokenFilter{
 		{
 			meridiem = getMeridiem(count);
 			meridiem = meridiem.toLowerCase();
-			if(isAM(meridiem) || isPM(meridiem))
+			if(util.isAM(meridiem) || util.isPM(meridiem))
 			{
+				endChar = util.getEndChar(meridiem);
 				copy.removeNode(count + 1);
 				length = copy.tokenList.size();
 			}
 		}
 
-		temp = formatTime(time,meridiem);
-		if (endChar(currentTokenString.charAt(currentTokenString.length()-1)))
-			temp += currentTokenString.charAt(currentTokenString.length()-1);
-		if (endChar(meridiem.charAt(meridiem.length()-1)))
-			temp += meridiem.charAt(meridiem.length()-1);
-				
-		currentTokenString = temp;	
+		currentTokenString = formatTime(time,meridiem);
+		
+		if(endChar == ',' || endChar == '.')
+			currentTokenString += endChar;
 		return currentTokenString;
 	}
 	
@@ -253,23 +253,11 @@ public class TokenFilter_DATE extends TokenFilter{
 		}
 		if(timecomponent.length == 3)
 			s = Integer.parseInt(timecomponent[2]);
-		if(isAM(meridiem) && h == 12)
+		if(util.isAM(meridiem) && h == 12)
 			h = 0;
-		if(isPM(meridiem) && h != 12)
+		if(util.isPM(meridiem) && h != 12)
 			h += 12;
 		ret = getTime(h,m,s);
-		return ret;
-	}
-
-	public String getDay(String y, String m, String d)
-	{
-		String ret = "";
-		ret += String.format("%04d", Integer.parseInt(y.replaceAll(",", "")));
-		ret += String.format("%02d", Integer.parseInt(m.replaceAll(",", "")));
-		if(d.indexOf(",") == -1)
-			ret += String.format("%02d", Integer.parseInt(d));
-		else
-			ret += String.format("%02d", Integer.parseInt(d.replaceAll(",",""))) + ",";
 		return ret;
 	}
 	
@@ -285,35 +273,24 @@ public class TokenFilter_DATE extends TokenFilter{
 		return ret;
 	}
 	
-	public boolean isAM(String str)
+	public String[] getDateArray(int monthIndex)
 	{
-		str = str.toLowerCase();
-		return str.indexOf("am") != -1;
-	}
-	
-	public boolean isPM(String str)
-	{
-		str = str.toLowerCase();
-		return str.indexOf("pm") != -1;
-	}
-	
-	public String trim(String str)
-	{
-		str = str.replaceAll(",","");
-		str = str.replaceAll("\\.","");
-		return str;
-	}
-	
-	public boolean endChar(char c)
-	{
-		if(!isChar(c) && !isNumberChar(c))
-				return true;
+		String tmp1;
+		if(monthIndex > 0)
+			tmp1 = copy.tokenList.get(monthIndex-1).toString();
 		else
-			return false;
+			tmp1 = "";
+		String tmp2 = copy.tokenList.get(monthIndex+1).toString();
+		String tmp3 = copy.tokenList.get(monthIndex+2).toString();
+		String[] ret = {tmp1,tmp2,tmp3};
+		return ret;
 	}
 	
-	public boolean isChar(char c)
+	public String getMeridiem(int timeIndex)
 	{
-		return Character.isLetter(c);
+		if(timeIndex == length-1)
+			return "";
+		return copy.tokenList.get(timeIndex + 1).toString();
 	}
+	
 }

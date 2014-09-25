@@ -1,11 +1,12 @@
 package edu.buffalo.cse.irf14.index;
 
-import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileWriter;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 
 public class Indexer {
@@ -114,14 +115,11 @@ public class Indexer {
 		index.add(term);
 	}
 	
-	public void serializeBucket(byte index, String indexDir)
+	public void serializeBucket(byte i, String indexDir)
 	{
-		String fileName = indexDir + '/' + index;
-		String stringIndex = "";
-		Index i = getIndex(index);
-		
-		
-		writeDisk(fileName,stringIndex);
+		String fileName = indexDir + '/' + i;
+		Index index = getIndex(i);
+		writeDisk(fileName,index.getIndexMap());
 	}
 	
 	public void deSerializeBucket(String indexDir)
@@ -129,22 +127,21 @@ public class Indexer {
 		
 	}
 	
-	public void writeDisk(String fileName, String stringIndex)
+	public void writeDisk(String fileName, HashMap<Integer, Term> indexMap)
 	{
 		try 
 		{
-			//String content = "This is the content to write into file";
-			
 			//Open the index file. Create the index file if does not exist. 
 			File file = new File(fileName);
 			if (!file.exists()) {
 				file.createNewFile();
 			}
 	 
-			FileWriter Fwriter = new FileWriter(file.getAbsoluteFile());
-			BufferedWriter Bwriter = new BufferedWriter(Fwriter);
-			Bwriter.write(content);
-			Bwriter.close();
+            FileOutputStream fWriter = new FileOutputStream(file,false);
+            ObjectOutputStream oWriter = new ObjectOutputStream(fWriter);
+			oWriter.writeObject(indexMap);
+			oWriter.close();
+			fWriter.close();
  
 		} 
 		catch (IOException e) 

@@ -57,4 +57,9 @@ public class Index {
 		}
 		return topKList;
 	}
+	
+	public HashMap<Integer, Term> getIndexMap()
+	{
+		return indexMap;
+	}
 }

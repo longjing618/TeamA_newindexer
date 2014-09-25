@@ -53,7 +53,7 @@ public class IndexReader {
 	 */
 	public int getTotalKeyTerms() {
 		//TODO : YOU MUST IMPLEMENT THIS
-		return IndexContainer.termMap.getSize();
+		return indexer.getSizeOfTermDictionary();
 	}
 	
 	/**

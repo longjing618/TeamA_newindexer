@@ -30,8 +30,8 @@ public class Index {
 		}
 	}
 	
-	public List<Posting> getPostings(String termText){
-		int termId = IndexContainer.termMap.getTermIdWithoutAdding(termText);
+	public List<Posting> getPostings(String termText, TermMap termMap){
+		int termId = termMap.getTermIdWithoutAdding(termText);
 		if(termId == -1)
 			return null;
 		Term term = indexMap.get(termId);

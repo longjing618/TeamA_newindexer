@@ -34,6 +34,17 @@ public class Indexer {
 	private Index zIndex = new Index();
 	private Index otherIndex = new Index();
 
+	private TermMap termMap;
+	
+	public TermMap getTermMap() {
+		return termMap;
+	}
+
+	public Indexer(TermMap termMap) {
+		super();
+		this.termMap = termMap;
+	}
+
 	private Index getIndexBucket(String term) {
 		char firstLetter = term.toLowerCase().charAt(0);
 		switch (firstLetter) {
@@ -116,7 +127,7 @@ public class Indexer {
 	
 	public List<Posting> getPostingList(String termText){
 		Index index = getIndexBucket(termText);
-		return index.getPostings(termText);
+		return index.getPostings(termText, termMap);
 	}
 	
 	public List<String> getTopK(int k){
@@ -127,9 +138,13 @@ public class Indexer {
 		Collections.sort(globalTopList);
 		List<String> topKTerms = new ArrayList<String>(k);
 		for(int i = 0; i < k; i++){
-			String termText = IndexContainer.termMap.getTermText(globalTopList.get(i));
+			String termText = termMap.getTermText(globalTopList.get(i));
 			topKTerms.add(termText);
 		}
 		return topKTerms;
+	}
+	
+	public int getSizeOfTermDictionary(){
+		return termMap.getSize();
 	}
 }

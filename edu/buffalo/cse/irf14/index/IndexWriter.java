@@ -10,6 +10,7 @@ import java.util.List;
 import edu.buffalo.cse.irf14.analysis.TokenizerException;
 import edu.buffalo.cse.irf14.document.Document;
 import edu.buffalo.cse.irf14.document.FieldNames;
+import edu.buffalo.cse.irf14.document.Parser;
 
 /**
  * @author nikhillo
@@ -38,7 +39,12 @@ public class IndexWriter {
 	 */
 	public void addDocument(Document d) throws IndexerException {
 		//TODO : YOU MUST IMPLEMENT THIS
-		int docId = Integer.parseInt(d.getField(FieldNames.DOCID)[0]);
+		int docId;
+		if(d.getField(FieldNames.DOCID) != null){
+		docId = Integer.parseInt(d.getField(FieldNames.DOCID)[0]);
+		}else{
+			docId = Parser.docMap.add(d.getField(FieldNames.FILEID)[0]);
+		}
 		List<HashMap<String, IntegerCounter>> termMapArray = IndexWriterUtil.processDocumet(d, FieldNames.CONTENT);
 		addToIndex(docId, termMapArray, IndexContainer.termIndexer);
 		termMapArray = IndexWriterUtil.processDocumet(d, FieldNames.TITLE);
@@ -70,10 +76,12 @@ public class IndexWriter {
 	
 	private void addToIndex(int docId, List<HashMap<String, IntegerCounter>> termMapArray, Indexer indexer){
 		for(byte index = 0; index < 27; index++){
+			if(termMapArray == null)
+				return;
 			HashMap<String, IntegerCounter> termMap = termMapArray.get(index);
 			for(String termText : termMap.keySet()){
-				Integer termCountInDoc = termMap.get(termText).getCount();
-				int termId = IndexContainer.termMap.getTermId(termText);
+				Integer termCountInDoc = termMap.get(termText).getCount();				
+				int termId = indexer.getTermMap().getTermId(termText);
 				Term term = new Term();
 				term.setTermId(termId);
 				term.setNumberOfDocuments(1);
@@ -86,7 +94,7 @@ public class IndexWriter {
 				
 				term.setPostingList(postingList);
 				
-				IndexContainer.termIndexer.addTerm(termText, term);
+				indexer.addTerm(termText, term);
 				
 			}
 		}

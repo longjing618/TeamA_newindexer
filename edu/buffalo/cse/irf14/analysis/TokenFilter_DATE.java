@@ -10,7 +10,6 @@ public class TokenFilter_DATE extends TokenFilter{
 	
 	utils util;
 	int length;
-	int count = 0;
 	String currentTokenString;
 	//TokenStream copy;
 	Token tempToken;
@@ -26,7 +25,6 @@ public class TokenFilter_DATE extends TokenFilter{
 	public TokenFilter_DATE(TokenStream stream) {
 		super(stream);
 		copy = stream;
-		length = copy.tokenList.size();
 		month = new HashMap<String,String>();
 		month.put("January", "01");
 		month.put("February", "02");
@@ -78,11 +76,10 @@ public class TokenFilter_DATE extends TokenFilter{
 				currentTokenString = currentTokenString.substring(0, currentTokenString.length()-2);
 				return 3; //yearwithADBC
 			}
-			ADBC = copy.tokenList.get(count+1).toString();//handle .
+			ADBC = copy.viewNext().getTermText();//handle .
 			if(ADBC.equals("BC") || ADBC.equals("AD"))
 			{
-				copy.tokenList.remove(count+1);
-				length = copy.tokenList.size();
+				copy.removeNext();
 				return 4; //year and ADBC
 			}
 		}
@@ -97,45 +94,38 @@ public class TokenFilter_DATE extends TokenFilter{
 	
 	public boolean increment() throws TokenizerException
 	{
-		if(count < length)
+		Token token = copy.next();
+		
+		currentTokenString = token.getTermText();
+		
+		int type = getType(currentTokenString);
+		switch(type)
 		{
-			currentTokenString = copy.tokenList.get(count).toString();
-			
-			int type = getType(currentTokenString);
-			switch(type)
-			{
-			case 1:
-				isDate = true;
-				currentTokenString = handleMonth(currentTokenString);
-				break;
-			case 2:
-			case 3:
-			case 4:
-				isDate = true;
-				currentTokenString = handleYear(currentTokenString,ADBC);
-				break;
-			case 5:
-				isDate = true;
-				currentTokenString = handleTime(currentTokenString); 
-				break;
-			case 6:
-				isDate = true;
-				String[] Arr = currentTokenString.split("-");
-				if(Arr[1].length() == 2)
-					Arr[1] = Arr[0].substring(0, 2) + Arr[1];
-				currentTokenString = util.trim(handleYear(Arr[0],ADBC)) + '-' + handleYear(Arr[1],ADBC);
-			}			
-			
-			//Update the current token and move the pointer to the next token
-			tempToken = new Token();
-			tempToken.setTermText(currentTokenString);
-			tempToken.setIsDate(isDate);
-			copy.tokenList.set(count, tempToken);
-			count++;
-			return true;
-		}
-		else
-			return false;
+		case 1:
+			isDate = true;
+			currentTokenString = handleMonth(currentTokenString);
+			break;
+		case 2:
+		case 3:
+		case 4:
+			isDate = true;
+			currentTokenString = handleYear(currentTokenString,ADBC);
+			break;
+		case 5:
+			isDate = true;
+			currentTokenString = handleTime(currentTokenString); 
+			break;
+		case 6:
+			isDate = true;
+			String[] Arr = currentTokenString.split("-");
+			if(Arr[1].length() == 2)
+				Arr[1] = Arr[0].substring(0, 2) + Arr[1];
+			currentTokenString = util.trim(handleYear(Arr[0],ADBC)) + '-' + handleYear(Arr[1],ADBC);
+		}			
+		
+		//Update the current token and move the pointer to the next token
+		token.setTermText(currentTokenString);
+		return copy.hasNext();
 	}
 	public TokenStream getStream()
 	{
@@ -147,7 +137,7 @@ public class TokenFilter_DATE extends TokenFilter{
 		endChar = ' ';
 		//currentTokenString is a month string
 		m = month.get(currentTokenString);
-		String[] date = getDateArray(count);
+		String[] date = getDateArray();
 		/*
 		 * date[0] is the possible day
 		 * date[1] is the possible day or year
@@ -165,23 +155,19 @@ public class TokenFilter_DATE extends TokenFilter{
 				{
 					d = date[0];
 					y = date[1];
-					copy.removeNode(count-1);
-					count--;
-					copy.removeNode(count+1);
-					length = copy.tokenList.size();
+					copy.removePrevious();
+					copy.removeNext();
 				}
 				else if(date[1].length()<4)
 				{
 					d = date[1];
-					copy.removeNode(count+1);
-					length = copy.tokenList.size();
+					copy.removeNext();
 					endChar = util.getEndChar(date[2]);
 					date[2] = util.trim(date[2]);
 					if(util.isNumber(date[2]) && date[2].length() == 4)
 					{
 						y = date[2];
-						copy.removeNode(count+1);
-						length = copy.tokenList.size();
+						copy.removeNext();
 					}
 				}
 			}		
@@ -190,15 +176,13 @@ public class TokenFilter_DATE extends TokenFilter{
 		{
 			date[1] = util.trim(date[1]);
 			d = date[1];
-			copy.removeNode(count+1);
-			length = copy.tokenList.size();
+			copy.removeNext();
 			endChar = util.getEndChar(date[2]);
 			date[2] = util.trim(date[2]);
 			if(util.isNumber(date[2]) && date[2].length() == 4)
 			{
 				y = date[2];
-				copy.removeNode(count+1);
-				length = copy.tokenList.size();
+				copy.removeNext();
 			}	
 		}
 		
@@ -239,13 +223,12 @@ public class TokenFilter_DATE extends TokenFilter{
 		}
 		else
 		{
-			meridiem = getMeridiem(count);
+			meridiem = getMeridiem();
 			meridiem = meridiem.toLowerCase();
 			if(util.isAM(meridiem) || util.isPM(meridiem))
 			{
 				endChar = util.getEndChar(meridiem);
-				copy.removeNode(count + 1);
-				length = copy.tokenList.size();
+				copy.removeNext();
 			}
 		}
 
@@ -290,24 +273,20 @@ public class TokenFilter_DATE extends TokenFilter{
 		return ret;
 	}
 	
-	public String[] getDateArray(int monthIndex)
+	public String[] getDateArray()
 	{
-		String tmp1;
-		if(monthIndex > 0)
-			tmp1 = copy.tokenList.get(monthIndex-1).toString();
-		else
-			tmp1 = "";
-		String tmp2 = copy.tokenList.get(monthIndex+1).toString();
-		String tmp3 = copy.tokenList.get(monthIndex+2).toString();
+		String tmp1 = "";
+		if(copy.getPrevious() != null)
+			tmp1 = copy.getPrevious().getTermText();
+		String tmp2 = copy.viewNext().getTermText();
+		String tmp3 = copy.viewNextNext().getTermText();
 		String[] ret = {tmp1,tmp2,tmp3};
 		return ret;
 	}
 	
-	public String getMeridiem(int timeIndex)
+	public String getMeridiem()
 	{
-		if(timeIndex == length-1)
-			return "";
-		return copy.tokenList.get(timeIndex + 1).toString();
+		return copy.viewNext().getTermText();
 	}
 	
 }

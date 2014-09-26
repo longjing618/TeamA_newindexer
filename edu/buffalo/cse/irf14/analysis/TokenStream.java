@@ -157,8 +157,10 @@ public class TokenStream implements Iterator<Token>{
 	}
 	
 	public Token getPrevious(){
-		tokenIterator.previous();
-		return tokenIterator.next();
+		int previous = tokenIterator.previousIndex()-1;
+		if(previous < 0)
+			return null;
+		return tokenList.get(previous);
 	}
 	
 	/**
@@ -194,12 +196,28 @@ public class TokenStream implements Iterator<Token>{
 		return null;
 	}
 	
-	public void removeNode(int count)
+	public int getLength()
 	{
-		if(count >= tokenList.size())
-			return;
-		tokenList.remove(count);
-		reset();
+		return tokenList.size();
+	}
+	
+	public Token viewNextNext()
+	{
+		if(tokenIterator.nextIndex() < getLength()-2)
+			return tokenList.get(tokenIterator.nextIndex()+1);
+		return null;
+	}
+	
+	public void removeNext()
+	{
+		tokenIterator.next();
+		tokenIterator.remove();
+	}
+	
+	public void removePrevious() {
+		tokenIterator.previous();
+		tokenIterator.previous();
+		tokenIterator.remove();
 	}
 	
 }

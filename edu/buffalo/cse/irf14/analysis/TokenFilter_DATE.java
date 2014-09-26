@@ -76,7 +76,8 @@ public class TokenFilter_DATE extends TokenFilter{
 				currentTokenString = currentTokenString.substring(0, currentTokenString.length()-2);
 				return 3; //yearwithADBC
 			}
-			ADBC = copy.viewNext().getTermText();//handle .
+			if(copy.viewNext() != null)
+				ADBC = copy.viewNext().getTermText();//handle .
 			if(ADBC.equals("BC") || ADBC.equals("AD"))
 			{
 				copy.removeNext();
@@ -119,8 +120,14 @@ public class TokenFilter_DATE extends TokenFilter{
 			isDate = true;
 			String[] Arr = currentTokenString.split("-");
 			if(Arr[1].length() == 2)
-				Arr[1] = Arr[0].substring(0, 2) + Arr[1];
-			currentTokenString = util.trim(handleYear(Arr[0],ADBC)) + '-' + handleYear(Arr[1],ADBC);
+			{
+				if(Arr[0].length() == 4)
+				{
+					String str = Arr[0].substring(0, 2) + Arr[1];
+					currentTokenString = util.trim(handleYear(Arr[0],ADBC)) + '-' + handleYear(str,ADBC);
+				}
+			}
+			
 		}			
 		
 		//Update the current token and move the pointer to the next token
@@ -275,11 +282,13 @@ public class TokenFilter_DATE extends TokenFilter{
 	
 	public String[] getDateArray()
 	{
-		String tmp1 = "";
+		String tmp1 = "", tmp2 = "", tmp3 = "";
 		if(copy.getPrevious() != null)
 			tmp1 = copy.getPrevious().getTermText();
-		String tmp2 = copy.viewNext().getTermText();
-		String tmp3 = copy.viewNextNext().getTermText();
+		if(copy.viewNext() != null)
+			tmp2 = copy.viewNext().getTermText();
+		if(copy.viewNextNext() != null)
+			tmp3 = copy.viewNextNext().getTermText();
 		String[] ret = {tmp1,tmp2,tmp3};
 		return ret;
 	}

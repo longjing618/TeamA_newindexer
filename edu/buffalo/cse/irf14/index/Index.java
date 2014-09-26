@@ -16,7 +16,7 @@ public class Index {
 	//Default construct function
 	public Index()
 	{
-		indexMap = null;
+		//indexMap = null;
 	}
 	//The term will need to be prepared earlier.
 	public void add(Term term){
@@ -48,10 +48,10 @@ public class Index {
 		return term.getPostingList();
 	}
 	
-	public List<Integer> getTopK(int k){
+	public List<Term> getTopK(int k){
 		List<Term> termList = new ArrayList<Term>(indexMap.values());
 		if(termList.isEmpty())
-			return new ArrayList<Integer>(0);
+			return new ArrayList<Term>(0);
 		Comparator<Term> termComparator = new Comparator<Term>() {
 
 			@Override
@@ -63,10 +63,10 @@ public class Index {
 			}
 		};
 		Collections.sort(termList, termComparator);
-		List<Integer> topKList = new ArrayList<Integer>(k);
-		int endIndex = topKList.size() > k ? k : topKList.size();
+		List<Term> topKList = new ArrayList<Term>(k);
+		int endIndex = termList.size() > k ? k : termList.size();
 		for(int i = 0; i < endIndex; i++){
-			topKList.add(termList.get(i).getTotalCount());
+			topKList.add(termList.get(i));
 		}
 		return topKList;
 	}

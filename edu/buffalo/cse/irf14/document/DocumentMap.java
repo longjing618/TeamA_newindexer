@@ -25,4 +25,8 @@ public class DocumentMap
 	public String getFileId(int docId){
 		return docMap.get(docId);
 	}
+	
+	public int getSize(){
+		return docId;
+	}
 }

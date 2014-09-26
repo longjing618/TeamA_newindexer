@@ -75,4 +75,7 @@ public class Index {
 	{
 		return indexMap;
 	}
+	public void setIndexMap(HashMap<Integer, Term> indexMap) {
+		this.indexMap = indexMap;
+	}
 }

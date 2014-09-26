@@ -130,7 +130,7 @@ public class Indexer {
 		String fileName = indexDir + '/' + i;
 		HashMap<Integer, Term> indexMap = readDisk(fileName);
 		Index index = getIndex(i);
-		index = new Index(indexMap);
+		index.setIndexMap(indexMap);
 	}
 
 	public HashMap<Integer,Term> readDisk(String fileName)

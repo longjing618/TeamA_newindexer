@@ -44,6 +44,7 @@ public class TokenFilter_DATE extends TokenFilter{
 		d = "01";
 		t = "00";
 		endChar = ' ';
+		ADBC = "";
 		util = new utils();
 	}
 
@@ -160,14 +161,16 @@ public class TokenFilter_DATE extends TokenFilter{
 				date[1] = util.trim(date[1]);
 				if(date[1].length() == 4)
 				{
-					d = date[0];
+					if(date[0].length() < 3)
+						d = date[0];
 					y = date[1];
 					copy.removePrevious();
 					copy.removeNext();
 				}
 				else if(date[1].length()<4)
 				{
-					d = date[1];
+					if(date[1].length() < 3)
+						d = date[1];
 					copy.removeNext();
 					endChar = util.getEndChar(date[2]);
 					date[2] = util.trim(date[2]);
@@ -182,7 +185,8 @@ public class TokenFilter_DATE extends TokenFilter{
 		else if(date[1].length()<4)
 		{
 			date[1] = util.trim(date[1]);
-			d = date[1];
+			if(date[1].length() < 3)
+				d = date[1];
 			copy.removeNext();
 			endChar = util.getEndChar(date[2]);
 			date[2] = util.trim(date[2]);
@@ -192,7 +196,6 @@ public class TokenFilter_DATE extends TokenFilter{
 				copy.removeNext();
 			}	
 		}
-		
 		currentTokenString = util.getDay(y,m,d);
 		if(endChar == ',' || endChar == '.')
 			currentTokenString += endChar;

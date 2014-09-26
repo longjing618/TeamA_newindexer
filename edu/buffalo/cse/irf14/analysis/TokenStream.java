@@ -210,8 +210,11 @@ public class TokenStream implements Iterator<Token>{
 	
 	public void removeNext()
 	{
-		tokenIterator.next();
-		tokenIterator.remove();
+		if(tokenIterator.hasNext())
+		{
+			tokenIterator.next();
+			tokenIterator.remove();
+		}
 	}
 	
 	public void removePrevious() {

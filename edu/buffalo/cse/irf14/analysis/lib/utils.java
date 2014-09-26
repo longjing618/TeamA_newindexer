@@ -64,6 +64,12 @@ public class utils
 	public String getDay(String y, String m, String d)
 	{
 		String ret = "";
+		if(!isNumber(y))
+			y = "1900";
+		if(!isNumber(m))
+			m = "01";
+		if(!isNumber(d))
+			d = "01";
 		ret += String.format("%04d", Integer.parseInt(y));
 		ret += String.format("%02d", Integer.parseInt(m));
 		ret += String.format("%02d", Integer.parseInt(d));

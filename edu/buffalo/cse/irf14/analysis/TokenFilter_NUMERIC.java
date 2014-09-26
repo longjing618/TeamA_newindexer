@@ -30,6 +30,8 @@ public class TokenFilter_NUMERIC extends TokenFilter{
 	}
 	
 	private void filter(Token token){
+		if(token.isDate())
+			return;
 		Matcher matcher = noDigits.matcher(token.getTermText());
 		if(matcher.matches())
 			return;

@@ -3,9 +3,14 @@
  */
 package edu.buffalo.cse.irf14.index;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+
+import javax.crypto.spec.PSource;
 
 import edu.buffalo.cse.irf14.analysis.Analyzer;
 import edu.buffalo.cse.irf14.analysis.AnalyzerFactory;
@@ -152,5 +157,39 @@ public class IndexReader {
 			
 		}
 		return null;
+	}
+	
+	private List<String> getTermsSortedByDocFrequency(String...terms){
+		if(terms == null || terms.length == 0)
+			return null;
+		List<SortingPair> tempList = new ArrayList<SortingPair>();
+		for(String termText : terms){
+			List<Posting> postingList = indexer.getPostingList(termText);
+			if(postingList == null || postingList.isEmpty()){
+				continue;
+			}
+			SortingPair sp = new SortingPair(postingList.size(), termText);
+			tempList.add(sp);
+		}
+		if(tempList.isEmpty())
+			return null;
+		Comparator<SortingPair> c = new Comparator<SortingPair>() {
+
+			@Override
+			public int compare(SortingPair o1, SortingPair o2) {
+				// TODO Auto-generated method stub
+				Integer i1 = o1.getDocFrequency();
+				Integer i2 = o2.getDocFrequency();
+				return i1.compareTo(i2);
+			}
+		};
+		Collections.sort(tempList,c);
+		List<String> returnList = new ArrayList<String>(tempList.size());
+		for(SortingPair sp: tempList){
+			returnList.add(sp.getTermText());
+		}
+		
+		return returnList;
+		
 	}
 }

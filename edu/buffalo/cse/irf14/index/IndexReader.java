@@ -63,7 +63,7 @@ public class IndexReader {
 	 */
 	public int getTotalValueTerms() {
 		//TODO: YOU MUST IMPLEMENT THIS
-		return -1;
+		return Parser.docMap.getSize();
 	}
 	
 	/**
@@ -128,7 +128,9 @@ public class IndexReader {
 	 */
 	public List<String> getTopK(int k) {
 		//TODO YOU MUST IMPLEMENT THIS
-		return null;
+		if(k < 1)
+			return null;
+		return indexer.getTopK(k);
 	}
 	
 	/**

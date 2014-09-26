@@ -8,6 +8,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 
@@ -129,7 +130,7 @@ public class Indexer {
 		String fileName = indexDir + '/' + i;
 		HashMap<Integer, Term> indexMap = readDisk(fileName);
 		Index index = getIndex(i);
-		index = new Index(indexMap);
+		index.setIndexMap(indexMap);
 	}
 
 	public HashMap<Integer,Term> readDisk(String fileName)
@@ -191,14 +192,25 @@ public class Indexer {
 	}
 	
 	public List<String> getTopK(int k){
-		List<Integer> globalTopList = new ArrayList<Integer>(27*k);
+		List<Term> globalTopList = new ArrayList<Term>(27*k);
 		for(byte i = 0; i < 27; i++){
 			globalTopList.addAll(getIndex(i).getTopK(k));
 		}
-		Collections.sort(globalTopList);
+		Comparator<Term> termComparator = new Comparator<Term>() {
+
+			@Override
+			public int compare(Term o1, Term o2) {
+				// TODO Auto-generated method stub
+				Integer term1Occourances = o1.getTotalCount();
+				Integer term2Occourances = o2.getTotalCount();
+				return -term1Occourances.compareTo(term2Occourances);
+			}
+		};
+		Collections.sort(globalTopList, termComparator);
 		List<String> topKTerms = new ArrayList<String>(k);
-		for(int i = 0; i < k; i++){
-			String termText = termMap.getTermText(globalTopList.get(i));
+		int endIndex = globalTopList.size() > k ? k : globalTopList.size();
+		for(int i = 0; i < endIndex; i++){
+			String termText = termMap.getTermText(globalTopList.get(i).getTermId());
 			topKTerms.add(termText);
 		}
 		return topKTerms;

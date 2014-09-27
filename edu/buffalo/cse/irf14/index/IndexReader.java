@@ -150,6 +150,12 @@ public class IndexReader {
 	 */
 	public Map<String, Integer> query(String...terms) {
 		//TODO : BONUS ONLY
+		for(String term : terms)
+		{
+			//String is the file id, integer is the doc frequency
+			Map<String, Integer> map = getPostings(term);
+			
+		}
 		return null;
 	}
 	

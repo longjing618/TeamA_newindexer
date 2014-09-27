@@ -217,10 +217,12 @@ public class TokenStream implements Iterator<Token>{
 		}
 	}
 	
-	public void removePrevious() {
+	public void removePrevious() 
+	{
 		tokenIterator.previous();
 		tokenIterator.previous();
 		tokenIterator.remove();
+		tokenIterator.next();
 	}
 	
 }

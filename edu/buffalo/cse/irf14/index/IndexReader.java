@@ -3,6 +3,7 @@
  */
 package edu.buffalo.cse.irf14.index;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -38,7 +39,11 @@ public class IndexReader {
 	private Indexer indexer;
 	public IndexReader(String indexDir, IndexType type) {
 		//TODO
-		this.indexDir = indexDir;
+		if(indexDir.endsWith(File.pathSeparator)){
+			this.indexDir = indexDir;
+		}else{
+			this.indexDir = indexDir = File.pathSeparator;
+		}
 		this.type = type;
 		if(type == IndexType.TERM){
 			indexer = IndexContainer.termIndexer;

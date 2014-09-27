@@ -78,4 +78,8 @@ public class Index {
 	public void setIndexMap(HashMap<Integer, Term> indexMap) {
 		this.indexMap = indexMap;
 	}
+	
+	public int getSize(){
+		return indexMap.size();
+	}
 }

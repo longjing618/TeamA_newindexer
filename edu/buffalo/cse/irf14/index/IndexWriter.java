@@ -3,6 +3,8 @@
  */
 package edu.buffalo.cse.irf14.index;
 
+import java.io.File;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -25,7 +27,11 @@ public class IndexWriter {
 	private String indexDir = ""; 
 	
 	public IndexWriter(String indexDir) {
-		this.indexDir = indexDir;
+		if(indexDir.endsWith(File.pathSeparator)){
+			this.indexDir = indexDir;
+		}else{
+			this.indexDir = indexDir = File.pathSeparator;
+		}
 	}
 	
 	/**
@@ -72,6 +78,9 @@ public class IndexWriter {
 			index.sort();
 			//call serialization methods here.
 		}
+		System.out.println(IndexContainer.termIndexer.getSizeOfTermDictionary());
+		System.out.println(IndexContainer.termIndexer.getSize());
+		System.out.println(IndexContainer.termTermMap.getSortedTerms());
 	}
 	
 	private void addToIndex(int docId, List<HashMap<String, IntegerCounter>> termMapArray, Indexer indexer){

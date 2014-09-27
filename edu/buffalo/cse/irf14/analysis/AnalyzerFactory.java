@@ -49,6 +49,8 @@ public class AnalyzerFactory {
 			return new AnalyzerPlace(stream);
 		}else if(name == FieldNames.CATEGORY){
 			return new AnalyzerCategory(stream);
+		}else if(name == FieldNames.NEWSDATE){
+			return new AnalyzerNewsDate(stream);
 		}
 		return null;
 	}

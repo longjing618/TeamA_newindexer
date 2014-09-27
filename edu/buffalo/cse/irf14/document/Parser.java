@@ -73,13 +73,13 @@ public class Parser {
 						}
 						else
 						{
-							pattern = "\\s+(.+),\\.?\\s+(.+)\\s+-\\s+(.+)";
+							pattern = "([\\w,\\s]+,)(\\s[\\w\\s]+)(-?.*)";
 							r = Pattern.compile(pattern);
 							m = r.matcher(current);
 							if (m.find())
 							{
-								ret.setField(FieldNames.PLACE, m.group(1));
-								ret.setField(FieldNames.NEWSDATE, m.group(2));
+								ret.setField(FieldNames.PLACE, m.group(1).trim());
+								ret.setField(FieldNames.NEWSDATE, m.group(2).trim());
 								content.append(m.group(3).trim()).append(" ");
 								isplace = true;
 							}
@@ -87,13 +87,13 @@ public class Parser {
 					}
 					if(lines == 3 && isplace == false)
 					{
-						pattern = "\\s+(.+),\\.?\\s+(.+)\\s+-\\s+(.+)";
+						pattern = "([\\w,\\s]+,)(\\s[\\w\\s]+)(-?.*)";
 						r = Pattern.compile(pattern);
 						m = r.matcher(current);
 						if (m.find())
 						{
-							ret.setField(FieldNames.PLACE, m.group(1));
-							ret.setField(FieldNames.NEWSDATE, m.group(2));
+							ret.setField(FieldNames.PLACE, m.group(1).trim());
+							ret.setField(FieldNames.NEWSDATE, m.group(2).trim());
 							content.append(m.group(3).trim()).append(" ");
 						}
 					}

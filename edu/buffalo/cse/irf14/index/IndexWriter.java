@@ -55,6 +55,8 @@ public class IndexWriter {
 		addToIndex(docId, termMapArray, IndexContainer.termIndexer);
 		termMapArray = IndexWriterUtil.processDocumet(d, FieldNames.TITLE);
 		addToIndex(docId, termMapArray, IndexContainer.termIndexer);
+		termMapArray = IndexWriterUtil.processDocumet(d, FieldNames.NEWSDATE);
+		addToIndex(docId, termMapArray, IndexContainer.termIndexer);
 		termMapArray = IndexWriterUtil.processDocumet(d, FieldNames.PLACE);
 		addToIndex(docId, termMapArray, IndexContainer.placeIndexer);
 		termMapArray = IndexWriterUtil.processDocumet(d, FieldNames.CATEGORY);

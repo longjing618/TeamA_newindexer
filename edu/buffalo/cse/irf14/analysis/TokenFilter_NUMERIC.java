@@ -40,6 +40,8 @@ public class TokenFilter_NUMERIC extends TokenFilter{
 		}else if(token.getTermText().matches("(\\d*)(\\.\\d+)?[\\D]+")){
 			token.setTermText(token.getTermText().replaceFirst("(\\d*)(\\.\\d+)?", ""));
 		}else if(token.getTermText().matches("[\\d\\W]+")){
+			if(token.getTermText().matches(".*\\d-.*")||token.getTermText().matches(".*-\\d.*"))
+				return;
 			token.setTermText(token.getTermText().replaceAll("\\d", ""));
 		}
 	}

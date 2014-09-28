@@ -106,10 +106,14 @@ public class IndexWriter {
 			for(String termText : termMap.keySet()){
 				Integer termCountInDoc = termMap.get(termText).getCount();				
 				int termId = indexer.getTermMap().getTermId(termText);
+				int start = indexer.getTermMap().getStart(termText);
+				int length = termText.length();
 				Term term = new Term();
 				term.setTermId(termId);
 				term.setNumberOfDocuments(1);
 				term.setTotalCount(termCountInDoc);
+				term.setStart(start);
+				term.setLength(length);
 				LinkedList<Posting> postingList = new LinkedList<Posting>();
 				Posting posting = new Posting();
 				posting.setDocId(docId);

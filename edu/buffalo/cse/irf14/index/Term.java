@@ -10,6 +10,8 @@ public class Term implements Serializable{
 	 */
 	private static final long serialVersionUID = 8930369869009602270L;
 	private int termId;
+	private int start;
+	private int length;
 	private int numberOfDocuments;
 	private int totalCount;
 	private List<Posting> postingList = new LinkedList<Posting>();
@@ -64,5 +66,25 @@ public class Term implements Serializable{
 	}
 	public void setPostingList(List<Posting> postingList) {
 		this.postingList = postingList;
+	}
+	
+	public void setStart(int s)
+	{
+		start = s;
+	}
+	
+	public int getStart()
+	{
+		return start;
+	}
+	
+	public void setLength(int l)
+	{
+		length = l;
+	}
+	
+	public int getLength()
+	{
+		return length;
 	}
 }

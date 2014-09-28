@@ -94,8 +94,12 @@ public class IndexWriter {
 		IndexContainer.authorIndexer.cleanup();
 		IndexContainer.placeIndexer.cleanup();
 		IndexContainer.categoryIndexer.cleanup();
-		System.out.println(IndexContainer.termIndexer.getSizeOfTermDictionary());
-		System.out.println(IndexContainer.termIndexer.getSize());
+		IndexContainer.termIndexer.serializeAll(indexDir);
+		IndexContainer.authorIndexer.serializeAll(indexDir);
+		IndexContainer.placeIndexer.serializeAll(indexDir);
+		IndexContainer.categoryIndexer.serializeAll(indexDir);
+//		System.out.println(IndexContainer.termIndexer.getSizeOfTermDictionary());
+//		System.out.println(IndexContainer.termIndexer.getSize());
 		//System.out.println(IndexContainer.termTermMap.getSortedTerms());
 	}
 	

@@ -71,6 +71,9 @@ public class Token {
 	 */
 	protected void merge(Token...tokens) {
 		//TODO : YOU MUST IMPLEMENT THIS METHOD
+		if(tokens == null || tokens.length == 0){
+			return;
+		}
 		StringBuilder mergedContent = new StringBuilder(termText);
 		for(Token token : tokens){
 			mergedContent.append(" ").append(token.toString());

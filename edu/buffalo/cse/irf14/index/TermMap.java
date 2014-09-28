@@ -8,18 +8,20 @@ import java.util.List;
 public class TermMap {
 	private int arrayIndex = 0;
 	private int termId = 0;
+	char delimiter;
 	//private HashMap<String, Integer> termMap;
 	//private HashMap<Integer, String> reverseMap;
 	private ArrayList<String> termMap;
 	public TermMap() {
 		termMap = new ArrayList<String>();	
+		delimiter = 0x2666;
 	}
 
 	public int getStart(String term)
 	{
 		for(int i=0;i<termMap.size();i++)
 		{
-			int ret = termMap.get(i).indexOf(term+',');
+			int ret = termMap.get(i).indexOf(term+delimiter);
 			if(ret > -1)
 				return ret;
 		}
@@ -30,7 +32,7 @@ public class TermMap {
 	{
 		for(int i=0;i<termMap.size();i++)
 		{
-			int ret = termMap.get(i).indexOf(term+',');
+			int ret = termMap.get(i).indexOf(term+delimiter);
 			if(ret > -1)
 				return i;
 		}
@@ -45,13 +47,13 @@ public class TermMap {
 		}
 		if(Integer.MAX_VALUE - termMap.get(arrayIndex).length() < term.length())
 		{
-			termMap.add(term+',');
+			termMap.add(term+delimiter);
 			arrayIndex++;
 		}
 		else
 		{
 			String temp = termMap.get(arrayIndex);
-			temp += term +',';
+			temp += term +delimiter;
 			termMap.set(arrayIndex, temp);
 		}
 		return termId;
@@ -63,18 +65,18 @@ public class TermMap {
 		for(int i=0;i<termMap.size();i++)
 		{
 			String temp = termMap.get(i);
-			int index = temp.indexOf(term+',');
+			int index = temp.indexOf(term+delimiter);
 			if(index > -1)
 			{
 				for(int j=0; j<index; j++) 
 				{
-				    if(temp.charAt(j) == ',')
+				    if(temp.charAt(j) == delimiter)
 				        ret++;
 				}
 				return ret + 1;
 			}
 			for(int j=0;j<temp.length();j++)
-				if(temp.charAt(j) == ',')
+				if(temp.charAt(j) == delimiter)
 					ret++;
 		}
 		return ret;
@@ -113,7 +115,7 @@ public class TermMap {
 	public List<String> getSortedTerms(){
 		List<String> terms = new ArrayList<String>();
 		for(int i=0;i<termMap.size();i++)
-			terms.addAll(Arrays.asList(termMap.get(i).split(",")));
+			terms.addAll(Arrays.asList(termMap.get(i).split(delimiter+"")));
 		Collections.sort(terms);
 		return terms;
 	}

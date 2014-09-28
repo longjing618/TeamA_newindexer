@@ -119,6 +119,16 @@ public class Indexer {
 		index.add(term);
 	}
 	
+	public void serializeAll(String indexDir){
+		for(byte b = 0; b < 27; b++){
+			serializeBucket(b, indexDir);
+		}
+	}
+	public void deSerializeAll(String indexDir){
+		for(byte b = 0; b < 27; b++){
+			deSerializeBucket(b, indexDir);
+		}
+	}
 	public void serializeBucket(byte i, String indexDir)
 	{
 		String fileName = indexDir + i + fileNameSuffix;

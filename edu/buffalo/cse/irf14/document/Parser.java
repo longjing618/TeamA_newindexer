@@ -62,6 +62,7 @@ public class Parser {
 					if(lines == 1)
 					{
 						ret.setField(FieldNames.TITLE,current);
+						continue;
 					}
 					if(lines == 2)
 					{
@@ -87,6 +88,7 @@ public class Parser {
 								isplace = true;
 							}
 						}
+						continue;
 					}
 					if(lines == 3 && isplace == false)
 					{
@@ -101,6 +103,7 @@ public class Parser {
 							ret.setField(FieldNames.NEWSDATE, m.group(2).trim());
 							content.append(m.group(3).trim()).append(" ");
 						}
+						continue;
 					}
 					content.append(current.trim()).append(" ");
 				}

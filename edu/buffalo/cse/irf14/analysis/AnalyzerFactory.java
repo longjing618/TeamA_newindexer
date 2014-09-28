@@ -43,7 +43,7 @@ public class AnalyzerFactory {
 		//TODO : YOU NEED TO IMPLEMENT THIS METHOD
 		if(name == FieldNames.CONTENT || name == FieldNames.TITLE){
 			return new AnalyzerTerm(stream);
-		}else if(name == FieldNames.AUTHOR){
+		}else if(name == FieldNames.AUTHOR || name == FieldNames.AUTHORORG){
 			return new AnalyzerAuthor(stream);
 		}else if(name == FieldNames.PLACE){
 			return new AnalyzerPlace(stream);

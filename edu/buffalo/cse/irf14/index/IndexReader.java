@@ -9,10 +9,10 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-
-import javax.crypto.spec.PSource;
+import java.util.Map.Entry;
 
 import edu.buffalo.cse.irf14.analysis.Analyzer;
 import edu.buffalo.cse.irf14.analysis.AnalyzerFactory;
@@ -160,13 +160,18 @@ public class IndexReader {
 		Map<String, Integer> ret = null;
 		for(String term : sortedTerms)
 		{
+			Map<String, Integer> map;
 			if(ret == null)
-				ret = new HashMap<String, Integer>();
-			//String is the file id, integer is the doc frequency
-			Map<String, Integer> map = getPostings(term);
-			ret = mapConjuction(ret,map);
+				ret = getPostings(term);
+			else
+			{
+				//String is the file id, integer is the doc frequency
+				map = getPostings(term);
+				ret = mapConjuction(ret,map);
+			}
 		}
-		return null;
+		ret = sortHashMap(ret);
+		return ret;
 	}
 	
 	//This function will return the conjunction of two posting list map<String,Integer>
@@ -177,7 +182,29 @@ public class IndexReader {
 		for (String key : map1.keySet()) 
 		{
 			if(map2.containsKey(key))
-					ret.put(key, map1.get(key));
+				ret.put(key, map1.get(key)+map2.get(key));
+		}
+		return ret;
+	}
+	
+	/*
+	 * This function will return the HashMap with sorted order by the integer
+	 */
+	private Map<String, Integer> sortHashMap(Map<String,Integer> map)
+	{
+		List<Entry<String, Integer>> list = new LinkedList<Entry<String, Integer>>(map.entrySet());
+		Collections.sort(list, new Comparator<Entry<String, Integer>>()
+				{
+		            public int compare(Entry<String, Integer> e1,Entry<String, Integer> e2)
+		            {
+		            	//This will return the DESC order
+		            	return e2.getValue().compareTo(e1.getValue());
+		            }
+		        });
+		Map<String, Integer> ret = new LinkedHashMap<String, Integer>();
+		for (Entry<String, Integer> e : list)
+		{
+		    ret.put(e.getKey(), e.getValue());
 		}
 		return ret;
 	}

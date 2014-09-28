@@ -114,9 +114,10 @@ public class Indexer {
 		}
 	}
 	
-	public void addTerm(String termText, Term term){
+	public void addTerm(String termText, Posting posting){
 		Index index = getIndexBucket(termText);
-		index.add(term);
+		int termId = getTermMap().getTermId(termText);
+		index.add(termId, posting);
 	}
 	
 	public void serializeAll(String indexDir){
@@ -237,5 +238,11 @@ public class Indexer {
 			count += getIndex(b).getSize();
 		}
 		return count;
+	}
+	
+	public void cleanup(){
+		for(byte b = 0; b < 27; b++){
+			getIndex(b).cleanup();
+		}
 	}
 }

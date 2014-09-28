@@ -19,14 +19,15 @@ public class Index {
 		//indexMap = null;
 	}
 	//The term will need to be prepared earlier.
-	public void add(Term term){
-		if(indexMap.containsKey(term.getTermId())){
-			Term existingTerm = indexMap.get(term.getTermId());
-			existingTerm.getPostingList().addAll(term.getPostingList());
-			existingTerm.setNumberOfDocuments(existingTerm.getNumberOfDocuments()+term.getNumberOfDocuments());
-			existingTerm.setTotalCount(existingTerm.getTotalCount() + term.getTotalCount());
+	public void add(int termId, Posting posting){
+		if(indexMap.containsKey(termId)){
+			Term existingTerm = indexMap.get(termId);
+			existingTerm.addPosting(posting);
 		}else{
-			indexMap.put(term.getTermId(), term);
+			Term newTerm = new Term();
+			newTerm.addPosting(posting);
+			newTerm.setTermId(termId);
+			indexMap.put(termId, newTerm);
 		}
 	}
 	
@@ -34,11 +35,11 @@ public class Index {
 		return indexMap.get(termId);
 	}
 	
-	public void sort(){
-		for(Term term: indexMap.values()){
-			Collections.sort(term.getPostingList());
-		}
-	}
+//	public void sort(){
+//		for(Term term: indexMap.values()){
+//			Collections.sort(term.getPostingList());
+//		}
+//	}
 	
 	public List<Posting> getPostings(String termText, TermMap termMap){
 		int termId = termMap.getTermIdWithoutAdding(termText);
@@ -81,5 +82,11 @@ public class Index {
 	
 	public int getSize(){
 		return indexMap.size();
+	}
+	
+	public void cleanup(){
+		for(int termId : indexMap.keySet()){
+			indexMap.get(termId).cleanup();
+		}
 	}
 }

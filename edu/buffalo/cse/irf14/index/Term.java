@@ -1,6 +1,7 @@
 package edu.buffalo.cse.irf14.index;
 
 import java.io.Serializable;
+import java.math.BigInteger;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -12,7 +13,28 @@ public class Term implements Serializable{
 	private int termId;
 	private int numberOfDocuments;
 	private int totalCount;
-	private List<Posting> postingList = new LinkedList<Posting>();
+	private byte [] docOffsets;
+	private byte [] frequency;
+	private int arraySize;
+	private int frequencySize;
+	private int arrayCount;
+	private int frequencyCount;
+	private int maxDocIdInPoting;
+	
+	public Term() {
+		super();
+		numberOfDocuments = 0;
+		totalCount = 0;
+		docOffsets = new byte[10];
+		frequency = new byte[10];
+		arraySize = 10;
+		frequencySize = 10;
+		arrayCount = 0;
+		frequencyCount = 10;
+		maxDocIdInPoting = 0;
+		
+	}
+	//private List<Posting> postingList = new LinkedList<Posting>();
 	//Not maintaining pointer to posting list here
 	//There will be one posting list for all words starting with a single character.
 	//For example, apple, Amsterdam will go to the same posting list. Need to discuss this.
@@ -60,9 +82,139 @@ public class Term implements Serializable{
 		return true;
 	}
 	public List<Posting> getPostingList() {
+		List<Posting> postingList = new LinkedList<Posting>();
+		List<Integer> docIdOffsetList = decodeVB(docOffsets);
+		List<Integer> frequencyList = decodeVB(frequency);
+		int currentDocId = 0;
+		int length = docIdOffsetList.size();
+		for(int i = 0; i < length; i++){
+			Posting posting = new Posting();
+			int docId = currentDocId + docIdOffsetList.get(i);
+			int termFreq = frequencyList.get(i);
+			posting.setDocId(docId);
+			posting.setTermCountInDoc(termFreq);
+			postingList.add(posting);
+		}
+		
 		return postingList;
 	}
-	public void setPostingList(List<Posting> postingList) {
-		this.postingList = postingList;
+	
+	public void addPosting(Posting posting){
+		numberOfDocuments++;
+		totalCount += posting.getTermCountInDoc();
+		int currentDocOffset = posting.getDocId() - maxDocIdInPoting;
+		byte [] currentDocOffsetVB = convertToVB(currentDocOffset);
+		if(arrayCount + currentDocOffsetVB.length >= arraySize){
+			expandPostingArray();
+		}
+		for(int i = 0; i < currentDocOffsetVB.length; i++){
+			docOffsets[arrayCount] = currentDocOffsetVB[i];
+			arrayCount++;
+		}
+		
+		int currentTermFreq = posting.getTermCountInDoc();
+		byte [] currentTermFreqVB = convertToVB(currentTermFreq);
+		if(frequencyCount + currentTermFreqVB.length >= frequencySize){
+			expandFrequenyArray();
+		}
+		for(int i = 0; i < currentTermFreqVB.length; i++){
+			frequency[frequencyCount] = currentTermFreqVB[i];
+			frequencyCount++;
+		}
+	}
+	
+	
+	private void expandPostingArray(){
+		byte [] newDocOffsets = new byte[arraySize * 2];
+		arraySize *= 2;
+		for(int index = 0; index < arrayCount; index++){
+			newDocOffsets[index] = docOffsets[index];
+		}
+		this.docOffsets = newDocOffsets;
+	}
+	
+	private void expandFrequenyArray(){
+		byte [] newFrequency = new byte[frequencySize * 2];
+		frequencySize *= 2;
+		for(int index = 0; index < frequencyCount; index++){
+			newFrequency[index] = frequency[index];
+		}
+		this.frequency = newFrequency;
+	}
+	
+	private byte[] convertToVB(int intForConversion){
+		byte firstBit1 = (byte)(Integer.parseInt("10000000",2));
+		byte firstBit0 = Byte.parseByte("01111111",2);
+		//byte lastBit1 = Byte.parseByte("00000001",2);
+		byte [] byteArray = BigInteger.valueOf(intForConversion).toByteArray();
+		
+		int [] carryBitArray = new int[1]; 
+		carryBitArray[0] = byteArray[byteArray.length - 1] > 0 ? 0 : 1; 
+		
+		byteArray[byteArray.length - 1] = (byte) (byteArray[byteArray.length - 1] | firstBit1);
+		int j = 1;
+		for(int n = byteArray.length - 2; n >= 0; n--,j++){
+			byte currentByte = byteArray[n];
+			int [] tempCarryBitArray = new int[j + 1];
+			tempCarryBitArray[0] = (currentByte > 0 ? 0 : 1);
+			for(int k = 0; k < j; k++){
+				currentByte = (byte) (currentByte << 1);
+				tempCarryBitArray[k+1] =  (currentByte > 0 ? 0 : 1);
+			}
+			
+			
+			currentByte = (byte) (currentByte & firstBit0);
+//			if(carryBit == 1){
+//				currentByte = (byte) (currentByte | lastBit1);
+//			}
+			String carry = "";
+			for(int b : carryBitArray){
+				carry = carry + b;
+			}
+			byte carryByte = Byte.parseByte(carry, 2);
+			currentByte = (byte)(currentByte | carryByte);
+			byteArray[n] = currentByte;
+			carryBitArray = tempCarryBitArray;
+		}
+		
+		return byteArray;
+	}
+	
+	private LinkedList<Integer> decodeVB(byte [] byteArray){
+		LinkedList<Integer> list = new LinkedList<Integer>();
+		StringBuffer sb = new StringBuffer("");
+		boolean isStopByte = false;
+		for(byte b : byteArray){
+			if(b < 0){
+				isStopByte = true;
+			}else{
+				b = (byte)( b|-128);  //ugly hack to make Integer.toBinaryString return minimum 8 bits.
+			}
+			String str = Integer.toBinaryString(b);
+			
+			str = str.substring(str.length() - 7, str.length());
+			
+			sb.append(str);
+			if(isStopByte){
+				isStopByte = false;
+				//System.out.println(sb.toString());
+				int i = Integer.parseInt(sb.toString(), 2);
+				list.add(i);
+				sb = new StringBuffer("");
+			}
+		}
+		
+		return list;
+	}
+	
+	public void cleanup(){
+		byte [] newDocOffsets = new byte[arrayCount];
+		byte [] newFrequency = new byte[frequencyCount];
+		for(int index = 0; index < arrayCount; index++){
+			newDocOffsets[index] = docOffsets[index];
+		}
+		for(int index = 0; index < frequencyCount; index++){
+			newFrequency[index] = frequency[index];
+		}
 	}
 }

@@ -27,6 +27,8 @@ public class IndexWriter {
 	private String indexDir = ""; 
 	
 	public IndexWriter(String indexDir) {
+		if(indexDir == null)
+			return;
 		if(indexDir.endsWith(File.pathSeparator)){
 			this.indexDir = indexDir;
 		}else{
@@ -52,30 +54,30 @@ public class IndexWriter {
 			docId = Parser.docMap.add(d.getField(FieldNames.FILEID)[0]);
 		}
 		
-	   Thread thread = new Thread(new indexWriterRunnable(this, FieldNames.CONTENT, d, IndexContainer.termIndexer, docId));
-	   thread.start();
-		//List<HashMap<String, IntegerCounter>> termMapArray = IndexWriterUtil.processDocumet(d, FieldNames.CONTENT);
-		//addToIndex(docId, termMapArray, IndexContainer.termIndexer);
-	   Thread thread1 = new Thread(new indexWriterRunnable(this, FieldNames.TITLE, d, IndexContainer.termIndexer, docId));
-	   thread1.start();
-		//termMapArray = IndexWriterUtil.processDocumet(d, FieldNames.TITLE);
-		//addToIndex(docId, termMapArray, IndexContainer.termIndexer);
-	   Thread thread2 = new Thread(new indexWriterRunnable(this, FieldNames.NEWSDATE, d, IndexContainer.termIndexer, docId));
-	   thread2.start();
-		//termMapArray = IndexWriterUtil.processDocumet(d, FieldNames.NEWSDATE);
-		//addToIndex(docId, termMapArray, IndexContainer.termIndexer);
-	   Thread thread3 = new Thread(new indexWriterRunnable(this, FieldNames.PLACE, d, IndexContainer.placeIndexer, docId));
-	   thread3.start();
-		//termMapArray = IndexWriterUtil.processDocumet(d, FieldNames.PLACE);
-		//addToIndex(docId, termMapArray, IndexContainer.placeIndexer);
-	   Thread thread4 = new Thread(new indexWriterRunnable(this, FieldNames.CATEGORY, d, IndexContainer.categoryIndexer, docId));
-	   thread4.start();
-		//termMapArray = IndexWriterUtil.processDocumet(d, FieldNames.CATEGORY);
-		//addToIndex(docId, termMapArray, IndexContainer.categoryIndexer);
-	   Thread thread5 = new Thread(new indexWriterRunnable(this, FieldNames.AUTHOR, d, IndexContainer.authorIndexer, docId));
-	   thread5.start();
-		//termMapArray = IndexWriterUtil.processDocumet(d, FieldNames.AUTHOR);
-		//addToIndex(docId, termMapArray, IndexContainer.authorIndexer);
+//	   Thread thread = new Thread(new indexWriterRunnable(this, FieldNames.CONTENT, d, IndexContainer.termIndexer, docId));
+//	   thread.start();
+		List<HashMap<String, IntegerCounter>> termMapArray = IndexWriterUtil.processDocumet(d, FieldNames.CONTENT);
+		addToIndex(docId, termMapArray, IndexContainer.termIndexer);
+//	   Thread thread1 = new Thread(new indexWriterRunnable(this, FieldNames.TITLE, d, IndexContainer.termIndexer, docId));
+//	   thread1.start();
+		termMapArray = IndexWriterUtil.processDocumet(d, FieldNames.TITLE);
+		addToIndex(docId, termMapArray, IndexContainer.termIndexer);
+//	   Thread thread2 = new Thread(new indexWriterRunnable(this, FieldNames.NEWSDATE, d, IndexContainer.termIndexer, docId));
+//	   thread2.start();
+		termMapArray = IndexWriterUtil.processDocumet(d, FieldNames.NEWSDATE);
+		addToIndex(docId, termMapArray, IndexContainer.termIndexer);
+//	   Thread thread3 = new Thread(new indexWriterRunnable(this, FieldNames.PLACE, d, IndexContainer.placeIndexer, docId));
+//	   thread3.start();
+		termMapArray = IndexWriterUtil.processDocumet(d, FieldNames.PLACE);
+		addToIndex(docId, termMapArray, IndexContainer.placeIndexer);
+//	   Thread thread4 = new Thread(new indexWriterRunnable(this, FieldNames.CATEGORY, d, IndexContainer.categoryIndexer, docId));
+//	   thread4.start();
+		termMapArray = IndexWriterUtil.processDocumet(d, FieldNames.CATEGORY);
+		addToIndex(docId, termMapArray, IndexContainer.categoryIndexer);
+//	   Thread thread5 = new Thread(new indexWriterRunnable(this, FieldNames.AUTHOR, d, IndexContainer.authorIndexer, docId));
+//	   thread5.start();
+		termMapArray = IndexWriterUtil.processDocumet(d, FieldNames.AUTHOR);
+		addToIndex(docId, termMapArray, IndexContainer.authorIndexer);
 		//the part below can be multithreaded
 		
 		
@@ -88,11 +90,10 @@ public class IndexWriter {
 	 */
 	public void close() throws IndexerException {
 		//TODO
-		for(byte indexId = 0; indexId < 27; indexId++){
-			Index index = IndexContainer.termIndexer.getIndex(indexId);
-			index.sort();
-			//call serialization methods here.
-		}
+		IndexContainer.termIndexer.cleanup();
+		IndexContainer.authorIndexer.cleanup();
+		IndexContainer.placeIndexer.cleanup();
+		IndexContainer.categoryIndexer.cleanup();
 		System.out.println(IndexContainer.termIndexer.getSizeOfTermDictionary());
 		System.out.println(IndexContainer.termIndexer.getSize());
 		//System.out.println(IndexContainer.termTermMap.getSortedTerms());
@@ -105,20 +106,17 @@ public class IndexWriter {
 			HashMap<String, IntegerCounter> termMap = termMapArray.get(index);
 			for(String termText : termMap.keySet()){
 				Integer termCountInDoc = termMap.get(termText).getCount();				
-				int termId = indexer.getTermMap().getTermId(termText);
-				Term term = new Term();
-				term.setTermId(termId);
-				term.setNumberOfDocuments(1);
-				term.setTotalCount(termCountInDoc);
-				LinkedList<Posting> postingList = new LinkedList<Posting>();
+//				int termId = indexer.getTermMap().getTermId(termText);
+//				Term term = new Term();
+//				term.setTermId(termId);
+//				term.setNumberOfDocuments(1);
+//				term.setTotalCount(termCountInDoc);
+				
 				Posting posting = new Posting();
 				posting.setDocId(docId);
 				posting.setTermCountInDoc(termCountInDoc);
-				postingList.add(posting);
 				
-				term.setPostingList(postingList);
-				
-				indexer.addTerm(termText, term);
+				indexer.addTerm(termText, posting);
 				
 			}
 		}

@@ -35,7 +35,7 @@ public class TermMap {
 		{
 			termMap.add("");
 		}
-		if(termMap.get(arrayIndex).length() > Integer.MAX_VALUE - term.length())
+		if(Integer.MAX_VALUE - termMap.get(arrayIndex).length() < term.length())
 		{
 			termMap.add(term+',');
 			arrayIndex++;

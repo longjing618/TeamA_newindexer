@@ -41,10 +41,10 @@ public class IndexReader {
 	public IndexReader(String indexDir, IndexType type) {
 		//TODO
 		if(indexDir != null){
-			if(indexDir.endsWith(File.pathSeparator)){
+			if(indexDir.endsWith(File.separator)){
 				this.indexDir = indexDir;
 			}else{
-				this.indexDir = indexDir = File.pathSeparator;
+				this.indexDir = indexDir + File.separator;
 			}
 		}
 		this.type = type;

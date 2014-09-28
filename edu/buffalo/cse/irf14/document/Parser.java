@@ -112,8 +112,8 @@ public class Parser {
 					content.append(current.trim()).append(" ");
 				}
 			}
-			if(content.length() == 0)
-				System.out.println(filename);
+//			if(content.length() == 0)
+//				System.out.println(filename);
 			ret.setField(FieldNames.CONTENT, content.toString());
 
 			ret.setField(FieldNames.DOCID, Integer.toString(docMap.add(filename)));

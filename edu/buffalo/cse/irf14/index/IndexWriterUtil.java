@@ -52,8 +52,8 @@ public class IndexWriterUtil {
 				tokenStream = tokenizer.consume(d.getField(filedName)[0]);
 			Analyzer analyzer = AnalyzerFactory.getInstance()
 					.getAnalyzerForField(filedName, tokenStream);
-			if (analyzer == null)
-				System.out.println(filedName);
+//			if (analyzer == null)
+//				System.out.println(filedName);
 			while (analyzer.increment()) {
 
 			}

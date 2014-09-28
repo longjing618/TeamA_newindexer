@@ -29,10 +29,10 @@ public class IndexWriter {
 	public IndexWriter(String indexDir) {
 		if(indexDir == null)
 			return;
-		if(indexDir.endsWith(File.pathSeparator)){
+		if(indexDir.endsWith(File.separator)){
 			this.indexDir = indexDir;
 		}else{
-			this.indexDir = indexDir = File.pathSeparator;
+			this.indexDir = indexDir + File.separator;
 		}
 	}
 	

@@ -21,5 +21,4 @@ public class AnalyzerNewsDate extends AbstractAnalyzer {
 		return filterList;
 	}
 
-	
 }

@@ -1,5 +1,8 @@
 package edu.buffalo.cse.irf14.analysis.lib;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+
 public class utils
 {
 	public boolean isNumber(String str) {
@@ -74,5 +77,29 @@ public class utils
 		ret += String.format("%02d", Integer.parseInt(m));
 		ret += String.format("%02d", Integer.parseInt(d));
 		return ret;
+	}
+	
+	public boolean dateCheck(String str)
+	{
+		if(str == null)
+			return false;
+		str = trim(str);
+		if(str.length() != 8)
+			return false;
+		
+		SimpleDateFormat dateParser = new SimpleDateFormat("yyyyMMdd");
+		SimpleDateFormat timeParser = new SimpleDateFormat("HH:mm:ss");		
+		dateParser.setLenient(false);
+		timeParser.setLenient(false);
+		try 
+		{
+			dateParser.parse(str);
+			timeParser.parse(str);
+		}
+		catch (ParseException e) 
+		{
+			return false;
+		}
+		return true;
 	}
 }

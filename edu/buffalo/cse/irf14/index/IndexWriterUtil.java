@@ -82,6 +82,7 @@ public class IndexWriterUtil {
 				}
 			}
 		} catch (TokenizerException e) {
+			e.printStackTrace();
 			throw new IndexerException();
 		}
 		return termMapArray;

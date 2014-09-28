@@ -99,40 +99,44 @@ public class TokenFilter_DATE extends TokenFilter{
 		Token token = copy.next();
 		
 		currentTokenString = token.getTermText();
-		
-		int type = getType(currentTokenString);
-		switch(type)
-		{
-		case 1:
-			isDate = true;
-			currentTokenString = handleMonth(currentTokenString);
-			break;
-		case 2:
-		case 3:
-		case 4:
-			isDate = true;
-			currentTokenString = handleYear(currentTokenString,ADBC);
-			break;
-		case 5:
-			isDate = true;
-			currentTokenString = handleTime(currentTokenString); 
-			break;
-		case 6:
-			isDate = true;
-			String[] Arr = currentTokenString.split("-");
-			if(Arr[1].length() == 2)
+		if(util.dateCheck(currentTokenString))
+			token.setIsDate(true);
+		else
+		{	
+			int type = getType(currentTokenString);
+			switch(type)
 			{
-				if(Arr[0].length() == 4)
+			case 1:
+				isDate = true;
+				currentTokenString = handleMonth(currentTokenString);
+				break;
+			case 2:
+			case 3:
+			case 4:
+				isDate = true;
+				currentTokenString = handleYear(currentTokenString,ADBC);
+				break;
+			case 5:
+				isDate = true;
+				currentTokenString = handleTime(currentTokenString); 
+				break;
+			case 6:
+				isDate = true;
+				String[] Arr = currentTokenString.split("-");
+				if(Arr[1].length() == 2)
 				{
-					String str = Arr[0].substring(0, 2) + Arr[1];
-					currentTokenString = util.trim(handleYear(Arr[0],ADBC)) + '-' + handleYear(str,ADBC);
+					if(Arr[0].length() == 4)
+					{
+						String str = Arr[0].substring(0, 2) + Arr[1];
+						currentTokenString = util.trim(handleYear(Arr[0],ADBC)) + '-' + handleYear(str,ADBC);
+					}
 				}
-			}
+				
+			}			
 			
-		}			
-		
-		//Update the current token and move the pointer to the next token
-		token.setTermText(currentTokenString);
+			//Update the current token and move the pointer to the next token
+			token.setTermText(currentTokenString);
+		}
 		return copy.hasNext();
 	}
 	public TokenStream getStream()

@@ -30,5 +30,8 @@ public class TokenFilter_STEMMER extends TokenFilter{
 			stemmer.stem();
 			token.setTermText(stemmer.toString());
 		}
+		if(token.getTermText().trim().equals("")||token.getTermText().matches("\\W+")){
+			copy.remove();
+		}
 	}
 }

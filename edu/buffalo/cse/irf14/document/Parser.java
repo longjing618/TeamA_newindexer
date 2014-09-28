@@ -61,7 +61,7 @@ public class Parser {
 					lines++;
 					if(lines == 1)
 					{
-						ret.setField(FieldNames.TITLE,current);
+						ret.setField(FieldNames.TITLE,current.toLowerCase());
 						continue;
 					}
 					if(lines == 2)

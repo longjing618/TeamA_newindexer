@@ -82,7 +82,7 @@ public class IndexWriter {
 		}
 		System.out.println(IndexContainer.termIndexer.getSizeOfTermDictionary());
 		System.out.println(IndexContainer.termIndexer.getSize());
-		System.out.println(IndexContainer.termTermMap.getSortedTerms());
+		//System.out.println(IndexContainer.termTermMap.getSortedTerms());
 	}
 	
 	private void addToIndex(int docId, List<HashMap<String, IntegerCounter>> termMapArray, Indexer indexer){

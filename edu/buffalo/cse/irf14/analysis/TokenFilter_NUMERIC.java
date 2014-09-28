@@ -10,7 +10,7 @@ public class TokenFilter_NUMERIC extends TokenFilter{
 	//String currentTokenString;
 	//TokenStream copy;
 	Token tempToken;
-	Pattern noDigits = Pattern.compile("\\D*");
+	Pattern noDigits = Pattern.compile("-?\\D*");
 	//private ArrayList<Pattern> patternList;
 	public TokenFilter_NUMERIC(TokenStream stream) {
 		super(stream);
@@ -32,12 +32,16 @@ public class TokenFilter_NUMERIC extends TokenFilter{
 	private void filter(Token token){
 		if(token.isDate())
 			return;
+		for(char ch : token.getTermBuffer()){
+			if(Character.isLetter(ch))
+				return;
+		}
 		Matcher matcher = noDigits.matcher(token.getTermText());
 		if(matcher.matches())
 			return;
-		if(token.getTermText().matches("(\\d*)(\\.\\d+)?")||token.getTermText().matches("(\\d*)(,\\d+)*(\\.\\d+)?")){
+		if(token.getTermText().matches("-?(\\d*)(\\.\\d+)?")||token.getTermText().matches("(\\d*)(,\\d+)*(\\.\\d+)?")){
 			copy.remove();
-		}else if(token.getTermText().matches("(\\d*)(\\.\\d+)?[\\D]+")){
+		}else if(token.getTermText().matches("(\\d*)(\\.\\d+)?[^\\d-]+")){
 			token.setTermText(token.getTermText().replaceFirst("(\\d*)(\\.\\d+)?", ""));
 		}else if(token.getTermText().matches("[\\d\\W]+")){
 			if(token.getTermText().matches(".*\\d-.*")||token.getTermText().matches(".*-\\d.*"))

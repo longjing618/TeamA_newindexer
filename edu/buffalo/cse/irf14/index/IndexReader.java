@@ -6,6 +6,7 @@ package edu.buffalo.cse.irf14.index;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -150,13 +151,30 @@ public class IndexReader {
 	 */
 	public Map<String, Integer> query(String...terms) {
 		//TODO : BONUS ONLY
-		for(String term : terms)
+		List<String> sortedTerms = getTermsSortedByDocFrequency(terms);
+		Map<String, Integer> ret = null;
+		for(String term : sortedTerms)
 		{
+			if(ret == null)
+				ret = new HashMap<String, Integer>();
 			//String is the file id, integer is the doc frequency
 			Map<String, Integer> map = getPostings(term);
-			
+			ret = mapConjuction(ret,map);
 		}
 		return null;
+	}
+	
+	//This function will return the conjunction of two posting list map<String,Integer>
+	public Map<String, Integer> mapConjuction(Map<String,Integer> map1, Map<String, Integer> map2)
+	{
+		//the length of map1 is shorter than map2, so we will traverse map1 here
+		Map<String, Integer> ret = new HashMap<String,Integer>();
+		for (String key : map1.keySet()) 
+		{
+			if(map2.containsKey(key))
+					ret.put(key, map1.get(key));
+		}
+		return ret;
 	}
 	
 	private List<String> getTermsSortedByDocFrequency(String...terms){

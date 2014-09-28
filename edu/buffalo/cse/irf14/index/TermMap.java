@@ -19,12 +19,20 @@ public class TermMap {
 	{
 		for(int i=0;i<termMap.size();i++)
 		{
-			int ret = termMap.get(i).indexOf(term);
+			int ret = termMap.get(i).indexOf(term+',');
 			if(ret > -1)
-			{
-				ret += termMap.get(i).length();
 				return ret;
-			}
+		}
+		return -1;
+	}
+	
+	public int getArrayIndex(String term)
+	{
+		for(int i=0;i<termMap.size();i++)
+		{
+			int ret = termMap.get(i).indexOf(term+',');
+			if(ret > -1)
+				return i;
 		}
 		return -1;
 	}
@@ -87,23 +95,19 @@ public class TermMap {
 		return termId;
 	}
 	
-	public String getTermText(int start, int length)
+	public String getTermText(int index, int start, int length)
 	{
-		String temp;
-		for(int i=0;i<termMap.size();i++)
+		if(index >= termMap.size())
+			return null;
+		
+		String temp = termMap.get(index);
+		if(start < 0 || start > temp.length())
+			return null;
+		else
 		{
-			if(start < 0)
-				break;
-			temp = termMap.get(i);
-			if(start > temp.length())
-				start -= temp.length();
-			else
-			{
-				String ret = temp.substring(start, start+length);
-				return ret;
-			}
+			String ret = temp.substring(start, start+length);
+			return ret;
 		}
-		return null;
 	}
 	
 	public List<String> getSortedTerms(){

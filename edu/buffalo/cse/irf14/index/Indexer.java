@@ -221,7 +221,7 @@ public class Indexer {
 		List<String> topKTerms = new ArrayList<String>(k);
 		int endIndex = globalTopList.size() > k ? k : globalTopList.size();
 		for(int i = 0; i < endIndex; i++){
-			String termText = termMap.getTermText(globalTopList.get(i).getStart(),globalTopList.get(i).getLength());
+			String termText = termMap.getTermText(globalTopList.get(i).getArrayIndex(), globalTopList.get(i).getStart(),globalTopList.get(i).getLength());
 			topKTerms.add(termText);
 		}
 		return topKTerms;

@@ -10,6 +10,7 @@ public class Term implements Serializable{
 	 */
 	private static final long serialVersionUID = 8930369869009602270L;
 	private int termId;
+	private int arrayIndex;
 	private int start;
 	private int length;
 	private int numberOfDocuments;
@@ -86,5 +87,15 @@ public class Term implements Serializable{
 	public int getLength()
 	{
 		return length;
+	}
+	
+	public void setArrayIndex(int index)
+	{
+		arrayIndex = index;
+	}
+	
+	public int getArrayIndex()
+	{
+		return arrayIndex;
 	}
 }

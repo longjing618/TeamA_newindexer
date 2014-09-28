@@ -31,6 +31,10 @@ public class TermMap {
 	
 	public int add(String term) {
 		termId++;
+		if(termMap.size() == 0)
+		{
+			termMap.add("");
+		}
 		if(termMap.get(arrayIndex).length() > Integer.MAX_VALUE - term.length())
 		{
 			termMap.add(term+',');

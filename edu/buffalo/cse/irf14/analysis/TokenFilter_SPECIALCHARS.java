@@ -9,7 +9,7 @@ public class TokenFilter_SPECIALCHARS extends TokenFilter{
 	//String currentTokenString;
 	//TokenStream copy;
 	Token tempToken;
-	Pattern normalWordPattern = Pattern.compile("[a-zA-Z0-9]*");
+	Pattern normalWordPattern = Pattern.compile("[a-zA-Z0-9]+");
 	public TokenFilter_SPECIALCHARS(TokenStream stream) {
 		super(stream);
 		copy = stream;
@@ -56,6 +56,10 @@ public class TokenFilter_SPECIALCHARS extends TokenFilter{
 		Matcher matcher = normalWordPattern.matcher(tokenText);
 		if(matcher.matches())
 			return;
+		if(tokenText.matches("[\\W_]+")){
+			copy.remove();
+			return;
+		}
 		if(tokenText.matches(".*[a-zA-Z]+-[a-zA-Z]+.*")){
 			token.setTermText(tokenText.replaceAll("[\\W_&&[^\\.]]", ""));
 		}else{

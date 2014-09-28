@@ -7,7 +7,7 @@ import java.util.regex.Pattern;
 public class TokenFilter_SYMBOL extends TokenFilter
 {
 	int length;
-	int count = 0;
+	//int count = 0;
 	//String currentTokenString;
 	//TokenStream copy;
 	Token tempToken;
@@ -20,7 +20,7 @@ public class TokenFilter_SYMBOL extends TokenFilter
 		super(stream);
 		copy = stream;
 		length = copy.tokenList.size();
-		normalWord = Pattern.compile("[a-zA-Z0-9]*");
+		normalWord = Pattern.compile("[a-zA-Z0-9]+");
 		contraction = new HashMap<String,String>();
 		contraction.put("ain't", "am not");
 		contraction.put("aren't", "are not");
@@ -275,10 +275,7 @@ public class TokenFilter_SYMBOL extends TokenFilter
 	    currentTokenString = handleHyphen(r,currentTokenString);
 		
 		//Update the current token and move the pointer to the next token
-		tempToken = new Token();
-		tempToken.setTermText(currentTokenString);
-		copy.tokenList.set(count, tempToken);
-		count++;
+		token.setTermText(currentTokenString);
 	}
 	
 	public static String handleHyphen(Pattern r, String currentTokenString)

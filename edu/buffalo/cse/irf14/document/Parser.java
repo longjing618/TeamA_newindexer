@@ -5,6 +5,7 @@ package edu.buffalo.cse.irf14.document;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.regex.Matcher;
@@ -61,6 +62,7 @@ public class Parser {
 					if(lines == 1)
 					{
 						ret.setField(FieldNames.TITLE,current);
+						continue;
 					}
 					if(lines == 2)
 					{
@@ -73,42 +75,58 @@ public class Parser {
 						}
 						else
 						{
-							pattern = "\\s+(.+),\\.?\\s+(.+)\\s+-\\s+(.+)";
+							pattern = "(.*)( \\w{3,}\\s+\\d{1,2}\\s+)(-?.*)";
 							r = Pattern.compile(pattern);
 							m = r.matcher(current);
 							if (m.find())
 							{
-								ret.setField(FieldNames.PLACE, m.group(1));
-								ret.setField(FieldNames.NEWSDATE, m.group(2));
-								content.append(m.group(3).trim()).append(" ");
+								String place = m.group(1).trim();
+								place = place.endsWith(",") ? place.substring(0, place.length()-1) : place;
+								ret.setField(FieldNames.PLACE, place);
+								ret.setField(FieldNames.NEWSDATE, m.group(2).trim());
+								content.append(m.group(3).trim().replaceFirst("- ", "")).append(" ");
 								isplace = true;
+							}else{
+								content.append(current).append(" ");
 							}
 						}
+						continue;
 					}
 					if(lines == 3 && isplace == false)
 					{
-						pattern = "\\s+(.+),\\.?\\s+(.+)\\s+-\\s+(.+)";
+						pattern = "(.*)( \\w{3,}\\s+\\d{1,2}\\s+)(-?.*)";
 						r = Pattern.compile(pattern);
 						m = r.matcher(current);
 						if (m.find())
 						{
-							ret.setField(FieldNames.PLACE, m.group(1));
-							ret.setField(FieldNames.NEWSDATE, m.group(2));
+							String place = m.group(1).trim();
+							place = place.endsWith(",") ? place.substring(0, place.length()-1) : place;
+							ret.setField(FieldNames.PLACE, place);
+							ret.setField(FieldNames.NEWSDATE, m.group(2).trim());
 							content.append(m.group(3).trim()).append(" ");
+						}else{
+							content.append(current).append(" ");
 						}
+						continue;
 					}
 					content.append(current.trim()).append(" ");
 				}
 			}
+			if(content.length() == 0)
+				System.out.println(filename);
 			ret.setField(FieldNames.CONTENT, content.toString());
 
 			ret.setField(FieldNames.DOCID, Integer.toString(docMap.add(filename)));
-		} 
+		} catch(FileNotFoundException e){
+			throw new ParserException();
+		}
 		catch (IOException e) 
 		{
 			e.printStackTrace();
 			throw new ParserException();
-		} 
+		} catch(Exception e){
+			throw new ParserException();
+		}
 		finally 
 		{
 			try 

@@ -43,14 +43,15 @@ public class Indexer {
 	private Index otherIndex = new Index();
 
 	private TermMap termMap;
-	
+	private String fileNameSuffix;
 	public TermMap getTermMap() {
 		return termMap;
 	}
 
-	public Indexer(TermMap termMap) {
+	public Indexer(TermMap termMap, String fileNameSuffix) {
 		super();
 		this.termMap = termMap;
+		this.fileNameSuffix = fileNameSuffix;
 	}
 
 	private Index getIndexBucket(String term) {
@@ -118,16 +119,26 @@ public class Indexer {
 		index.add(term);
 	}
 	
+	public void serializeAll(String indexDir){
+		for(byte b = 0; b < 27; b++){
+			serializeBucket(b, indexDir);
+		}
+	}
+	public void deSerializeAll(String indexDir){
+		for(byte b = 0; b < 27; b++){
+			deSerializeBucket(b, indexDir);
+		}
+	}
 	public void serializeBucket(byte i, String indexDir)
 	{
-		String fileName = indexDir + '/' + i;
+		String fileName = indexDir + i + fileNameSuffix;
 		Index index = getIndex(i);
 		writeDisk(fileName,index.getIndexMap());
 	}
 	
 	public void deSerializeBucket(byte i, String indexDir)
 	{
-		String fileName = indexDir + '/' + i;
+		String fileName = indexDir + i + fileNameSuffix;
 		HashMap<Integer, Term> indexMap = readDisk(fileName);
 		Index index = getIndex(i);
 		index.setIndexMap(indexMap);
@@ -218,5 +229,13 @@ public class Indexer {
 	
 	public int getSizeOfTermDictionary(){
 		return termMap.getSize();
+	}
+	
+	public int getSize(){
+		int count = 0;
+		for(byte b = 0; b < 27; b++){
+			count += getIndex(b).getSize();
+		}
+		return count;
 	}
 }

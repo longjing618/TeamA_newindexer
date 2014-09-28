@@ -5,6 +5,7 @@ package edu.buffalo.cse.irf14.document;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.regex.Matcher;
@@ -107,12 +108,16 @@ public class Parser {
 			ret.setField(FieldNames.CONTENT, content.toString());
 
 			ret.setField(FieldNames.DOCID, Integer.toString(docMap.add(filename)));
-		} 
+		} catch(FileNotFoundException e){
+			throw new ParserException();
+		}
 		catch (IOException e) 
 		{
 			e.printStackTrace();
 			throw new ParserException();
-		} 
+		} catch(Exception e){
+			throw new ParserException();
+		}
 		finally 
 		{
 			try 

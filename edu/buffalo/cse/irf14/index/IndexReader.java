@@ -172,7 +172,10 @@ public class IndexReader {
 				ret = mapConjuction(ret,map);
 			}
 		}
-		ret = sortHashMap(ret);
+		if(ret.size() != 0)
+			ret = sortHashMap(ret);
+		else
+			ret = null;
 		return ret;
 	}
 	
@@ -181,6 +184,8 @@ public class IndexReader {
 	{
 		//the length of map1 is shorter than map2, so we will traverse map1 here
 		Map<String, Integer> ret = new HashMap<String,Integer>();
+		if(map2 == null)
+			return map1;
 		for (String key : map1.keySet()) 
 		{
 			if(map2.containsKey(key))

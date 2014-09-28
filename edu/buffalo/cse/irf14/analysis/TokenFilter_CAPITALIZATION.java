@@ -89,7 +89,7 @@ public class TokenFilter_CAPITALIZATION extends TokenFilter{
 				break;
 		}
 		Token token = copy.tokenIterator.previous();
-		if(token.isStartOfSentence()){
+		if(token.isStartOfSentence()&&copy.tokenIterator.hasPrevious()){
 			token = copy.tokenIterator.previous();
 			if(isStentenceAllCaps)
 				token.setTermText(token.getTermText().toLowerCase());

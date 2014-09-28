@@ -86,6 +86,8 @@ public class Parser {
 								ret.setField(FieldNames.NEWSDATE, m.group(2).trim());
 								content.append(m.group(3).trim().replaceFirst("- ", "")).append(" ");
 								isplace = true;
+							}else{
+								content.append(current).append(" ");
 							}
 						}
 						continue;
@@ -102,12 +104,16 @@ public class Parser {
 							ret.setField(FieldNames.PLACE, place);
 							ret.setField(FieldNames.NEWSDATE, m.group(2).trim());
 							content.append(m.group(3).trim()).append(" ");
+						}else{
+							content.append(current).append(" ");
 						}
 						continue;
 					}
 					content.append(current.trim()).append(" ");
 				}
 			}
+			if(content.length() == 0)
+				System.out.println(filename);
 			ret.setField(FieldNames.CONTENT, content.toString());
 
 			ret.setField(FieldNames.DOCID, Integer.toString(docMap.add(filename)));

@@ -146,6 +146,8 @@ public class TokenFilter_CAPITALIZATION extends TokenFilter{
 	
 	private boolean isAllCaps(char [] str){
 		for(char ch : str){
+			if(!Character.isLetter(ch))
+				continue;
 			if(Character.isLowerCase(ch))
 				return false;
 		}

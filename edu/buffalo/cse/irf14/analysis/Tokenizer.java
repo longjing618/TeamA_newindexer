@@ -40,9 +40,10 @@ public class Tokenizer {
 	 */
 	public TokenStream consume(String str) throws TokenizerException {
 		//TODO : YOU MUST IMPLEMENT THIS METHOD
-		str = str.trim();
+		
 		if(str == null || str.equals(""))
 			throw new TokenizerException();
+		str = str.trim();
 		TokenStream tokenStream = new TokenStream();
 		if(str != null && str.length() > 0)
 			tokenStream.init(str, delim);

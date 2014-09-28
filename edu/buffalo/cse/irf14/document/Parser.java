@@ -73,26 +73,30 @@ public class Parser {
 						}
 						else
 						{
-							pattern = "([\\w,\\s]+,)(\\s[\\w\\s]+)(-?.*)";
+							pattern = "(.*)( \\w{3,}\\s+\\d{1,2}\\s+)(-?.*)";
 							r = Pattern.compile(pattern);
 							m = r.matcher(current);
 							if (m.find())
 							{
-								ret.setField(FieldNames.PLACE, m.group(1).trim());
+								String place = m.group(1).trim();
+								place = place.endsWith(",") ? place.substring(0, place.length()-1) : place;
+								ret.setField(FieldNames.PLACE, place);
 								ret.setField(FieldNames.NEWSDATE, m.group(2).trim());
-								content.append(m.group(3).trim()).append(" ");
+								content.append(m.group(3).trim().replaceFirst("- ", "")).append(" ");
 								isplace = true;
 							}
 						}
 					}
 					if(lines == 3 && isplace == false)
 					{
-						pattern = "([\\w,\\s]+,)(\\s[\\w\\s]+)(-?.*)";
+						pattern = "(.*)( \\w{3,}\\s+\\d{1,2}\\s+)(-?.*)";
 						r = Pattern.compile(pattern);
 						m = r.matcher(current);
 						if (m.find())
 						{
-							ret.setField(FieldNames.PLACE, m.group(1).trim());
+							String place = m.group(1).trim();
+							place = place.endsWith(",") ? place.substring(0, place.length()-1) : place;
+							ret.setField(FieldNames.PLACE, place);
 							ret.setField(FieldNames.NEWSDATE, m.group(2).trim());
 							content.append(m.group(3).trim()).append(" ");
 						}

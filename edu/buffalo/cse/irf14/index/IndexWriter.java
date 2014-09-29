@@ -52,12 +52,8 @@ public class IndexWriter {
 	public void addDocument(Document d) throws IndexerException {
 		// TODO : YOU MUST IMPLEMENT THIS
 		try {
-			int docId;
-			if (d.getField(FieldNames.DOCID) != null) {
-				docId = Integer.parseInt(d.getField(FieldNames.DOCID)[0]);
-			} else {
-				docId = docMap.add(d.getField(FieldNames.FILEID)[0]);
-			}
+			int docId = docMap.add(d.getField(FieldNames.FILEID)[0]);
+			
 
 			List<HashMap<String, IntegerCounter>> termMapArray = IndexWriterUtil
 					.processDocumet(d, FieldNames.CONTENT);

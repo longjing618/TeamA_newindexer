@@ -225,12 +225,22 @@ public class TokenFilter_SYMBOL extends TokenFilter
 	
 	private void removeSymbol(Token token){
 		if(isEndOfSentence){
-			token.setEndOfSentence(true);
+			token.setStartOfSentence(true);
 			isEndOfSentence = false;
 		}
+		
 		String currentTokenString = token.getTermText();
-		Matcher matcher = normalWord.matcher(currentTokenString);
-		if(matcher.matches())
+//		Matcher matcher = normalWord.matcher(currentTokenString);
+//		if(matcher.matches())
+//			return;
+		boolean shouldProcess = false;
+		for(char ch : token.getTermBuffer()){
+			if(!Character.isLetterOrDigit(ch)){
+				shouldProcess = true;
+				break;
+			}
+		}
+		if(!shouldProcess)
 			return;
 		//Handle contraction
 		if(contraction.containsKey(currentTokenString))

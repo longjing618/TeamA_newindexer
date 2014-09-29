@@ -53,8 +53,17 @@ public class TokenFilter_SPECIALCHARS extends TokenFilter{
 //		}
 //		if(tokenText.matches("[a-zA-Z0-9]*"))
 //			return;
-		Matcher matcher = normalWordPattern.matcher(tokenText);
-		if(matcher.matches())
+//		Matcher matcher = normalWordPattern.matcher(tokenText);
+//		if(matcher.matches())
+//			return;
+		boolean shouldProcess = false;
+		for(char ch : token.getTermBuffer()){
+			if(!Character.isLetterOrDigit(ch)){
+				shouldProcess = true;
+				break;
+			}
+		}
+		if(!shouldProcess)
 			return;
 		if(tokenText.matches("[\\W_]+")){
 			copy.remove();

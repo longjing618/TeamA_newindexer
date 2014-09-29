@@ -1,10 +1,15 @@
 package edu.buffalo.cse.irf14.document;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Set;
 
-public class DocumentMap
+public class DocumentMap implements Serializable
 {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 5212341231705427422L;
 	private int docId = 0;
 	private HashMap<Integer, String> docMap;
 	public DocumentMap()

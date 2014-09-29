@@ -22,7 +22,7 @@ public class Parser {
 	 * @return The parsed and fully loaded Document object
 	 * @throws ParserException In case any error occurs during parsing
 	 */
-	public static DocumentMap docMap = new DocumentMap();
+	//public static DocumentMap docMap = new DocumentMap();
 	public static Document parse(String filename) throws ParserException {
 		// TODO YOU MUST IMPLEMENT THIS
 		BufferedReader br = null;
@@ -116,7 +116,7 @@ public class Parser {
 //				System.out.println(filename);
 			ret.setField(FieldNames.CONTENT, content.toString());
 
-			ret.setField(FieldNames.DOCID, Integer.toString(docMap.add(filename)));
+			//ret.setField(FieldNames.DOCID, Integer.toString(docMap.add(filename)));
 		} catch(FileNotFoundException e){
 			throw new ParserException();
 		}

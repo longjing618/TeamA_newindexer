@@ -20,8 +20,10 @@ import edu.buffalo.cse.irf14.analysis.Token;
 import edu.buffalo.cse.irf14.analysis.TokenStream;
 import edu.buffalo.cse.irf14.analysis.Tokenizer;
 import edu.buffalo.cse.irf14.analysis.TokenizerException;
+import edu.buffalo.cse.irf14.document.DocumentMap;
 import edu.buffalo.cse.irf14.document.FieldNames;
 import edu.buffalo.cse.irf14.document.Parser;
+import edu.buffalo.cse.irf14.document.SerializeUtil;
 
 /**
  * @author nikhillo
@@ -76,7 +78,9 @@ public class IndexReader {
 	 */
 	public int getTotalValueTerms() {
 		//TODO: YOU MUST IMPLEMENT THIS
-		return Parser.docMap.getSize();
+		SerializeUtil su = new SerializeUtil();
+		DocumentMap docMap = su.deSerializeDocMap(indexDir);
+		return docMap.getSize();
 	}
 	
 	/**
@@ -106,6 +110,8 @@ public class IndexReader {
 			while(analyzer.increment()){
 				
 			}
+			SerializeUtil su = new SerializeUtil();
+			DocumentMap docMap = su.deSerializeDocMap(indexDir);
 			tokenStream.reset();
 			while(tokenStream.hasNext()){
 				Token token = tokenStream.next();
@@ -117,7 +123,7 @@ public class IndexReader {
 					postingMap = new LinkedHashMap<String, Integer>();
 				}
 				for(Posting posting: postingList){
-					String fileId = Parser.docMap.getFileId(posting.getDocId());
+					String fileId = docMap.getFileId(posting.getDocId());
 					postingMap.put(fileId, posting.getTermCountInDoc());
 				}
 				

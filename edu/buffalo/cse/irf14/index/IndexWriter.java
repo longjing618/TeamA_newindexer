@@ -9,8 +9,10 @@ import java.util.List;
 
 import edu.buffalo.cse.irf14.analysis.TokenizerException;
 import edu.buffalo.cse.irf14.document.Document;
+import edu.buffalo.cse.irf14.document.DocumentMap;
 import edu.buffalo.cse.irf14.document.FieldNames;
 import edu.buffalo.cse.irf14.document.Parser;
+import edu.buffalo.cse.irf14.document.SerializeUtil;
 
 /**
  * @author nikhillo Class responsible for writing indexes to disk
@@ -24,7 +26,7 @@ public class IndexWriter {
 	 */
 
 	private String indexDir = "";
-
+	DocumentMap docMap = new DocumentMap();
 	public IndexWriter(String indexDir) {
 		if (indexDir == null)
 			return;
@@ -54,7 +56,7 @@ public class IndexWriter {
 			if (d.getField(FieldNames.DOCID) != null) {
 				docId = Integer.parseInt(d.getField(FieldNames.DOCID)[0]);
 			} else {
-				docId = Parser.docMap.add(d.getField(FieldNames.FILEID)[0]);
+				docId = docMap.add(d.getField(FieldNames.FILEID)[0]);
 			}
 
 			List<HashMap<String, IntegerCounter>> termMapArray = IndexWriterUtil
@@ -104,8 +106,10 @@ public class IndexWriter {
 		IndexContainer.authorIndexer.serializeAll(indexDir);
 		IndexContainer.placeIndexer.serializeAll(indexDir);
 		IndexContainer.categoryIndexer.serializeAll(indexDir);
+		SerializeUtil su = new SerializeUtil();
+		su.serializeDocMap(indexDir, docMap);
 		// System.out.println(IndexContainer.termIndexer.getSizeOfTermDictionary());
-		//System.out.println(IndexContainer.termIndexer.getSize());
+		System.out.println(IndexContainer.termIndexer.getSize());
 		// System.out.println(IndexContainer.termTermMap.getSortedTerms());
 	}
 

@@ -41,7 +41,7 @@ public class Runner {
 		
 		Document d = null;
 		IndexWriter writer = new IndexWriter(indexDir);
-		//long startTime = System.currentTimeMillis();
+		long startTime = System.currentTimeMillis();
 		//long count = 0;
 		try {
 			for (String cat : catDirectories) {
@@ -70,8 +70,8 @@ public class Runner {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		//long endTime = System.currentTimeMillis();
-		//System.out.println("Parse time: " + ((endTime-startTime)/1000.0));
+		long endTime = System.currentTimeMillis();
+		System.out.println("Parse time: " + ((endTime-startTime)/1000.0));
 		//System.out.println(count);
 		//System.out.println(IndexContainer.placeIndexer);
 	}

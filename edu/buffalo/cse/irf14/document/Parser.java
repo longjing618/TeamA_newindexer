@@ -61,7 +61,7 @@ public class Parser {
 					lines++;
 					if(lines == 1)
 					{
-						ret.setField(FieldNames.TITLE,current.toLowerCase());
+						ret.setField(FieldNames.TITLE,current);
 						continue;
 					}
 					if(lines == 2)
@@ -69,7 +69,7 @@ public class Parser {
 						m = r.matcher(current);
 						if (m.find())
 						{
-							ret.setField(FieldNames.AUTHOR,m.group(2).split(" and "));
+							ret.setField(FieldNames.AUTHOR,m.group(2));
 							if(m.group(4) != null)
 								ret.setField(FieldNames.AUTHORORG, m.group(4));
 						}

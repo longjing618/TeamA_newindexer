@@ -194,6 +194,7 @@ public class Term implements Serializable{
 			
 			str = str.substring(str.length() - 7, str.length());
 			
+			
 			sb.append(str);
 			if(isStopByte){
 				isStopByte = false;
@@ -216,5 +217,7 @@ public class Term implements Serializable{
 		for(int index = 0; index < frequencyCount; index++){
 			newFrequency[index] = frequency[index];
 		}
+		arraySize = arrayCount;
+		frequencySize = frequencyCount;
 	}
 }

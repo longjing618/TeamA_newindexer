@@ -107,6 +107,10 @@ public class TokenFilter_CAPITALIZATION extends TokenFilter{
 	}
 	
 	private void skipToBeginingOfNextSentance(boolean convertToLowerCase){
+		Token currentToken = copy.getCurrent();
+		if(currentToken != null){
+			currentToken.setTermText(currentToken.getTermText().toLowerCase());
+		}
 		while(copy.hasNext()){
 			Token token = copy.next();
 			if(token.isStartOfSentence())

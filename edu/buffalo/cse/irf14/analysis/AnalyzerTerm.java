@@ -16,8 +16,8 @@ public class AnalyzerTerm extends AbstractAnalyzer {
 	protected List<TokenFilter> getFilterList() {
 		// TODO Auto-generated method stub
 		ArrayList<TokenFilter> filterList = new ArrayList<TokenFilter>();
-		filterList.add(TokenFilterFactory.getInstance().getFilterByType(TokenFilterType.SYMBOL, stream));
 		filterList.add(TokenFilterFactory.getInstance().getFilterByType(TokenFilterType.ACCENT, stream));
+		filterList.add(TokenFilterFactory.getInstance().getFilterByType(TokenFilterType.SYMBOL, stream));
 		filterList.add(TokenFilterFactory.getInstance().getFilterByType(TokenFilterType.SPECIALCHARS, stream));
 		filterList.add(TokenFilterFactory.getInstance().getFilterByType(TokenFilterType.DATE, stream));
 		filterList.add(TokenFilterFactory.getInstance().getFilterByType(TokenFilterType.STOPWORD, stream));

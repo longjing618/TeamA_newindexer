@@ -29,26 +29,26 @@ public class IndexWriterUtil {
 				return null;
 			Tokenizer tokenizer = new Tokenizer();
 			TokenStream tokenStream;
-			if (filedName == FieldNames.AUTHOR) {
-
-				TokenStream authorTokenStream = null;
-				for (String str : d.getField(filedName)) {
-					TokenStream tempTokenStream = tokenizer.consume(str);
-					Token first = tempTokenStream.next();
-					while (tempTokenStream.hasNext()) {
-						Token temp = tempTokenStream.next();
-						first.mergeTokens(temp);
-						tempTokenStream.remove();
-					}
-					if (authorTokenStream == null) {
-						authorTokenStream = tempTokenStream;
-					} else {
-						authorTokenStream.append(tempTokenStream);
-					}
-				}
-
-				tokenStream = authorTokenStream;
-			} else
+//			if (filedName == FieldNames.AUTHOR) {
+//
+//				TokenStream authorTokenStream = null;
+//				for (String str : d.getField(filedName)) {
+//					TokenStream tempTokenStream = tokenizer.consume(str);
+//					Token first = tempTokenStream.next();
+//					while (tempTokenStream.hasNext()) {
+//						Token temp = tempTokenStream.next();
+//						first.mergeTokens(temp);
+//						tempTokenStream.remove();
+//					}
+//					if (authorTokenStream == null) {
+//						authorTokenStream = tempTokenStream;
+//					} else {
+//						authorTokenStream.append(tempTokenStream);
+//					}
+//				}
+//
+//				tokenStream = authorTokenStream;
+//			} else
 				tokenStream = tokenizer.consume(d.getField(filedName)[0]);
 			Analyzer analyzer = AnalyzerFactory.getInstance()
 					.getAnalyzerForField(filedName, tokenStream);

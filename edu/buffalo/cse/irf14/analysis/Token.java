@@ -114,7 +114,7 @@ public class Token {
 	}
 
 	public boolean isEndOfSentence() {
-		return isEndOfSentence;
+		return isEndOfSentence||termText.endsWith(".")||termText.endsWith("?")||termText.endsWith("!");
 	}
 
 	public void setEndOfSentence(boolean isEndOfSentence) {

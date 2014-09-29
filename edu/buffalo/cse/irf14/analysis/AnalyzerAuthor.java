@@ -16,16 +16,17 @@ public class AnalyzerAuthor extends AbstractAnalyzer {
 	protected List<TokenFilter> getFilterList() {
 		// TODO Auto-generated method stub
 		stream.reset();
-		while(stream.hasNext()){
-			Token token = stream.next();
-			token.setTermText(token.getTermText().toLowerCase());
-		}
-		stream.reset();
+//		while(stream.hasNext()){
+//			Token token = stream.next();
+//			token.setTermText(token.getTermText().toLowerCase());
+//		}
+//		stream.reset();
 		ArrayList<TokenFilter> filterList = new ArrayList<TokenFilter>();
 		//filterList.add(TokenFilterFactory.getInstance().getFilterByType(TokenFilterType.SYMBOL, stream));
 		//filterList.add(TokenFilterFactory.getInstance().getFilterByType(TokenFilterType.ACCENT, stream));
 		filterList.add(TokenFilterFactory.getInstance().getFilterByType(TokenFilterType.STOPWORD, stream));
-		filterList.add(TokenFilterFactory.getInstance().getFilterByType(TokenFilterType.SPECIALCHARS, stream));
+		filterList.add(TokenFilterFactory.getInstance().getFilterByType(TokenFilterType.CAPITALIZATION, stream));
+		filterList.add(TokenFilterFactory.getInstance().getFilterByType(TokenFilterType.SPECIALCHARS, stream));		
 		
 		return filterList;
 	}

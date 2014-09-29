@@ -50,7 +50,7 @@ public class TokenFilter_CAPITALIZATION extends TokenFilter{
 			if(token.getTermBuffer().length > 0){
 				if(isAllCaps(token.getTermBuffer())&&wholeSentenceInCaps){
 					token.setTermText(token.getTermText().toLowerCase());
-				}else if(Character.isUpperCase(token.getTermBuffer()[0])){
+				}else if(Character.isUpperCase(token.getTermBuffer()[0])||isAllCaps(token.getTermBuffer())){
 					mergeFisrtLetterCapital(token);
 				}
 			}
@@ -63,7 +63,7 @@ public class TokenFilter_CAPITALIZATION extends TokenFilter{
 		while(copy.hasNext()){
 			Token token = copy.next();
 			if(!token.getTermText().trim().equals("")){
-			if(!Character.isUpperCase(token.getTermBuffer()[0]) || token.isStartOfSentence()){
+			if(!(Character.isUpperCase(token.getTermBuffer()[0])||isAllCaps(token.getTermBuffer())) || token.isStartOfSentence()){
 				copy.tokenIterator.previous();
 				copy.tokenIterator.previous();
 				copy.tokenIterator.next();

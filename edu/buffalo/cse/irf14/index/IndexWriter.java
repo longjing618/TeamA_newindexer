@@ -105,7 +105,7 @@ public class IndexWriter {
 		SerializeUtil su = new SerializeUtil();
 		su.serializeDocMap(indexDir, docMap);
 		// System.out.println(IndexContainer.termIndexer.getSizeOfTermDictionary());
-		System.out.println(IndexContainer.termIndexer.getSize());
+		//System.out.println(IndexContainer.termIndexer.getSize());
 		// System.out.println(IndexContainer.termTermMap.getSortedTerms());
 	}
 

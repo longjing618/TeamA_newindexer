@@ -1,9 +1,8 @@
 package edu.buffalo.cse.irf14.query;
 
-<<<<<<< HEAD
-=======
 import java.util.HashSet;
->>>>>>> a8964f1269cfb04183863cbb8db47767c001b432
+import java.util.Stack;
+import java.util.StringTokenizer;
 
 /**
  * Class that represents a parsed query
@@ -22,7 +21,32 @@ public class Query {
 	 */
 	public String toString() {
 		//TODO: YOU MUST IMPLEMENT THIS
-		return null;
+		
+		String ret = "{";
+		String token = "";
+		StringTokenizer st = new StringTokenizer(querypostfix);
+		String left = "";
+		String right = "";
+		Stack<String> s = new Stack<String>();
+		
+		while (st.hasMoreTokens())
+		{
+			token = st.nextToken();
+			if(QueryUtils.isOperator(token))
+			{
+				right = s.pop();
+				left = s.pop();
+				s.push(left + QueryUtils.space +token + QueryUtils.space + right);
+			}
+			else
+			{
+				if(token.indexOf(QueryUtils.colon) == -1)
+					token = QueryUtils.TermPrefix + token;
+				s.push(token);
+			}
+		}
+		ret += s.pop() + "}";
+		return ret;
 	}
 	
 	//Bikram doing this

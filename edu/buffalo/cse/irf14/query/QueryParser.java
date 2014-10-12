@@ -32,6 +32,10 @@ public class QueryParser {
 		while (st.hasMoreTokens())
 		{   
 			 token = st.nextToken();
+			 
+			 if(token.equals(QueryUtils.NOT))
+				 token += QueryUtils.space + st.nextToken();
+			 
 			 StringBuilder sbToken = new StringBuilder(token);
 
 			 if(QueryUtils.isOperator(token) == false)

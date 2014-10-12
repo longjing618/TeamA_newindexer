@@ -4,6 +4,7 @@ public class QueryUtils
 {
 	static String AND = "AND";
 	static String OR = "OR";
+	static String NOT = "NOT";
 	static String space = " ";
 	static String colon = ":";
 	static String TermPrefix = "Term:";
@@ -44,5 +45,12 @@ public class QueryUtils
 				ret++;
 		str.delete(length-ret, length);
 		return ret;
+	}
+	
+	public static String fillmissing(String str)
+	{
+		if(str.indexOf(colon) == -1)
+			str = TermPrefix + str;
+		return str;
 	}
 }

@@ -43,8 +43,15 @@ public class Query {
 			}
 			else
 			{
-				if(token.indexOf(QueryUtils.colon) == -1)
-					token = QueryUtils.TermPrefix + token;
+				if(token.equals(QueryUtils.NOT))
+				{
+					if(st.hasMoreTokens())
+					{
+						token = st.nextToken();
+						token = QueryUtils.fillmissing(token);
+						token = QueryUtils.nleft + QueryUtils.space + token + QueryUtils.space + QueryUtils.nright;
+					}
+				}
 				s.push(token);
 			}
 		}

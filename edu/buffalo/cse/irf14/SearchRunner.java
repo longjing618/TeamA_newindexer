@@ -5,6 +5,9 @@ import java.io.PrintStream;
 import java.util.List;
 import java.util.Map;
 
+import edu.buffalo.cse.irf14.query.Query;
+import edu.buffalo.cse.irf14.query.QueryParser;
+
 /**
  * Main class to run the searcher.
  * As before implement all TODO methods unless marked for bonus
@@ -33,6 +36,8 @@ public class SearchRunner {
 	 */
 	public void query(String userQuery, ScoringModel model) {
 		//TODO: IMPLEMENT THIS METHOD
+		Query query = QueryParser.parse(userQuery, "OR");
+		
 	}
 	
 	/**

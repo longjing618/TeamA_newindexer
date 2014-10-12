@@ -3,7 +3,7 @@ package edu.buffalo.cse.irf14.analysis;
 import java.util.List;
 
 public abstract class AbstractAnalyzer implements Analyzer {
-
+	protected TokenStream stream;
 	@Override
 	public boolean increment() throws TokenizerException {
 		// TODO Auto-generated method stub
@@ -22,7 +22,7 @@ public abstract class AbstractAnalyzer implements Analyzer {
 	@Override
 	public TokenStream getStream() {
 		// TODO Auto-generated method stub
-		return null;
+		return stream;
 	}
 	
 	protected abstract List<TokenFilter> getFilterList();

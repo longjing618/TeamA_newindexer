@@ -94,6 +94,7 @@ public class Term implements Serializable{
 			posting.setDocId(docId);
 			posting.setTermCountInDoc(termFreq);
 			postingList.add(posting);
+			currentDocId = docId;
 		}
 		
 		return postingList;
@@ -103,6 +104,7 @@ public class Term implements Serializable{
 		numberOfDocuments++;
 		totalCount += posting.getTermCountInDoc();
 		int currentDocOffset = posting.getDocId() - maxDocIdInPoting;
+		maxDocIdInPoting = posting.getDocId();
 		byte [] currentDocOffsetVB = convertToVB(currentDocOffset);
 		if(arrayCount + currentDocOffsetVB.length >= arraySize){
 			expandPostingArray();

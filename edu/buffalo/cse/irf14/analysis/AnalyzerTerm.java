@@ -5,7 +5,7 @@ import java.util.List;
 
 public class AnalyzerTerm extends AbstractAnalyzer {
 
-	private TokenStream stream;
+	//private TokenStream stream;
 	
 	public AnalyzerTerm(TokenStream stream) {
 		super();

@@ -24,6 +24,8 @@ public class CapitalizationRuleTest extends TFRuleBaseTest {
 					assertArrayEquals(new String[] {"the", "city", "San Francisco", "is",
 							"in", "California." },
 							runTest(TokenFilterType.CAPITALIZATION, "The city San Francisco is in California."));
+					assertArrayEquals(new String[] {"the", "BASE City." },
+							runTest(TokenFilterType.CAPITALIZATION, "The BASE City."));
 					assertArrayEquals(
 							new String[] {"some", "bodily", "fluids,", "such",
 									"as", "saliva", "and", "tears,", "do", "not",

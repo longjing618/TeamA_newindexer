@@ -5,7 +5,7 @@ import java.util.List;
 
 public class AnalyzerNewsDate extends AbstractAnalyzer {
 
-	private TokenStream stream;
+	//private TokenStream stream;
 	
 	public AnalyzerNewsDate(TokenStream stream) {
 		super();

@@ -7,21 +7,11 @@ public class QueryUtils
 	static String space = " ";
 	static String colon = ":";
 	static String TermPrefix = "Term:";
-	
-	public String getAnd()
-	{
-		return AND;
-	}
-	
-	public String getOr()
-	{
-		return OR;
-	}
-	
-	public String getSpace()
-	{
-		return space;
-	}
+	static String aleft = "[";
+	static String aright = "]";
+	static String nleft = "<";
+	static String nright = ">";
+
 	
 	public static boolean isOperator(String operator)
 	{

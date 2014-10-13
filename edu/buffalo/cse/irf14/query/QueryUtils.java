@@ -15,7 +15,9 @@ public class QueryUtils
 	static String nleft = "<";
 	static String nright = ">";
 	static String quote = "\"";
-
+	static String rleft = "(";
+	static String rright = ")";
+	static String conbine = colon + "\\" + rleft;
 	
 	public static boolean isOperator(String operator)
 	{
@@ -33,7 +35,10 @@ public class QueryUtils
 		for(int i=0;i<length;i++)
 			if(str.charAt(i) == '(')
 				ret++;
-		str.delete(0, ret);
+			else
+				break;
+		if(ret > 0)
+			str.delete(0, ret);
 		return ret;
 	}
 	
@@ -64,15 +69,37 @@ public class QueryUtils
 	    boolean lock = false;
 	    boolean t = false;
 	    String temp;
+	    String indexName = "";
+	    boolean needAddIndexName = false;
+	    String[] tsa = {""};
 	    while (st.hasMoreTokens())
 	    {
 	    	temp = st.nextToken();
-
+	    	if(temp.equals(NOT))
+	    		if(st.hasMoreTokens())
+	    			temp += space + st.nextToken() + space;
+	    	
+	    	//handle index name with bracket
+	    	if(temp.indexOf(":(") != -1)
+	    	{//System.out.print("555555555");
+	    		tsa = temp.split(":\\(");
+	    		indexName = tsa[0];
+	    		temp = rleft + indexName + colon + tsa[1];
+	    		needAddIndexName = true;
+	    		ret += temp + space;
+	    		t = true;
+	    		continue;
+	    	}
+	    	
 	    	if(QueryUtils.isOperator(temp) == false)
 	    	{
 	    		if(t && lock == false) // there is a term in front
-	    			ret += AND + space;
+	    			ret += defaultOperator + space;
+	    		if(needAddIndexName)
+	    			ret += indexName + colon;
 	    		ret += temp + space;
+	    		if(needAddIndexName && temp.charAt(temp.length()-1) == ')')
+	    			needAddIndexName = false;
 	    		t = true;
 	    	}
 	    	else
@@ -86,5 +113,4 @@ public class QueryUtils
 	    		lock = false;
 	    }
 	    return ret;
-	}
 }

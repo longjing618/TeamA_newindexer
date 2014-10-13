@@ -47,6 +47,19 @@ public class Query {
 		while (st.hasMoreTokens())
 		{
 			token = st.nextToken();
+			
+			if(token.indexOf(QueryUtils.quote) != -1)
+			{
+				String temp = "";
+				while(st.hasMoreTokens())
+				{
+					temp = st.nextToken();
+					token += QueryUtils.space + temp;
+					if(temp.indexOf(QueryUtils.quote) != -1)
+						break;
+				}
+			}
+			
 			if(QueryUtils.isOperator(token))
 			{
 				right = s.pop();

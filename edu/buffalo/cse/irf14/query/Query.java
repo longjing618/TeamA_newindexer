@@ -52,6 +52,7 @@ public class Query {
 						token = QueryUtils.nleft + QueryUtils.space + token + QueryUtils.space + QueryUtils.nright;
 					}
 				}
+				token = QueryUtils.fillmissing(token);
 				s.push(token);
 			}
 		}

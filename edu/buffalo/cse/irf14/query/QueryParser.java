@@ -17,7 +17,7 @@ public class QueryParser {
 	 * @param defaultOperator : The default operator to use, one amongst (AND|OR)
 	 * @return Query object if successfully parsed, null otherwise
 	 */
-	public static Query parse(String userQuery, String defaultOperator) {
+	public static Query parse(String userQuery, String defaultOperator) throws QueryParserException{
 		//TODO: YOU MUST IMPLEMENT THIS METHOD
 		
 		if(userQuery == null || userQuery.trim().equals(""))
@@ -25,6 +25,7 @@ public class QueryParser {
 		
 		String ret = new String();
 		Stack<String> operatorStack = new Stack<String>();
+		userQuery = QueryUtils.preProcess(userQuery,defaultOperator);
 		StringTokenizer st = new StringTokenizer(userQuery);
 		String token;
 		int operCount = 0;
@@ -34,7 +35,20 @@ public class QueryParser {
 			 token = st.nextToken();
 			 
 			 if(token.equals(QueryUtils.NOT))
-				 token += QueryUtils.space + st.nextToken();
+				 if(st.hasMoreTokens())
+					 token += QueryUtils.space + st.nextToken();
+			 
+			 if(token.indexOf(QueryUtils.quote) != -1)
+			 {
+				 String temp = "";
+				 while(st.hasMoreTokens())
+				 {
+					 temp = st.nextToken();
+					 token += QueryUtils.space + temp;
+					 if(temp.indexOf(QueryUtils.quote) != -1)
+						 break;
+				 }
+			 }
 			 
 			 StringBuilder sbToken = new StringBuilder(token);
 

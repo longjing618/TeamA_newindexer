@@ -1,5 +1,7 @@
 package edu.buffalo.cse.irf14.query;
 
+import java.util.StringTokenizer;
+
 public class QueryUtils 
 {
 	static String AND = "AND";
@@ -12,6 +14,7 @@ public class QueryUtils
 	static String aright = "]";
 	static String nleft = "<";
 	static String nright = ">";
+	static String quote = "\"";
 
 	
 	public static boolean isOperator(String operator)
@@ -52,5 +55,36 @@ public class QueryUtils
 		if(str.indexOf(colon) == -1)
 			str = TermPrefix + str;
 		return str;
+	}
+	
+	public static String preProcess(String str, String defaultOperator)
+	{
+		String ret = "";
+		StringTokenizer st = new StringTokenizer(str);
+	    boolean lock = false;
+	    boolean t = false;
+	    String temp;
+	    while (st.hasMoreTokens())
+	    {
+	    	temp = st.nextToken();
+
+	    	if(QueryUtils.isOperator(temp) == false)
+	    	{
+	    		if(t && lock == false) // there is a term in front
+	    			ret += AND + space;
+	    		ret += temp + space;
+	    		t = true;
+	    	}
+	    	else
+	    	{
+	    		ret += temp + space;
+	    		t = false;
+	    	}
+	    	if(temp.matches("\\(*\".+"))
+	    		lock = true;
+	    	if(temp.matches(".+\"\\)*"))
+	    		lock = false;
+	    }
+	    return ret;
 	}
 }

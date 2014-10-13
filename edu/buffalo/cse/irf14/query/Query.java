@@ -71,11 +71,12 @@ public class Query {
 			}
 			else
 			{
-				if(token.equals(QueryUtils.NOT))
+				if(token.indexOf(QueryUtils.NOT) != -1)
 				{
+					token = token.substring(0, token.indexOf(QueryUtils.NOT));
 					if(st.hasMoreTokens())
 					{
-						token = st.nextToken();
+						token += st.nextToken();
 						token = QueryUtils.fillmissing(token);
 						token = QueryUtils.nleft + QueryUtils.space + token + QueryUtils.space + QueryUtils.nright;
 					}

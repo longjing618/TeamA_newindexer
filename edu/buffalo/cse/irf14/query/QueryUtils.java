@@ -113,4 +113,5 @@ public class QueryUtils
 	    		lock = false;
 	    }
 	    return ret;
+	}
 }

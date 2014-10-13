@@ -78,7 +78,7 @@ public class Query {
 					{
 						token += st.nextToken();
 						token = QueryUtils.fillmissing(token);
-						token = QueryUtils.nleft + QueryUtils.space + token + QueryUtils.space + QueryUtils.nright;
+						token = QueryUtils.nleft + token + QueryUtils.nright;
 					}
 				}
 				token = QueryUtils.fillmissing(token);

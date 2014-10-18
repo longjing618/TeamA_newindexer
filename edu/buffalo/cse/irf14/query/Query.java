@@ -37,7 +37,7 @@ public class Query {
 	public String toString() {
 		//TODO: YOU MUST IMPLEMENT THIS
 		
-		String ret = "{ ";
+		String ret = "";
 		String token = "";
 		StringTokenizer st = new StringTokenizer(querypostfix);
 		String left = "";
@@ -64,9 +64,6 @@ public class Query {
 			{
 				right = s.pop();
 				left = s.pop();
-				if(st.hasMoreTokens())
-					s.push(QueryUtils.aleft + QueryUtils.space + left + QueryUtils.space +token + QueryUtils.space + right + QueryUtils.space + QueryUtils.aright);
-				else
 					s.push(left + QueryUtils.space +token + QueryUtils.space + right);	
 			}
 			else
@@ -85,7 +82,9 @@ public class Query {
 				s.push(token);
 			}
 		}
-		ret += s.pop() + " }";
+		ret += s.pop();
+		ret = QueryUtils.retouch(ret);
+		ret ="{ " + ret + " }";
 		return ret;
 	}
 	

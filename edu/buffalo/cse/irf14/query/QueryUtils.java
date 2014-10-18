@@ -114,4 +114,87 @@ public class QueryUtils
 	    }
 	    return ret;
 	}
+	
+	public static boolean isSameIndex(String a, String b)
+	{
+		a = a.replace("<", "");
+		b = b.replace("<", "");
+		a = a.split(":")[0];
+		b = b.split(":")[0];
+		if(a.equals(b))
+			return true;
+		else
+			return false;
+	}
+
+	public static String getIndexName(String str)
+	{
+		return str.replace("<", "").split(":")[0];
+	}
+	
+	public static String retouch(String str)
+	{
+		StringBuilder sbToken = new StringBuilder();
+		StringTokenizer st = new StringTokenizer(str);
+		String s1;
+		String s2;
+		String s3;
+		String currentOperator;
+		if(st.countTokens() < 3)
+			return str;
+		s1 = st.nextToken(); // s1 is the first token
+		s2 = st.nextToken(); // s2 is the operator
+		s3 = st.nextToken(); // s3 is the second token
+		currentOperator = s2;
+		
+		boolean isset = false;
+		do
+		{
+			if(isSameIndex(s1, s3) && currentOperator.equals(s2))
+			{
+				if(isset == false)
+				{
+					sbToken.append("[ ");
+					isset = true;
+				}
+				else
+					sbToken.append(currentOperator).append(" ");
+				sbToken.append(s1).append(" ");
+				currentOperator = s2;
+			}
+			else
+			{
+				if(isset == false)
+				{
+					sbToken.append(s1).append(" ");
+					sbToken.append(s2).append(" ");
+				}
+				else
+				{
+					sbToken.append(s1).append(" ");
+					sbToken.append("] ");
+					sbToken.append(s2).append(" ");
+					isset = false;
+				}
+				currentOperator = s2;
+			}
+			
+			if(st.hasMoreTokens()) //if it is a valid query, then there must two terms behind
+			{
+				s1 = s3;
+				s2 = st.nextToken();
+				s3 = st.nextToken();
+			}
+			else
+			{
+				sbToken.append(currentOperator).append(" ");
+				sbToken.append(s3);
+				if(isset = true)
+					sbToken.append(" ]");
+				break;
+			}
+		}
+		while (true);
+		return sbToken.toString();
+	}
 }

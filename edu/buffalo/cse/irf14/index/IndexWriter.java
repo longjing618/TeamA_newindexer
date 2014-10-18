@@ -57,6 +57,7 @@ public class IndexWriter {
 
 			List<HashMap<String, IntegerCounter>> termMapArray = IndexWriterUtil
 					.processDocumet(d, FieldNames.CONTENT);
+			docMap.addLengthToDoc(Integer.parseInt(d.getField(FieldNames.DOCID)[0]), Integer.parseInt(d.getField(FieldNames.DOCLENGTH)[0]));
 			addToIndex(docId, termMapArray, IndexContainer.termIndexer);
 			
 			termMapArray = IndexWriterUtil.processDocumet(d, FieldNames.TITLE);

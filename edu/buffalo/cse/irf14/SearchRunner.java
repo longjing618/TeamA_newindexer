@@ -5,6 +5,8 @@ import java.io.PrintStream;
 import java.util.List;
 import java.util.Map;
 
+import edu.buffalo.cse.irf14.document.DocumentMap;
+import edu.buffalo.cse.irf14.document.SerializeUtil;
 import edu.buffalo.cse.irf14.query.Query;
 import edu.buffalo.cse.irf14.query.QueryParser;
 
@@ -16,6 +18,11 @@ import edu.buffalo.cse.irf14.query.QueryParser;
  */
 public class SearchRunner {
 	public enum ScoringModel {TFIDF, OKAPI};
+	private String indexDir;
+	private String corpusDir;
+	private char mode;
+	private PrintStream stream;
+	private DocumentMap docMap;
 	
 	/**
 	 * Default (and only public) constuctor
@@ -27,6 +34,24 @@ public class SearchRunner {
 	public SearchRunner(String indexDir, String corpusDir, 
 			char mode, PrintStream stream) {
 		//TODO: IMPLEMENT THIS METHOD
+		if(indexDir != null){
+			if(indexDir.endsWith(File.separator)){
+				this.indexDir = indexDir;
+			}else{
+				this.indexDir = indexDir + File.separator;
+			}
+		}
+		if(corpusDir != null){
+			if(corpusDir.endsWith(File.separator)){
+				this.corpusDir = corpusDir;
+			}else{
+				this.corpusDir = corpusDir + File.separator;
+			}
+		}
+		this.mode = mode;
+		this.stream = stream;
+		SerializeUtil su = new SerializeUtil();
+		docMap = su.deSerializeDocMap(indexDir);
 	}
 	
 	/**
@@ -92,4 +117,12 @@ public class SearchRunner {
 		//TODO: IMPLEMENT THIS METHOD IFF SPELLCHECK EXECUTED
 		return null;
 	}
+
+	public DocumentMap getDocMap() {
+		return docMap;
+	}
+
+//	public void setDocMap(DocumentMap docMap) {
+//		this.docMap = docMap;
+//	}
 }

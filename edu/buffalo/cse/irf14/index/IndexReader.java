@@ -40,6 +40,7 @@ public class IndexReader {
 	private String indexDir;
 	private IndexType type;
 	private Indexer indexer;
+	private DocumentMap docMap;
 	public IndexReader(String indexDir, IndexType type) {
 		//TODO
 		if(indexDir != null){
@@ -59,6 +60,9 @@ public class IndexReader {
 		}else{
 			indexer = IndexContainer.authorIndexer;
 		}
+		
+		SerializeUtil su = new SerializeUtil();
+		docMap = su.deSerializeDocMap(indexDir);
 	}
 	
 	/**
@@ -78,8 +82,6 @@ public class IndexReader {
 	 */
 	public int getTotalValueTerms() {
 		//TODO: YOU MUST IMPLEMENT THIS
-		SerializeUtil su = new SerializeUtil();
-		DocumentMap docMap = su.deSerializeDocMap(indexDir);
 		return docMap.getSize();
 	}
 	
@@ -110,8 +112,8 @@ public class IndexReader {
 			while(analyzer.increment()){
 				
 			}
-			SerializeUtil su = new SerializeUtil();
-			DocumentMap docMap = su.deSerializeDocMap(indexDir);
+//			SerializeUtil su = new SerializeUtil();
+//			DocumentMap docMap = su.deSerializeDocMap(indexDir);
 			tokenStream.reset();
 			while(tokenStream.hasNext()){
 				Token token = tokenStream.next();

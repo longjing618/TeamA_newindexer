@@ -50,6 +50,10 @@ public class IndexWriterUtil {
 //				tokenStream = authorTokenStream;
 //			} else
 				tokenStream = tokenizer.consume(d.getField(filedName)[0]);
+			if(filedName == FieldNames.CONTENT){
+				String [] length = {Integer.toString(tokenStream.getLength())};
+				d.setField(FieldNames.DOCLENGTH, length);
+			}
 			Analyzer analyzer = AnalyzerFactory.getInstance()
 					.getAnalyzerForField(filedName, tokenStream);
 //			if (analyzer == null)

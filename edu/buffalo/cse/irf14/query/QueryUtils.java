@@ -146,8 +146,10 @@ public class QueryUtils
 		String s2;
 		String s3;
 		String currentOperator;
+		
 		if(st.countTokens() < 3)
 			return str;
+		
 		s1 = st.nextToken(); // s1 is the first token
 		s2 = st.nextToken(); // s2 is the operator
 		s3 = st.nextToken(); // s3 is the second token

@@ -11,7 +11,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import edu.buffalo.cse.irf14.document.Document;
 import edu.buffalo.cse.irf14.document.DocumentMap;
+import edu.buffalo.cse.irf14.document.FieldNames;
+import edu.buffalo.cse.irf14.document.Parser;
+import edu.buffalo.cse.irf14.document.ParserException;
 import edu.buffalo.cse.irf14.document.SerializeUtil;
 import edu.buffalo.cse.irf14.index.IndexContainer;
 import edu.buffalo.cse.irf14.query.BM25Scorer;
@@ -19,6 +23,7 @@ import edu.buffalo.cse.irf14.query.DocIdScorePair;
 import edu.buffalo.cse.irf14.query.Query;
 import edu.buffalo.cse.irf14.query.QueryParser;
 import edu.buffalo.cse.irf14.query.QueryParserException;
+import edu.buffalo.cse.irf14.query.QueryUtils;
 import edu.buffalo.cse.irf14.query.TfIdfScorer;
 
 
@@ -81,16 +86,59 @@ public class SearchRunner {
 			Query query = QueryParser.parse(userQuery, "OR");
 			long startTime = System.currentTimeMillis();
 			Set<Integer> docIdSet = query.getQueryDocIdSet();
+			List<DocIdScorePair> docIdScorePiarList = null;
 			if(model == ScoringModel.TFIDF){
 				TfIdfScorer scorer = new TfIdfScorer();
-				List<DocIdScorePair> docIdScorePiarList = scorer.getLogTfIdfScores(query, docIdSet, docMap);			
-			}
-			if(model == ScoringModel.OKAPI)
+				docIdScorePiarList = scorer.getLogTfIdfScores(query, docIdSet, docMap);			
+			}else if(model == ScoringModel.OKAPI)
 			{
 				BM25Scorer scorer = new BM25Scorer();
-				List<DocIdScorePair> docIdScorePairList = scorer.getBM25Scores(query, docMap, docIdSet);
+				docIdScorePiarList = scorer.getBM25Scores(query, docMap, docIdSet);
+			}
+			
+			ArrayList<String> result = new ArrayList<String>();
+			String firstLine = "Query: " + userQuery;
+			long endTime = System.currentTimeMillis();
+			long timeTaken = endTime - startTime;
+			String qureyTime = "Query time: " + timeTaken;
+			result.add(firstLine);
+			result.add(qureyTime);
+			if(docIdScorePiarList == null || docIdScorePiarList.isEmpty()){
+				for(int i = 0; i<2; i++){
+					stream.println(result.get(i));
+				}
+				stream.println("No results retrived for this query.");
+				return;
+			}
+			int i = 0;
+			for(DocIdScorePair docIdScorePair : docIdScorePiarList){
+				result.add("---------------------");
+				int docId = docIdScorePair.getDocId();
+				String score = Double.toString(docIdScorePair.getScore());
+				String fileId = docMap.getFileId(docId);
+				String filePath = corpusDir + fileId;
+				Document d = Parser.parse(filePath);
+				String snippet = QueryUtils.getsnippets(d, userQuery);
+				i++;
+				String resultRank = "Result Rank: " + i;
+				String resulltTitle = d.getField(FieldNames.TITLE)[0];
+				String resultRelevancy = "Result relavancy: " + score;
+				result.add(resultRank);
+				result.add(resulltTitle);
+				result.add(snippet);
+				result.add(resultRelevancy);
+				result.add("-------------------");
+				if(i == 10){
+					break;
+				}
+			}
+			for(String str:result){
+				stream.println(str);
 			}
 		} catch (QueryParserException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ParserException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
@@ -139,6 +187,9 @@ public class SearchRunner {
 					String score = Double.toString(docIdScorePair.getScore());
 					sb.append(fileId).append("#").append(score);
 					i++;
+					if(i == 10){
+						break;
+					}
 					if(i < docIdScoreList.size()){
 						sb.append(", ");
 					}

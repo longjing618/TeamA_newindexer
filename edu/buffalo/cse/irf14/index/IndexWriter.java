@@ -102,6 +102,7 @@ public class IndexWriter {
 		IndexContainer.authorIndexer.serializeAll(indexDir);
 		IndexContainer.placeIndexer.serializeAll(indexDir);
 		IndexContainer.categoryIndexer.serializeAll(indexDir);
+		IndexContainer.serializeTermMap(indexDir);
 		SerializeUtil su = new SerializeUtil();
 		su.serializeDocMap(indexDir, docMap);
 		// System.out.println(IndexContainer.termIndexer.getSizeOfTermDictionary());

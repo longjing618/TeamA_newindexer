@@ -8,7 +8,6 @@ import java.io.File;
 import edu.buffalo.cse.irf14.document.Document;
 import edu.buffalo.cse.irf14.document.Parser;
 import edu.buffalo.cse.irf14.document.ParserException;
-import edu.buffalo.cse.irf14.index.IndexContainer;
 import edu.buffalo.cse.irf14.index.IndexWriter;
 import edu.buffalo.cse.irf14.index.IndexerException;
 
@@ -41,8 +40,8 @@ public class Runner {
 		
 		Document d = null;
 		IndexWriter writer = new IndexWriter(indexDir);
-		//long startTime = System.currentTimeMillis();
-		//long count = 0;
+		long startTime = System.currentTimeMillis();
+		long count = 0;
 		try {
 			for (String cat : catDirectories) {
 				dir = new File(ipDir+ File.separator+ cat);
@@ -59,12 +58,14 @@ public class Runner {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					} 
-					//count++;
+					count++;
 					
 				}
 				
 			}
-			
+			long endTime = System.currentTimeMillis();
+			System.out.println(endTime-startTime);
+			System.out.println(count);
 			writer.close();
 		} catch (IndexerException e) {
 			// TODO Auto-generated catch block

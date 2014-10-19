@@ -1,12 +1,17 @@
 package edu.buffalo.cse.irf14.index;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
-public class TermMap {
+public class TermMap implements Serializable{
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 468748100524730179L;
 	private int termId = 0;
 	private HashMap<String, Integer> termMap;
 	//private HashMap<Integer, String> reverseMap;

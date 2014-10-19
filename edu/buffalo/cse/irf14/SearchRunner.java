@@ -1,15 +1,24 @@
 package edu.buffalo.cse.irf14;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 import java.io.PrintStream;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import edu.buffalo.cse.irf14.document.DocumentMap;
 import edu.buffalo.cse.irf14.document.SerializeUtil;
 import edu.buffalo.cse.irf14.index.IndexContainer;
+import edu.buffalo.cse.irf14.query.DocIdScorePair;
 import edu.buffalo.cse.irf14.query.Query;
 import edu.buffalo.cse.irf14.query.QueryParser;
+import edu.buffalo.cse.irf14.query.QueryParserException;
+import edu.buffalo.cse.irf14.query.TfIdfScorer;
 
 /**
  * Main class to run the searcher.
@@ -66,7 +75,19 @@ public class SearchRunner {
 	 */
 	public void query(String userQuery, ScoringModel model) {
 		//TODO: IMPLEMENT THIS METHOD
-		Query query = QueryParser.parse(userQuery, "OR");
+		try {
+			long startTime = System.currentTimeMillis();
+			Query query = QueryParser.parse(userQuery, "OR");
+			Set<Integer> docIdSet = query.getQueryDocIdSet();
+			if(model == ScoringModel.TFIDF){
+				TfIdfScorer scorer = new TfIdfScorer();
+				List<DocIdScorePair> docIdScorePiarList = scorer.getLogTfIdfScores(query, docIdSet, docMap);
+				
+			}
+		} catch (QueryParserException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
 	}
 	
@@ -76,6 +97,72 @@ public class SearchRunner {
 	 */
 	public void query(File queryFile) {
 		//TODO: IMPLEMENT THIS METHOD
+		BufferedReader br = null;
+		try {
+			br = new BufferedReader(new FileReader(queryFile));
+			int lineNumber = 0;
+			String line = "";
+			List<String> queryList = new ArrayList<String>();
+			List<String> results = new ArrayList<String>();
+			int numberOfQueries = 0;
+			while((line = br.readLine())!=null){
+				if(lineNumber == 0){
+					String numQ = line.split("=")[1];
+					numberOfQueries = Integer.parseInt(numQ);
+					lineNumber++;
+					continue;
+				}
+				queryList.add(line);
+				lineNumber++;
+			}
+			for(String str : queryList){
+				String [] queryParts = str.split(":");
+				String queryId = queryParts[0];
+				String queryString = queryParts[1];
+				Query query = QueryParser.parse(queryString, "OR");
+				Set<Integer> docIdSet = query.getQueryDocIdSet();
+				TfIdfScorer scorer = new TfIdfScorer();
+				List<DocIdScorePair> docIdScoreList = scorer.getLogTfIdfScores(query, docIdSet, docMap);
+				if(docIdScoreList.isEmpty()){
+					continue;
+				}
+				StringBuilder sb = new StringBuilder(queryId);
+				sb.append(":{");
+				int i = 0;
+				for(DocIdScorePair docIdScorePair : docIdScoreList){
+					String fileId = docMap.getFileId(docIdScorePair.getDocId());
+					String score = Double.toString(docIdScorePair.getScore());
+					sb.append(fileId).append("#").append(score);
+					i++;
+					if(i < docIdScoreList.size()){
+						sb.append(", ");
+					}
+				}
+				sb.append("}");
+				results.add(sb.toString());
+			}
+			String firstOutputLine = "numResults=" + results.size();
+			stream.println(firstOutputLine);
+			for(String str : results){
+				stream.println(str);
+			}
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (QueryParserException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}finally{
+			try {
+				br.close();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
 	}
 	
 	/**

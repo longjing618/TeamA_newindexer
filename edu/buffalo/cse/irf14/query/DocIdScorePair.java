@@ -13,10 +13,17 @@ public class DocIdScorePair implements Comparable<DocIdScorePair>{
 		this.score = score;
 	}
 
-
 	private int docId;
 	private double score;
+	private String snippet;
 	
+	public DocIdScorePair(int docId, double score, String str) 
+	{
+		super();
+		this.docId = docId;
+		this.score = score;
+		this.snippet = str;
+	}
 	
 	public int getDocId() {
 		return docId;

@@ -14,6 +14,7 @@ import java.util.Set;
 import edu.buffalo.cse.irf14.document.DocumentMap;
 import edu.buffalo.cse.irf14.document.SerializeUtil;
 import edu.buffalo.cse.irf14.index.IndexContainer;
+import edu.buffalo.cse.irf14.query.BM25Scorer;
 import edu.buffalo.cse.irf14.query.DocIdScorePair;
 import edu.buffalo.cse.irf14.query.Query;
 import edu.buffalo.cse.irf14.query.QueryParser;
@@ -83,6 +84,11 @@ public class SearchRunner {
 			if(model == ScoringModel.TFIDF){
 				TfIdfScorer scorer = new TfIdfScorer();
 				List<DocIdScorePair> docIdScorePiarList = scorer.getLogTfIdfScores(query, docIdSet, docMap);			
+			}
+			if(model == ScoringModel.OKAPI)
+			{
+				BM25Scorer scorer = new BM25Scorer();
+				List<DocIdScorePair> docIdScorePairList = scorer.getBM25Scores(query, docMap, docIdSet);
 			}
 		} catch (QueryParserException e) {
 			// TODO Auto-generated catch block

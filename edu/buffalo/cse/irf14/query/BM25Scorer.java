@@ -45,7 +45,7 @@ public class BM25Scorer
 				
 				if(docids.contains(docid))
 				{
-					partialRSV = Math.log(N/docFreq) * ( (k1+1)*termFreq / (k1*((1-b)+b*(ld/lave))+termFreq) );
+					partialRSV = Math.log(N/docFreq) * ( (k1+1)*termFreq / (k1*((1-b)+b*(ld/lave))+termFreq) ) * ((k3+1)*termFreq/(k3+termFreq));
 					if(temp.containsKey(docid))
 					{
 						tempscore = temp.get(docid);

@@ -1,6 +1,12 @@
 package edu.buffalo.cse.irf14.query;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.StringTokenizer;
+
+import edu.buffalo.cse.irf14.document.Document;
+import edu.buffalo.cse.irf14.document.FieldNames;
 
 public class QueryUtils 
 {
@@ -232,5 +238,43 @@ public class QueryUtils
 			}
 		}
 		return str;
+	}
+	
+	public static String getsnippets(Document doc, String query)
+	{
+		ArrayList<SentenceMatchCountPair> sc = new ArrayList<SentenceMatchCountPair>();
+		String ret = doc.getField(FieldNames.TITLE)[0];
+		String body = doc.getField(FieldNames.CONTENT)[0];
+		ArrayList<String> sentences = new ArrayList<String>(Arrays.asList(body.split(". ")));
+		for(String sentence : sentences)
+			sc.add(new SentenceMatchCountPair(sentence,LCS(sentence,query)));
+		
+		Collections.sort(sc);
+		return ret + sc.get(0).getsentence() + sc.get(1).getsentence();
+	}
+	
+	public static int LCS(String sentence, String query)
+	{
+		int ret = 0;
+		String[] sentencewords = sentence.split(" ");
+		String[] querywords = query.split(" ");
+		int matrix[][] = new int[querywords.length+1][sentencewords.length+1];
+		for(int i = 1; i<=sentencewords.length;i++)
+			matrix[0][i] = 0;
+		for(int i = 1; i<=querywords.length;i++)
+			matrix[i][0] = 0;
+		
+		for(int m=0;m<querywords.length;m++)
+		{
+			for(int n=0;n<sentencewords.length;n++)
+			{
+				if(sentencewords[n].equals(querywords[m]))
+					matrix[m+1][n+1] = matrix[m][n] + 1;
+				else
+					matrix[m+1][n+1] = Math.max(matrix[m][n+1],matrix[m+1][n]);
+			}
+		}
+		ret = matrix[querywords.length][sentencewords.length];
+		return ret;
 	}
 }

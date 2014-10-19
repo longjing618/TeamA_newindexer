@@ -44,7 +44,7 @@ public class IndexerTest {
 				"increase in home sales in july", "july new home sales rise"};
 		int len = strs.length;
 		Document d;
-		System.setProperty("INDEX.DIR", "F:\\IrIndexOutput");
+		System.setProperty("INDEX.DIR", "F:\\IrIndexOutput\\");
 		String dir = System.getProperty("INDEX.DIR");
 		IndexWriter writer = new IndexWriter(dir); //set this beforehand
 		for (int i = 0; i < len; i++) {

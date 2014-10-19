@@ -144,13 +144,13 @@ public class TokenStream implements Iterator<Token>{
 		//If the delimiter is a valid regex my mistake, like ".",
 		//then we will have issues.
 		//Commenting to remove positional tracking
-		//int index = 0;
+		int index = 1;
 		StringTokenizer st = new StringTokenizer(str, delim);
 		while(st.hasMoreTokens()){
 			Token token = new Token();
 			token.setTermText(st.nextToken());
 			//Commenting to remove positional tracking
-			//token.position = ++index;
+			token.position = ++index;
 			tokenList.add(token);
 		}
 		tokenIterator = tokenList.listIterator();

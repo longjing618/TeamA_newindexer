@@ -11,7 +11,6 @@ import edu.buffalo.cse.irf14.analysis.TokenizerException;
 import edu.buffalo.cse.irf14.document.Document;
 import edu.buffalo.cse.irf14.document.DocumentMap;
 import edu.buffalo.cse.irf14.document.FieldNames;
-import edu.buffalo.cse.irf14.document.Parser;
 import edu.buffalo.cse.irf14.document.SerializeUtil;
 
 /**
@@ -57,7 +56,7 @@ public class IndexWriter {
 
 			List<HashMap<String, IntegerCounter>> termMapArray = IndexWriterUtil
 					.processDocumet(d, FieldNames.CONTENT);
-			docMap.addLengthToDoc(Integer.parseInt(d.getField(FieldNames.DOCID)[0]), Integer.parseInt(d.getField(FieldNames.DOCLENGTH)[0]));
+			docMap.addLengthToDoc(docId, Integer.parseInt(d.getField(FieldNames.DOCLENGTH)[0]));
 			addToIndex(docId, termMapArray, IndexContainer.termIndexer);
 			
 			termMapArray = IndexWriterUtil.processDocumet(d, FieldNames.TITLE);
@@ -79,9 +78,9 @@ public class IndexWriter {
 			addToIndex(docId, termMapArray, IndexContainer.authorIndexer);
 			// the part below can be multithreaded
 		}catch (IndexerException e) {
-
+			e.printStackTrace();
 		}catch(Exception e){
-			
+			e.printStackTrace();
 		}
 
 	}
@@ -127,7 +126,7 @@ public class IndexWriter {
 				Posting posting = new Posting();
 				posting.setDocId(docId);
 				posting.setTermCountInDoc(termCountInDoc);
-
+				posting.setPositionLsit(termMap.get(termText).getPositionalIndex());
 				indexer.addTerm(termText, posting);
 
 			}

@@ -1,6 +1,12 @@
 package edu.buffalo.cse.irf14.document;
 
-public class DocumentInfo {
+import java.io.Serializable;
+
+public class DocumentInfo implements Serializable{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private String fileId;
 	private int length;
 	public String getFileId() {

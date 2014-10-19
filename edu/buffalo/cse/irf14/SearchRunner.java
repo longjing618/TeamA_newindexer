@@ -7,6 +7,7 @@ import java.util.Map;
 
 import edu.buffalo.cse.irf14.document.DocumentMap;
 import edu.buffalo.cse.irf14.document.SerializeUtil;
+import edu.buffalo.cse.irf14.index.IndexContainer;
 import edu.buffalo.cse.irf14.query.Query;
 import edu.buffalo.cse.irf14.query.QueryParser;
 
@@ -40,6 +41,10 @@ public class SearchRunner {
 			}else{
 				this.indexDir = indexDir + File.separator;
 			}
+			IndexContainer.termIndexer.deSerializeAll(indexDir);
+			IndexContainer.authorIndexer.deSerializeAll(indexDir);
+			IndexContainer.placeIndexer.deSerializeAll(indexDir);
+			IndexContainer.authorIndexer.deSerializeAll(indexDir);
 		}
 		if(corpusDir != null){
 			if(corpusDir.endsWith(File.separator)){

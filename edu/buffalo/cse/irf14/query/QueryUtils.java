@@ -245,12 +245,28 @@ public class QueryUtils
 		ArrayList<SentenceMatchCountPair> sc = new ArrayList<SentenceMatchCountPair>();
 		String ret = doc.getField(FieldNames.TITLE)[0];
 		String body = doc.getField(FieldNames.CONTENT)[0];
-		ArrayList<String> sentences = new ArrayList<String>(Arrays.asList(body.split(". ")));
+		
+		String[] tempsentences = body.split(" ");
+		String tempsentence = "";
+		ArrayList<String> sentences = new ArrayList<String>();
+		for(int i=0;i<tempsentences.length-10;i=i+10)
+		{
+			tempsentence = "";
+			for(int m=0;m<10;m++)
+				tempsentence += " " + tempsentences[i+m];
+			sentences.add(tempsentence);
+		}
+		
+		tempsentence = "";
+		for(int i =0;i<tempsentences.length;i++)
+			tempsentence += tempsentences[i];
+		sentences.add(tempsentence);
+		
 		for(String sentence : sentences)
 			sc.add(new SentenceMatchCountPair(sentence,LCS(sentence,query)));
 		
 		Collections.sort(sc);
-		return ret + sc.get(0).getsentence() + sc.get(1).getsentence();
+		return ret + " " + sc.get(0).getsentence() + " " + sc.get(1).getsentence();
 	}
 	
 	public static int LCS(String sentence, String query)

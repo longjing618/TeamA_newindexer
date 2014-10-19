@@ -169,8 +169,11 @@ public class QueryUtils
 				{
 					if(isset == false)
 					{
+						
+						isset = true;
+						sbToken.append(currentOperator).append(" ");
+						sbToken.append("[ ");
 						sbToken.append(s1).append(" ");
-						sbToken.append(s2).append(" ");
 					}
 					else
 					{
@@ -219,7 +222,7 @@ public class QueryUtils
 		}
 		while (true);
 		str = sbToken.toString();
-		
+		//System.out.print(str.length() - str.replaceAll("(\\[|\\])","").length());
 		if( str.length() - str.replaceAll("(\\[|\\])","").length() == 2)
 		{
 			if(str.charAt(0) == '[' && str.charAt(str.length()-1) == ']')

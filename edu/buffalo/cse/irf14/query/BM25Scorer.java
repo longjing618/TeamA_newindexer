@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
@@ -19,7 +18,6 @@ public class BM25Scorer
 	private float k1 = 1.5f;
 	private float k3 = 1.5f;
 	private float b = 0.75f;
-	private double leftPart;
 	
 	public List<DocIdScorePair> getBM25Scores(Query query, DocumentMap docmap, Set<Integer> docids)
 	{

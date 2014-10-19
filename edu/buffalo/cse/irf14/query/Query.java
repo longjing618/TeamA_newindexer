@@ -91,6 +91,7 @@ public class Query {
 	//Bikram doing this
 	public HashSet<Integer> getQueryDocIdSet(){
 		String parsedString = toString();
+//		String parsedString = "{ [ Term:Term1 AND <Term:Term2> ] AND [ Term:Term3 AND <Term:term4> ] }";
 		final HashSet<String> operatorSet = new HashSet<String>(Arrays.asList("OR","AND"));
 		final HashSet<String> closingBracketSet = new HashSet<String>(Arrays.asList("}","]",")")); 
 		HashSet<Integer> docIdSet = new HashSet<Integer>();
@@ -105,9 +106,15 @@ public class Query {
 			if(closingBracketSet.contains(str)){
 				ArrayList<String> subQuery = getBracketedPart(termStack, operatorStack, str);
 				HashSet<Integer> tempDocIds = subQueryEval(subQuery, docIdSet);
+				if(tempDocIds == null){
+					return null;
+				}
 				if(docIdSet.isEmpty()){
 					docIdSet.addAll(tempDocIds);
 				}else{
+					if(operatorStack.isEmpty()){
+						continue;
+					}
 					String operator = operatorStack.peek();
 					if(operator.equals("OR")){
 						docIdSet.addAll(tempDocIds);
@@ -161,26 +168,35 @@ public class Query {
 		HashSet<Integer> tempDocIds = new HashSet<Integer>();
 		HashSet<Integer> negationList = new HashSet<Integer>();
 		boolean isNot = false;
+		String finalOperation = null;
 		for(int i = 0; i<subQuery.size(); i += 2){
 			String term = subQuery.get(i);
 			String operation = null;
 			if(i > 0){
 				operation = subQuery.get(i - 1);
 				if(term.equals("")){					
-					tempDocIds.removeAll(negationList);
-					if(docIdSet.isEmpty()){
-						docIdSet.addAll(tempDocIds);
+					if(!tempDocIds.isEmpty()){
+						tempDocIds.removeAll(negationList);
+						if(docIdSet.isEmpty()){
+							docIdSet.addAll(tempDocIds);
+							tempDocIds.clear();
+							continue;
+						}
+						if(operation.equals("OR")){
+							docIdSet.addAll(tempDocIds);
+						}else{
+							docIdSet.retainAll(tempDocIds);
+						}
 						tempDocIds.clear();
-						continue;
 					}
-					if(operation.equals("OR")){
-						docIdSet.addAll(tempDocIds);
-					}else{
-						docIdSet.retainAll(tempDocIds);
-					}
-					tempDocIds.clear();
 					continue;
 				}
+			}
+			if(i == 0 && term.equals("")){
+				if(subQuery.size() > 1){
+					finalOperation = subQuery.get(i + 1);
+				}
+				continue;
 			}
 			if(term.startsWith("<") && term.endsWith(">")){
 				isNot = true;
@@ -205,16 +221,23 @@ public class Query {
 				indexer = IndexContainer.categoryIndexer;
 			}
 			List<Posting> postingList = indexer.getPostingList(termText);
+			if(postingList == null){
+				return null;
+			}
 			if(isNot){
 				for(Posting posting : postingList){
 					negationList.add(posting.getDocId());
 				}
+				isNot = false;
 				continue;
 			}
+//			if(postingList == null){
+//				return null;
+//			}
 			for(Posting posting: postingList){
 				termPostings.add(posting.getDocId());
 			}
-			if(operation == null){
+			if(operation == null || tempDocIds.isEmpty()){
 				tempDocIds.addAll(termPostings);
 			}else if(operation.equals("OR")){
 				tempDocIds.addAll(termPostings);
@@ -224,6 +247,16 @@ public class Query {
 			}
 		}
 		tempDocIds.removeAll(negationList);
+		if(finalOperation != null && !tempDocIds.isEmpty()){
+			if(finalOperation == null || docIdSet.isEmpty()){
+				docIdSet.addAll(tempDocIds);
+			}else if(finalOperation.equals("OR")){
+				docIdSet.addAll(tempDocIds);
+			}else{
+				//AND
+				docIdSet.retainAll(tempDocIds);
+			}
+		}
 		//docIdSet.removeAll(negationList);
 		return tempDocIds;
 		

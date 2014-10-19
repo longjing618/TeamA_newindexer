@@ -199,6 +199,27 @@ public class Indexer {
 	}
 	
 	public List<Posting> getPostingList(String termText){
+//		System.out.println(termText);
+//		if(termText.equalsIgnoreCase("term1")){
+//			int [] docIds = {1,2,3,4,5};
+//			return makeDummyPostingList(docIds);
+//		}else if(termText.equalsIgnoreCase("term2")){
+//			int [] docIds = {3,4,5};
+//			return makeDummyPostingList(docIds);
+//		}else if(termText.equalsIgnoreCase("term3")){
+//			int [] docIds = {1,2,3};
+//			return makeDummyPostingList(docIds);
+//		}else if(termText.equalsIgnoreCase("term4")){
+//			int [] docIds = {3,4,5};
+//			return makeDummyPostingList(docIds);
+//		}else if(termText.equalsIgnoreCase("term5")){
+//			int [] docIds = {4,6,7};
+//			return makeDummyPostingList(docIds);
+//		}else if(termText.equalsIgnoreCase("term6")){
+//			int [] docIds = {11,9};
+//			return makeDummyPostingList(docIds);
+//		}
+//		return null;
 		Index index = getIndexBucket(termText);
 		return index.getPostings(termText, termMap);
 	}
@@ -244,5 +265,14 @@ public class Indexer {
 		for(byte b = 0; b < 27; b++){
 			getIndex(b).cleanup();
 		}
+	}
+	private List<Posting> makeDummyPostingList(int [] docIds){
+		ArrayList<Posting> returnList = new ArrayList<Posting>();
+		for(int i : docIds){
+			Posting posting = new Posting();
+			posting.setDocId(i);
+			returnList.add(posting);
+		}
+		return returnList;
 	}
 }

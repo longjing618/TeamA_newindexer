@@ -3,10 +3,15 @@ package edu.buffalo.cse.irf14.query;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
 import java.util.StringTokenizer;
 
 import edu.buffalo.cse.irf14.document.Document;
 import edu.buffalo.cse.irf14.document.FieldNames;
+import edu.buffalo.cse.irf14.index.IndexContainer;
+import edu.buffalo.cse.irf14.index.Indexer;
+import edu.buffalo.cse.irf14.index.Posting;
 
 public class QueryUtils 
 {
@@ -240,6 +245,35 @@ public class QueryUtils
 			}
 		}
 		return str;
+	}
+	
+	public static HashSet<Integer> getSpellingCorrection(String queryterm)
+	{
+		ArrayList<String> kgrams = convertToKgram(queryterm,3);
+		Indexer indexer = IndexContainer.kgramIndexer;
+		List<Posting> postingList;
+		HashSet<Integer> termIdSet = new HashSet<Integer>();
+		for(String kgram : kgrams)
+		{
+			postingList = indexer.getPostingList(kgram);
+			termIdSet.retainAll(postingList);
+		}
+		return termIdSet;
+	}
+	
+	public static ArrayList<String> convertToKgram(String str,int k)
+	{
+		String temp;
+		ArrayList<String> ret = new ArrayList<String>();
+		int m;
+		for(m=0;m<str.length()-k;m++)
+		{
+			temp = str.substring(m,m+k);
+			ret.add(temp);
+		}
+		temp = str.substring(m);
+		ret.add(temp);
+		return ret;
 	}
 	
 	public static String getsnippets(Document doc, String query)

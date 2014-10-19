@@ -123,7 +123,7 @@ public class SearchRunner {
 				Set<Integer> docIdSet = query.getQueryDocIdSet();
 				TfIdfScorer scorer = new TfIdfScorer();
 				List<DocIdScorePair> docIdScoreList = scorer.getLogTfIdfScores(query, docIdSet, docMap);
-				if(docIdScoreList.isEmpty()){
+				if(docIdScoreList == null || docIdScoreList.isEmpty()){
 					continue;
 				}
 				StringBuilder sb = new StringBuilder(queryId);

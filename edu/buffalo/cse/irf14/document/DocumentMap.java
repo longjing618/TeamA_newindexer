@@ -47,4 +47,14 @@ public class DocumentMap implements Serializable
 		}
 		return -1;
 	}
+	
+	public float getAvergeDocLength()
+	{
+		long length = 0;
+		for(int docid : docMap.keySet())
+		{
+			length += getDocLength(docid);
+		}
+		return length/docMap.size();
+	}
 }

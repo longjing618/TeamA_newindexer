@@ -76,13 +76,15 @@ public class IndexWriterUtil {
 				Map<String, IntegerCounter> termMap = termMapArray
 						.get(termMapArrayIndex);
 				if (termMap.containsKey(tokenString)) {
-					termMap.get(tokenString).incrementCounter();
+					termMap.get(tokenString).incrementCounter(token.position);
 				} else {
 					// Commenting to remove positional tracking
 					// LinkedList<Integer> positionsList = new
 					// LinkedList<Integer>();
 					// positionsList.add(token.position);
-					termMap.put(tokenString, new IntegerCounter());
+					IntegerCounter newIntegerCounter = new IntegerCounter();
+					newIntegerCounter.addPosition(token.position);
+					termMap.put(tokenString, newIntegerCounter);
 				}
 			}
 		} catch (TokenizerException e) {

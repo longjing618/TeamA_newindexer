@@ -2,6 +2,7 @@ package edu.buffalo.cse.irf14.index;
 
 import java.io.Serializable;
 import java.math.BigInteger;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -15,11 +16,14 @@ public class Term implements Serializable{
 	private int totalCount;
 	private byte [] docOffsets;
 	private byte [] frequency;
+	private byte [] positions;
 	private int arraySize;
 	private int frequencySize;
 	private int arrayCount;
 	private int frequencyCount;
 	private int maxDocIdInPoting;
+	private int positionArraySize;
+	private int positionArrayCount;
 	
 	public Term() {
 		super();
@@ -27,10 +31,12 @@ public class Term implements Serializable{
 		totalCount = 0;
 		docOffsets = new byte[10];
 		frequency = new byte[10];
+		positions = new byte[100];
 		arraySize = 10;
 		frequencySize = 10;
 		arrayCount = 0;
-		frequencyCount = 10;
+		frequencyCount = 0;
+		positionArraySize = 10;
 		maxDocIdInPoting = 0;
 		
 	}
@@ -87,6 +93,7 @@ public class Term implements Serializable{
 		List<Integer> frequencyList = decodeVB(frequency);
 		int currentDocId = 0;
 		int length = docIdOffsetList.size();
+		List<LinkedList<Integer>> positionalIndex = getPositionalIndex();
 		for(int i = 0; i < length; i++){
 			Posting posting = new Posting();
 			int docId = currentDocId + docIdOffsetList.get(i);
@@ -95,6 +102,7 @@ public class Term implements Serializable{
 			posting.setTermCountInDoc(termFreq);
 			postingList.add(posting);
 			currentDocId = docId;
+			posting.setPositionLsit(positionalIndex.get(i));
 		}
 		
 		return postingList;
@@ -123,6 +131,7 @@ public class Term implements Serializable{
 			frequency[frequencyCount] = currentTermFreqVB[i];
 			frequencyCount++;
 		}
+		addPositions(posting.getPositionLsit());
 	}
 	
 	
@@ -142,6 +151,15 @@ public class Term implements Serializable{
 			newFrequency[index] = frequency[index];
 		}
 		this.frequency = newFrequency;
+	}
+	
+	private void expandPositionsArray(){
+		byte [] newPositions = new byte[positionArraySize * 2];
+		positionArraySize *= 2;
+		for(int index = 0; index < positionArrayCount; index++){
+			newPositions[index] = positions[index];
+		}
+		this.positions = newPositions;
 	}
 	
 	private byte[] convertToVB(int intForConversion){
@@ -221,5 +239,42 @@ public class Term implements Serializable{
 		}
 		arraySize = arrayCount;
 		frequencySize = frequencyCount;
+	}
+	
+	private void addPositions(List<Integer> positionsList){
+		int currentHigh = 0;
+		//byte [] temp = new byte [1000];
+		//int positionCount = 0;
+		for(int currentPosition : positionsList){
+			int currentOffset = currentPosition - currentHigh;
+			currentHigh = currentPosition;
+			byte [] tempVB = convertToVB(currentOffset);
+			if(positionArrayCount + tempVB.length + 1 >= positionArraySize){
+				expandPositionsArray();
+			}
+			for(int i = 0; i < tempVB.length; i++){
+				positions[positionArrayCount] = tempVB[i];
+				positionArrayCount++;
+			}
+		}
+		positions[positionArrayCount] = (byte)0;
+		positionArrayCount++;
+	}
+	
+	private List<LinkedList<Integer>> getPositionalIndex(){
+		List<LinkedList<Integer>> returnList = new ArrayList<LinkedList<Integer>>();
+		LinkedList<Integer> positionList = new LinkedList<Integer>();
+		int currentPosition = 0;
+		for(int index = 0; index <= positionArrayCount; index++){
+			int currentOffset = positions[index];
+			if(currentOffset == 0){
+				returnList.add(positionList);
+				positionList = new LinkedList<Integer>();
+				currentPosition = 0;
+			}
+			currentPosition += currentOffset;
+			positionList.add(currentPosition);
+		}
+		return returnList;
 	}
 }

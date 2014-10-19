@@ -3,8 +3,11 @@ package edu.buffalo.cse.irf14.query;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 import java.util.Stack;
 import java.util.StringTokenizer;
 
@@ -220,7 +223,21 @@ public class Query {
 				//category
 				indexer = IndexContainer.categoryIndexer;
 			}
-			List<Posting> postingList = indexer.getPostingList(termText);
+			List<Posting> postingList;
+			if(termText.startsWith("\"")){
+				//String continuation = "";
+				while(true){
+					String tempTermText = subQuery.get(i+1);
+					i++;
+					termText = termText + " " + tempTermText;
+					if(tempTermText.endsWith("\"")){
+						break;
+					}
+				}
+				postingList = getPhrasedPostingList(termText, indexer);
+			}else{
+				postingList = indexer.getPostingList(termText);
+			}
 			if(postingList == null){
 				return null;
 			}
@@ -290,5 +307,34 @@ public class Query {
 			e.printStackTrace();
 		}
 		return null;
+	}
+	
+	private List<Posting> getPhrasedPostingList(String termText, Indexer indexer){
+		termText = termText.replaceAll("\"", "");
+		String [] terms = termText.split(" ");
+		List<Posting> firstPosting = indexer.getPostingList(terms[0]);
+		if(firstPosting == null){
+			return null;
+		}
+		List<Posting> postingList = new LinkedList<Posting>();
+		List<Posting> secondPostingList =  indexer.getPostingList(terms[1]);
+		HashMap<Integer, HashSet<Integer>> secondPosting = new HashMap<Integer, HashSet<Integer>>();
+		for(Posting posting:secondPostingList){
+			secondPosting.put(posting.getDocId(), new HashSet<Integer>(posting.getPositionLsit()));
+		}
+		secondPostingList = null;
+		for(Posting posting : firstPosting){
+			if(secondPosting.containsKey(posting.getDocId())){
+				for(int position : posting.getPositionLsit()){
+					int nextPosition = position + 1;
+					if(secondPosting.get(posting.getDocId()).contains(nextPosition)){
+						postingList.add(posting);
+						break;
+					}
+				}
+			}
+		}
+		
+		return postingList;
 	}
 }

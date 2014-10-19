@@ -247,8 +247,9 @@ public class QueryUtils
 		return str;
 	}
 	
-	public static HashSet<Integer> getSpellingCorrection(String queryterm)
+	public static ArrayList<TermidClosenessPair> getSpellingCorrection(String queryterm)
 	{
+		ArrayList<TermidClosenessPair> sc = new ArrayList<TermidClosenessPair>();
 		ArrayList<String> kgrams = convertToKgram(queryterm,3);
 		Indexer indexer = IndexContainer.kgramIndexer;
 		List<Posting> postingList;
@@ -258,7 +259,12 @@ public class QueryUtils
 			postingList = indexer.getPostingList(kgram);
 			termIdSet.retainAll(postingList);
 		}
-		return termIdSet;
+		for(int termid : termIdSet)
+		{
+			sc.add(new TermidClosenessPair(termid,1));
+		}
+		Collections.sort(sc);
+		return sc;
 	}
 	
 	public static ArrayList<String> convertToKgram(String str,int k)

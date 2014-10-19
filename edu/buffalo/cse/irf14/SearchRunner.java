@@ -9,6 +9,7 @@ import edu.buffalo.cse.irf14.document.DocumentMap;
 import edu.buffalo.cse.irf14.document.SerializeUtil;
 import edu.buffalo.cse.irf14.query.Query;
 import edu.buffalo.cse.irf14.query.QueryParser;
+import edu.buffalo.cse.irf14.query.QueryParserException;
 
 /**
  * Main class to run the searcher.
@@ -61,8 +62,12 @@ public class SearchRunner {
 	 */
 	public void query(String userQuery, ScoringModel model) {
 		//TODO: IMPLEMENT THIS METHOD
-		Query query = QueryParser.parse(userQuery, "OR");
-		
+		try {
+			Query query = QueryParser.parse(userQuery, "OR");
+		} catch (QueryParserException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	
 	/**

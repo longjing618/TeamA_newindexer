@@ -47,7 +47,7 @@ public class TokenFilterFactory {
 		case NUMERIC:
 			return new TokenFilter_NUMERIC(stream);
 		case CAPITALIZATION:
-			return new TokenFilter_CAPITALIZATION(stream);
+			return new TokenFilter_CAPITALIZATION_toLowerCase(stream);
 		case STOPWORD:
 			return new TokenFilter_STOPWORD(stream);
 		case STEMMER:

@@ -18,10 +18,8 @@ import edu.buffalo.cse.irf14.query.DocIdScorePair;
 import edu.buffalo.cse.irf14.query.Query;
 import edu.buffalo.cse.irf14.query.QueryParser;
 import edu.buffalo.cse.irf14.query.QueryParserException;
-<<<<<<< HEAD
-=======
 import edu.buffalo.cse.irf14.query.TfIdfScorer;
->>>>>>> c1ec763d7457f5caae3402930a152b96b6931f4a
+
 
 /**
  * Main class to run the searcher.

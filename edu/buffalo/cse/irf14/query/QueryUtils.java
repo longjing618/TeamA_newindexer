@@ -81,7 +81,7 @@ public class QueryUtils
 	    	
 	    	//handle index name with bracket
 	    	if(temp.indexOf(":(") != -1)
-	    	{//System.out.print("555555555");
+	    	{
 	    		tsa = temp.split(":\\(");
 	    		indexName = tsa[0];
 	    		temp = rleft + indexName + colon + tsa[1];
@@ -148,29 +148,51 @@ public class QueryUtils
 		currentOperator = s2;
 		
 		boolean isset = false;
+		boolean isstart = true;
 		do
 		{
-			if(isSameIndex(s1, s3) && currentOperator.equals(s2))
+			if(isSameIndex(s1, s3))
 			{
-				if(isset == false)
+				if(currentOperator.equals(s2))
 				{
-					sbToken.append("[ ");
-					isset = true;
+					if(isset == false)
+					{
+						sbToken.append("[ ");
+						isset = true;
+					}
+					else
+						sbToken.append(currentOperator).append(" ");
+					sbToken.append(s1).append(" ");
+					currentOperator = s2;
 				}
 				else
-					sbToken.append(currentOperator).append(" ");
-				sbToken.append(s1).append(" ");
-				currentOperator = s2;
+				{
+					if(isset == false)
+					{
+						sbToken.append(s1).append(" ");
+						sbToken.append(s2).append(" ");
+					}
+					else
+					{
+						sbToken.append(currentOperator).append(" ");
+						sbToken.append(s1).append(" ");
+						sbToken.append("] ");
+						isset = false;
+					}
+					currentOperator = s2;
+				}
 			}
 			else
 			{
 				if(isset == false)
 				{
+					if(isstart == false)
+						sbToken.append(s2).append(" ");
 					sbToken.append(s1).append(" ");
-					sbToken.append(s2).append(" ");
 				}
 				else
 				{
+					sbToken.append(currentOperator).append(" ");
 					sbToken.append(s1).append(" ");
 					sbToken.append("] ");
 					sbToken.append(s2).append(" ");
@@ -189,12 +211,23 @@ public class QueryUtils
 			{
 				sbToken.append(currentOperator).append(" ");
 				sbToken.append(s3);
-				if(isset = true)
+				if(isset)
 					sbToken.append(" ]");
 				break;
 			}
+			isstart = false;
 		}
 		while (true);
-		return sbToken.toString();
+		str = sbToken.toString();
+		
+		if( str.length() - str.replaceAll("(\\[|\\])","").length() == 2)
+		{
+			if(str.charAt(0) == '[' && str.charAt(str.length()-1) == ']')
+			{	
+				str = str.replaceAll("\\[ ","");
+				str = str.replaceAll(" ]","");
+			}
+		}
+		return str;
 	}
 }

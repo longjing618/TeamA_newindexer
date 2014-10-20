@@ -310,7 +310,10 @@ public class QueryUtils
 		sentences.add(tempsentence);
 		
 		for(String sentence : sentences)
+		{
+			sentence = sentence.toLowerCase();
 			sc.add(new SentenceMatchCountPair(sentence,LCS(sentence,query)));
+		}
 		
 		Collections.sort(sc);
 		return ret + " " + sc.get(0).getsentence() + " " + sc.get(1).getsentence();

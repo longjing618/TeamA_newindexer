@@ -4,6 +4,7 @@
 package edu.buffalo.cse.irf14.index;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -76,6 +77,12 @@ public class IndexWriter {
 			addToIndex(docId, termMapArray, IndexContainer.authorIndexer);
 			termMapArray = IndexWriterUtil.processDocumet(d, FieldNames.AUTHORORG);
 			addToIndex(docId, termMapArray, IndexContainer.authorIndexer);
+			
+			//Building the k-gram index
+			termMapArray = IndexWriterUtil.processDocumet(d, FieldNames.CONTENT);
+			addTokgramIndex(IndexContainer.termIndexer.getTermMap(),termMapArray, IndexContainer.kgramIndexer);
+			
+			
 			// the part below can be multithreaded
 		}catch (IndexerException e) {
 			e.printStackTrace();
@@ -102,7 +109,11 @@ public class IndexWriter {
 		IndexContainer.authorIndexer.serializeAll(indexDir);
 		IndexContainer.placeIndexer.serializeAll(indexDir);
 		IndexContainer.categoryIndexer.serializeAll(indexDir);
+
 		IndexContainer.serializeTermMap(indexDir);
+		
+		IndexContainer.kgramIndexer.serializeAll(indexDir);
+
 		SerializeUtil su = new SerializeUtil();
 		su.serializeDocMap(indexDir, docMap);
 		// System.out.println(IndexContainer.termIndexer.getSizeOfTermDictionary());
@@ -110,6 +121,44 @@ public class IndexWriter {
 		// System.out.println(IndexContainer.termTermMap.getSortedTerms());
 	}
 
+	public void addTokgramIndex(TermMap tm, List<HashMap<String, IntegerCounter>> termMapArray, Indexer indexer)
+	{
+		for (byte index = 0; index < 27; index++) 
+		{
+			if (termMapArray == null)
+				return;
+			HashMap<String, IntegerCounter> termMap = termMapArray.get(index);
+			ArrayList<String> kgrams;
+			int termId;
+			for (String termText : termMap.keySet())
+			{
+				termId = tm.getTermId(termText); 
+				kgrams = convertToKgram(termText,3);
+				for(String kgram : kgrams)
+				{
+					Posting posting = new Posting();
+					posting.setDocId(termId);
+					indexer.addTerm(kgram, posting);	
+				}
+			}
+		}
+	}
+	
+	public ArrayList<String> convertToKgram(String str,int k)
+	{
+		String temp;
+		ArrayList<String> ret = new ArrayList<String>();
+		int m;
+		for(m=0;m<str.length()-k;m++)
+		{
+			temp = str.substring(m,m+k);
+			ret.add(temp);
+		}
+		temp = str.substring(m);
+		ret.add(temp);
+		return ret;
+	}
+		
 	public void addToIndex(int docId,
 			List<HashMap<String, IntegerCounter>> termMapArray, Indexer indexer) {
 		for (byte index = 0; index < 27; index++) {

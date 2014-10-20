@@ -105,7 +105,8 @@ public class Query {
 		Stack<String> termStack = new Stack<String>();
 		Stack<String> operatorStack = new Stack<String>();
 		String [] parsedValues = parsedString.split(" ");
-		for(String str : parsedValues){
+		for(int i = 0; i<parsedValues.length;i++){
+			String str = parsedValues[i];
 			if(closingBracketSet.contains(str)){
 				ArrayList<String> subQuery = getBracketedPart(termStack, operatorStack, str);
 				HashSet<Integer> tempDocIds = subQueryEval(subQuery, docIdSet);
@@ -130,6 +131,12 @@ public class Query {
 				if(operatorSet.contains(str)){
 					operatorStack.push(str);
 				}else{
+					String termText = str.substring(str.indexOf(":") + 1);
+					if(termText.startsWith("\"")){
+						String temp = parsedValues[i + 1];
+						i++;
+						str = str + " " + temp;
+					}
 					termStack.push(str);
 				}
 			}
@@ -207,7 +214,7 @@ public class Query {
 			}
 			String index = term.substring(0, term.indexOf(":"));
 			String termText = term.substring(term.indexOf(":") + 1);
-			termText = getAnalyzedTerm(termText, index);
+			termText = QueryUtils.getAnalyzedTerm(termText, index);
 			if(termText == null || termText.equals("")){
 				continue;
 			}
@@ -226,14 +233,14 @@ public class Query {
 			List<Posting> postingList;
 			if(termText.startsWith("\"")){
 				//String continuation = "";
-				while(true){
-					String tempTermText = subQuery.get(i+1);
-					i++;
-					termText = termText + " " + tempTermText;
-					if(tempTermText.endsWith("\"")){
-						break;
-					}
-				}
+//				while(true){
+//					String tempTermText = subQuery.get(i+1);
+//					i++;
+//					termText = termText + " " + tempTermText;
+//					if(tempTermText.endsWith("\"")){
+//						break;
+//					}
+//				}
 				postingList = getPhrasedPostingList(termText, indexer);
 			}else{
 				postingList = indexer.getPostingList(termText);
@@ -279,35 +286,7 @@ public class Query {
 		
 	}
 	
-	private String getAnalyzedTerm(String termText, String index){
-		TokenStream stream;
-		try {
-			stream = new Tokenizer().consume(termText);
-			Analyzer analyzer;
-			if(index.equalsIgnoreCase("term")){
-				analyzer = AnalyzerFactory.getInstance().getAnalyzerForField(FieldNames.CONTENT, stream);
-			}else if(index.equalsIgnoreCase("category")){
-				analyzer = AnalyzerFactory.getInstance().getAnalyzerForField(FieldNames.CATEGORY, stream);
-			}else if(index.equalsIgnoreCase("author")){
-				analyzer = AnalyzerFactory.getInstance().getAnalyzerForField(FieldNames.AUTHOR, stream);
-			}else {
-				analyzer = AnalyzerFactory.getInstance().getAnalyzerForField(FieldNames.PLACE, stream);
-			}
-			while(analyzer.increment()){
-				
-			}
-			stream.reset();
-			if(stream.isEmpty()){
-				return null;
-			}else{
-				return stream.next().toString();
-			}
-		} catch (TokenizerException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return null;
-	}
+	
 	
 	private List<Posting> getPhrasedPostingList(String termText, Indexer indexer){
 		termText = termText.replaceAll("\"", "");

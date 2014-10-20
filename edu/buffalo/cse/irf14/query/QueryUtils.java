@@ -3,10 +3,20 @@ package edu.buffalo.cse.irf14.query;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
 import java.util.StringTokenizer;
 
+import edu.buffalo.cse.irf14.analysis.Analyzer;
+import edu.buffalo.cse.irf14.analysis.AnalyzerFactory;
+import edu.buffalo.cse.irf14.analysis.TokenStream;
+import edu.buffalo.cse.irf14.analysis.Tokenizer;
+import edu.buffalo.cse.irf14.analysis.TokenizerException;
 import edu.buffalo.cse.irf14.document.Document;
 import edu.buffalo.cse.irf14.document.FieldNames;
+import edu.buffalo.cse.irf14.index.IndexContainer;
+import edu.buffalo.cse.irf14.index.Indexer;
+import edu.buffalo.cse.irf14.index.Posting;
 
 public class QueryUtils 
 {
@@ -146,8 +156,10 @@ public class QueryUtils
 		String s2;
 		String s3;
 		String currentOperator;
+		
 		if(st.countTokens() < 3)
 			return str;
+		
 		s1 = st.nextToken(); // s1 is the first token
 		s2 = st.nextToken(); // s2 is the operator
 		s3 = st.nextToken(); // s3 is the second token
@@ -240,17 +252,68 @@ public class QueryUtils
 		return str;
 	}
 	
+	public static ArrayList<TermidClosenessPair> getSpellingCorrection(String queryterm)
+	{
+		ArrayList<TermidClosenessPair> sc = new ArrayList<TermidClosenessPair>();
+		ArrayList<String> kgrams = convertToKgram(queryterm,3);
+		Indexer indexer = IndexContainer.kgramIndexer;
+		List<Posting> postingList;
+		HashSet<Integer> termIdSet = new HashSet<Integer>();
+		for(String kgram : kgrams)
+		{
+			postingList = indexer.getPostingList(kgram);
+			termIdSet.retainAll(postingList);
+		}
+		for(int termid : termIdSet)
+		{
+			sc.add(new TermidClosenessPair(termid,1));
+		}
+		Collections.sort(sc);
+		return sc;
+	}
+	
+	public static ArrayList<String> convertToKgram(String str,int k)
+	{
+		String temp;
+		ArrayList<String> ret = new ArrayList<String>();
+		int m;
+		for(m=0;m<str.length()-k;m++)
+		{
+			temp = str.substring(m,m+k);
+			ret.add(temp);
+		}
+		temp = str.substring(m);
+		ret.add(temp);
+		return ret;
+	}
+	
 	public static String getsnippets(Document doc, String query)
 	{
 		ArrayList<SentenceMatchCountPair> sc = new ArrayList<SentenceMatchCountPair>();
 		String ret = doc.getField(FieldNames.TITLE)[0];
 		String body = doc.getField(FieldNames.CONTENT)[0];
-		ArrayList<String> sentences = new ArrayList<String>(Arrays.asList(body.split(". ")));
+		
+		String[] tempsentences = body.split(" ");
+		String tempsentence = "";
+		ArrayList<String> sentences = new ArrayList<String>();
+		for(int i=0;i<tempsentences.length-10;i=i+10)
+		{
+			tempsentence = "";
+			for(int m=0;m<10;m++)
+				tempsentence += " " + tempsentences[i+m];
+			sentences.add(tempsentence);
+		}
+		
+		tempsentence = "";
+		for(int i =0;i<tempsentences.length;i++)
+			tempsentence += tempsentences[i];
+		sentences.add(tempsentence);
+		
 		for(String sentence : sentences)
 			sc.add(new SentenceMatchCountPair(sentence,LCS(sentence,query)));
 		
 		Collections.sort(sc);
-		return ret + sc.get(0).getsentence() + sc.get(1).getsentence();
+		return ret + " " + sc.get(0).getsentence() + " " + sc.get(1).getsentence();
 	}
 	
 	public static int LCS(String sentence, String query)
@@ -276,5 +339,41 @@ public class QueryUtils
 		}
 		ret = matrix[querywords.length][sentencewords.length];
 		return ret;
+	}
+	
+	public static String getAnalyzedTerm(String termText, String index){
+		TokenStream stream;
+		try {
+			stream = new Tokenizer().consume(termText);
+			Analyzer analyzer;
+			if(index.equalsIgnoreCase("term")){
+				analyzer = AnalyzerFactory.getInstance().getAnalyzerForField(FieldNames.CONTENT, stream);
+			}else if(index.equalsIgnoreCase("category")){
+				analyzer = AnalyzerFactory.getInstance().getAnalyzerForField(FieldNames.CATEGORY, stream);
+			}else if(index.equalsIgnoreCase("author")){
+				analyzer = AnalyzerFactory.getInstance().getAnalyzerForField(FieldNames.AUTHOR, stream);
+			}else {
+				analyzer = AnalyzerFactory.getInstance().getAnalyzerForField(FieldNames.PLACE, stream);
+			}
+			while(analyzer.increment()){
+				
+			}
+			stream.reset();
+			if(stream.isEmpty()){
+				return null;
+			}else{
+				return stream.next().toString();
+			}
+		} catch (TokenizerException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	public static String getAnalyzedTerm(String termTextWithIndex){
+		String index = termTextWithIndex.substring(0, termTextWithIndex.indexOf(":"));
+		String termText = termTextWithIndex.substring(termTextWithIndex.indexOf(":") + 1);
+		return getAnalyzedTerm(termText, index);
 	}
 }

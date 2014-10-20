@@ -14,6 +14,9 @@ import edu.buffalo.cse.irf14.index.Posting;
 
 public class TfIdfScorer {
 	public List<DocIdScorePair> getLogTfIdfScores(Query query, Set<Integer> docIdSet, DocumentMap docMap){
+		if(docIdSet == null || docIdSet.isEmpty()){
+			return null;
+		}
 		ArrayList<String> queryTerms = processQueryString(query.toString());
 		HashMap<Integer, Double> docIdScoreMap = new HashMap<Integer, Double>();
 		ArrayList<DocIdScorePair> returnList = new ArrayList<DocIdScorePair>(docIdSet.size());
@@ -48,8 +51,19 @@ public class TfIdfScorer {
 	
 	private ArrayList<String> processQueryString(String queryString){
 		//TODO: manage phrases
-		String temp = queryString.replaceAll("<[^>]*>", " " ).replaceAll("[OR|AND|\\[\\(\\{\\}\\)\\]]", "").replaceAll("\\s+", " " ).trim();
+		String temp = queryString.replaceAll("<[^>]*>", " " ).replaceAll("[\\[\\(\\{\\}\\)\\]]", "").replaceAll("AND", "").replaceAll("OR", "").replaceAll("\\s+", " " ).trim();
 		ArrayList<String> returnList = new ArrayList<String>(Arrays.asList(temp.split(" ")));
+		ArrayList<String> tempList = new ArrayList<String>();
+		for(int i = 0; i < returnList.size(); i++){
+			String str = returnList.get(i);
+			String termText = str.substring(str.indexOf(":") + 1);
+			if(termText.startsWith("\"")){
+				String temp1 = returnList.get(i+1);
+				i++;
+				str = str + " " + temp1;
+			}
+			tempList.add(str);
+		}
 //		int phraseStart = -1;
 //		int phraseEnd = -1;
 //		for(int i = 0; i < returnList.size(); i++){
@@ -70,7 +84,7 @@ public class TfIdfScorer {
 //				}
 //			}
 //		}
-		return returnList;
+		return tempList;
 	}
 	
 	private List<Posting> getPostingListForTerm(String term){
@@ -78,6 +92,7 @@ public class TfIdfScorer {
 			return null;
 		String index = term.substring(0, term.indexOf(":"));
 		String termText = term.substring(term.indexOf(":") + 1);
+		termText = QueryUtils.getAnalyzedTerm(termText, index);
 		return getIndexer(index).getPostingList(termText);
 	}
 	

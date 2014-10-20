@@ -57,10 +57,12 @@ public class SearchRunner {
 			}else{
 				this.indexDir = indexDir + File.separator;
 			}
-			IndexContainer.termIndexer.deSerializeAll(indexDir);
-			IndexContainer.authorIndexer.deSerializeAll(indexDir);
-			IndexContainer.placeIndexer.deSerializeAll(indexDir);
-			IndexContainer.authorIndexer.deSerializeAll(indexDir);
+			IndexContainer.deserializeAll(indexDir);
+//			IndexContainer.termIndexer.deSerializeAll(indexDir);
+//			IndexContainer.authorIndexer.deSerializeAll(indexDir);
+//			IndexContainer.placeIndexer.deSerializeAll(indexDir);
+//			IndexContainer.authorIndexer.deSerializeAll(indexDir);
+			
 		}
 		if(corpusDir != null){
 			if(corpusDir.endsWith(File.separator)){
@@ -123,6 +125,7 @@ public class SearchRunner {
 				String resultRank = "Result Rank: " + i;
 				String resulltTitle = d.getField(FieldNames.TITLE)[0];
 				String resultRelevancy = "Result relavancy: " + score;
+				result.add("FileId: " + fileId);
 				result.add(resultRank);
 				result.add(resulltTitle);
 				result.add(snippet);

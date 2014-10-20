@@ -110,7 +110,7 @@ public class IndexWriter {
 		IndexContainer.placeIndexer.serializeAll(indexDir);
 		IndexContainer.categoryIndexer.serializeAll(indexDir);
 		
-		IndexContainer.kgramIndexer.serializeAll(indexDir);
+		//IndexContainer.kgramIndexer.serializeAll(indexDir);
 		SerializeUtil su = new SerializeUtil();
 		su.serializeDocMap(indexDir, docMap);
 		// System.out.println(IndexContainer.termIndexer.getSizeOfTermDictionary());
@@ -118,7 +118,7 @@ public class IndexWriter {
 		// System.out.println(IndexContainer.termTermMap.getSortedTerms());
 	}
 
-	public void addTokgramIndex(TermMap tm, List<HashMap<String, IntegerCounter>> termMapArray, Indexer indexer)
+	public void addTokgramIndex(TermMap tm, List<HashMap<String, IntegerCounter>> termMapArray, kgramindex indexer)
 	{
 		for (byte index = 0; index < 27; index++) 
 		{
@@ -133,9 +133,7 @@ public class IndexWriter {
 				kgrams = convertToKgram(termText,3);
 				for(String kgram : kgrams)
 				{
-					Posting posting = new Posting();
-					posting.setDocId(termId);
-					indexer.addTerm(kgram, posting);	
+					indexer.addGram(kgram, termId);	
 				}
 			}
 		}

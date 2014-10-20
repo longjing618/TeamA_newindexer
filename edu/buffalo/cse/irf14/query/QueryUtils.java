@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.StringTokenizer;
 
@@ -17,6 +18,7 @@ import edu.buffalo.cse.irf14.document.FieldNames;
 import edu.buffalo.cse.irf14.index.IndexContainer;
 import edu.buffalo.cse.irf14.index.Indexer;
 import edu.buffalo.cse.irf14.index.Posting;
+import edu.buffalo.cse.irf14.index.kgramindex;
 
 public class QueryUtils 
 {
@@ -256,13 +258,16 @@ public class QueryUtils
 	{
 		ArrayList<TermidClosenessPair> sc = new ArrayList<TermidClosenessPair>();
 		ArrayList<String> kgrams = convertToKgram(queryterm,3);
-		Indexer indexer = IndexContainer.kgramIndexer;
-		List<Posting> postingList;
+		kgramindex indexer = IndexContainer.kgramIndexer;
+		LinkedList<Integer> postingList;
 		HashSet<Integer> termIdSet = new HashSet<Integer>();
 		for(String kgram : kgrams)
 		{
-			postingList = indexer.getPostingList(kgram);
-			termIdSet.retainAll(postingList);
+			postingList = indexer.getPostingsList(kgram);
+			if(termIdSet.size() == 0)
+				termIdSet = new HashSet(postingList);
+			else
+				termIdSet.retainAll(postingList);
 		}
 		for(int termid : termIdSet)
 		{
@@ -310,7 +315,10 @@ public class QueryUtils
 		sentences.add(tempsentence);
 		
 		for(String sentence : sentences)
+		{
+			sentence = sentence.toLowerCase();
 			sc.add(new SentenceMatchCountPair(sentence,LCS(sentence,query)));
+		}
 		
 		Collections.sort(sc);
 		return ret + " " + sc.get(0).getsentence() + " " + sc.get(1).getsentence();

@@ -51,6 +51,7 @@ public class IndexContainer {
 	}
 
 	//This is the k-gram indexer
-	public static Indexer kgramIndexer = new Indexer(kgramTermMap,"_kgramIndex");
+
+	public static kgramindex kgramIndexer = new kgramindex();
 
 }

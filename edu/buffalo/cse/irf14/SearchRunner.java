@@ -7,6 +7,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -18,12 +19,14 @@ import edu.buffalo.cse.irf14.document.Parser;
 import edu.buffalo.cse.irf14.document.ParserException;
 import edu.buffalo.cse.irf14.document.SerializeUtil;
 import edu.buffalo.cse.irf14.index.IndexContainer;
+import edu.buffalo.cse.irf14.index.TermMap;
 import edu.buffalo.cse.irf14.query.BM25Scorer;
 import edu.buffalo.cse.irf14.query.DocIdScorePair;
 import edu.buffalo.cse.irf14.query.Query;
 import edu.buffalo.cse.irf14.query.QueryParser;
 import edu.buffalo.cse.irf14.query.QueryParserException;
 import edu.buffalo.cse.irf14.query.QueryUtils;
+import edu.buffalo.cse.irf14.query.TermidClosenessPair;
 import edu.buffalo.cse.irf14.query.TfIdfScorer;
 
 
@@ -40,6 +43,7 @@ public class SearchRunner {
 	private char mode;
 	private PrintStream stream;
 	private DocumentMap docMap;
+	private List<String> currentQueryList;
 	
 	/**
 	 * Default (and only public) constuctor
@@ -84,6 +88,8 @@ public class SearchRunner {
 	public void query(String userQuery, ScoringModel model) {
 		//TODO: IMPLEMENT THIS METHOD
 		try {
+			currentQueryList = Arrays.asList(userQuery.split(" "));
+			
 			Query query = QueryParser.parse(userQuery, "OR");
 			long startTime = System.currentTimeMillis();
 			Set<Integer> docIdSet = query.getQueryDocIdSet();
@@ -256,7 +262,7 @@ public class SearchRunner {
 	 */
 	public static boolean spellCorrectSupported() {
 		//TODO: CHANGE THIS TO TRUE ONLY IF SPELLCHECK BONUS ATTEMPTED
-		return false;
+		return true;
 	}
 	
 	/**
@@ -265,9 +271,26 @@ public class SearchRunner {
 	 */
 	public List<String> getCorrections() {
 		//TODO: IMPLEMENT THIS METHOD IFF SPELLCHECK EXECUTED
-		return null;
+		
+		if(currentQueryList == null)
+			return null;
+		
+		TermMap tm = IndexContainer.termIndexer.getTermMap();
+		String queryterm;
+		for(int i=0;i<currentQueryList.size();i++)
+		{
+			queryterm = currentQueryList.get(i);
+			if(tm.getTermIdWithoutAdding(queryterm) == -1)
+			{
+				currentQueryList.remove(i);
+				ArrayList<TermidClosenessPair> ret = QueryUtils.getSpellingCorrection(queryterm);
+				queryterm = tm.getTermText(ret.get(0).getTermId());
+				currentQueryList.add(i, queryterm);
+			}
+		}
+		return currentQueryList;
 	}
-
+	
 	public DocumentMap getDocMap() {
 		return docMap;
 	}

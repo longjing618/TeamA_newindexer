@@ -56,6 +56,7 @@ public class SearchRunner {
 			IndexContainer.authorIndexer.deSerializeAll(indexDir);
 			IndexContainer.placeIndexer.deSerializeAll(indexDir);
 			IndexContainer.authorIndexer.deSerializeAll(indexDir);
+			IndexContainer.kgramIndexer.deSerializeAll(indexDir);
 		}
 		if(corpusDir != null){
 			if(corpusDir.endsWith(File.separator)){

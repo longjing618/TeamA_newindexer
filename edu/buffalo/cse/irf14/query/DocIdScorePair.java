@@ -50,7 +50,7 @@ public class DocIdScorePair implements Comparable<DocIdScorePair>{
 		// TODO Auto-generated method stub
 		Double score1 = this.score;
 		Double score2 = o.score;
-		return score1.compareTo(score2);
+		return -score1.compareTo(score2);
 	}
 	
 }

@@ -112,11 +112,7 @@ public class IndexWriter {
 
 		IndexContainer.serializeTermMap(indexDir);
 		
-
-		//IndexContainer.kgramIndexer.serializeAll(indexDir);
-
-
-		//IndexContainer.kgramIndexer.serializeAll(indexDir);
+		IndexContainer.kgramIndexer.serializeAll(indexDir);
 
 		SerializeUtil su = new SerializeUtil();
 		su.serializeDocMap(indexDir, docMap);

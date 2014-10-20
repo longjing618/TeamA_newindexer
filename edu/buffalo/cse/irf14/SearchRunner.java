@@ -57,12 +57,11 @@ public class SearchRunner {
 			}else{
 				this.indexDir = indexDir + File.separator;
 			}
+
 			IndexContainer.deserializeAll(indexDir);
-//			IndexContainer.termIndexer.deSerializeAll(indexDir);
-//			IndexContainer.authorIndexer.deSerializeAll(indexDir);
-//			IndexContainer.placeIndexer.deSerializeAll(indexDir);
-//			IndexContainer.authorIndexer.deSerializeAll(indexDir);
-			
+
+			IndexContainer.kgramIndexer.deSerializeAll(indexDir);
+
 		}
 		if(corpusDir != null){
 			if(corpusDir.endsWith(File.separator)){

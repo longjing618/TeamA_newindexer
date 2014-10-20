@@ -167,6 +167,9 @@ public class Query {
 				break;
 			}
 			str = stack.pop();
+			if(str.endsWith("\"")){
+				str = stack.pop() + " " + str;
+			}
 			returnList.add(operatorStack.pop());
 			returnList.add(str);
 		}

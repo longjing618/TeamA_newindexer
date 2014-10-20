@@ -171,13 +171,20 @@ public class SearchRunner {
 				lineNumber++;
 			}
 			for(String str : queryList){
-				String [] queryParts = str.split(":");
+				String [] queryParts = str.split(":", 2);
 				String queryId = queryParts[0];
 				String queryString = queryParts[1];
+				queryString = queryString.substring(1, queryString.length() - 1);
 				Query query = QueryParser.parse(queryString, "OR");
 				Set<Integer> docIdSet = query.getQueryDocIdSet();
-				TfIdfScorer scorer = new TfIdfScorer();
-				List<DocIdScorePair> docIdScoreList = scorer.getLogTfIdfScores(query, docIdSet, docMap);
+				List<DocIdScorePair> docIdScoreList = null;
+				//if(mode == 'Q'){
+					TfIdfScorer scorer = new TfIdfScorer();
+					docIdScoreList = scorer.getLogTfIdfScores(query, docIdSet, docMap);
+//				}else{
+//					BM25Scorer scorer = new BM25Scorer();
+//					docIdScoreList = scorer.getBM25Scores(query, docMap, docIdSet);
+//				}
 				if(docIdScoreList == null || docIdScoreList.isEmpty()){
 					continue;
 				}
@@ -187,6 +194,7 @@ public class SearchRunner {
 				for(DocIdScorePair docIdScorePair : docIdScoreList){
 					String fileId = docMap.getFileId(docIdScorePair.getDocId());
 					String score = Double.toString(docIdScorePair.getScore());
+					score = score.substring(0,7);
 					sb.append(fileId).append("#").append(score);
 					i++;
 					if(i == 10){

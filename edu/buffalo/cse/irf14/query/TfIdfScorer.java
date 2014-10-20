@@ -23,6 +23,9 @@ public class TfIdfScorer {
 		int corpusSize = docMap.getSize();
 		for(String str : queryTerms){
 			List<Posting> postingsList = getPostingListForTerm(str);
+			if(postingsList == null){
+				continue;
+			}
 			double docFreq = postingsList.size();
 			double idf = Math.log10((double)(corpusSize/docFreq));
 			for(Posting posting:postingsList){
@@ -93,6 +96,8 @@ public class TfIdfScorer {
 		String index = term.substring(0, term.indexOf(":"));
 		String termText = term.substring(term.indexOf(":") + 1);
 		termText = QueryUtils.getAnalyzedTerm(termText, index);
+		if(termText == null || termText.equals(""))
+			return null;
 		return getIndexer(index).getPostingList(termText);
 	}
 	

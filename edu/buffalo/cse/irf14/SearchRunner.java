@@ -88,8 +88,8 @@ public class SearchRunner {
 	public void query(String userQuery, ScoringModel model) {
 		//TODO: IMPLEMENT THIS METHOD
 		try {
-			currentQueryList = Arrays.asList(userQuery.split(" "));
-			getCorrections();
+			currentQueryList = new ArrayList<String>(Arrays.asList(userQuery.split(" ")));
+			//getCorrections();
 			Query query = QueryParser.parse(userQuery, "OR");
 			long startTime = System.currentTimeMillis();
 			Set<Integer> docIdSet = query.getQueryDocIdSet();
@@ -290,10 +290,10 @@ public class SearchRunner {
 			queryterm = currentQueryList.get(i);
 			if(tm.getTermIdWithoutAdding(queryterm) == -1)
 			{
-				currentQueryList.remove(i);
+				//currentQueryList.remove(i);
 				ArrayList<TermidClosenessPair> ret = QueryUtils.getSpellingCorrection(queryterm);
 				queryterm = tm.getTermText(ret.get(0).getTermId());
-				currentQueryList.add(i, queryterm);
+				currentQueryList.set(i, queryterm);
 			}
 		}
 		return currentQueryList;

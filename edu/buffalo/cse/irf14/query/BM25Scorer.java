@@ -36,6 +36,8 @@ public class BM25Scorer
 		for(String queryterm : queryTerms)
 		{
 			postingslist = getPostingsList(queryterm);
+			if(postingslist == null)
+				return null;
 			docFreq = postingslist.size();
 			for(Posting p : postingslist)
 			{

@@ -99,9 +99,41 @@ public class BM25Scorer
 		return postingList;
 	}
 	
-	public ArrayList<String> getQueryTerms(String str)
+	public ArrayList<String> getQueryTerms(String queryString)
 	{
-		str = str.replaceAll("[AND|OR|\\[|\\(|\\{|\\}|\\)|\\]|]", "").replaceAll("<[^>*]*>", "").replaceAll("\\s+", " ").trim();
-		return new ArrayList<String>(Arrays.asList(str.split(" ")));
+		String temp = queryString.replaceAll("<[^>]*>", " " ).replaceAll("[\\[\\(\\{\\}\\)\\]]", "").replaceAll("AND", "").replaceAll("OR", "").replaceAll("\\s+", " " ).trim();
+		ArrayList<String> returnList = new ArrayList<String>(Arrays.asList(temp.split(" ")));
+		ArrayList<String> tempList = new ArrayList<String>();
+		for(int i = 0; i < returnList.size(); i++){
+			String str = returnList.get(i);
+			String termText = str.substring(str.indexOf(":") + 1);
+			if(termText.startsWith("\"")){
+				String temp1 = returnList.get(i+1);
+				i++;
+				str = str + " " + temp1;
+			}
+			tempList.add(str);
+		}
+//		int phraseStart = -1;
+//		int phraseEnd = -1;
+//		for(int i = 0; i < returnList.size(); i++){
+//			String str = returnList.get(i);
+//			if(str.startsWith("\"")){
+//				phraseStart = i;
+//			}
+//			if(str.endsWith("\"")){
+//				phraseEnd = i;
+//				if(phraseEnd > phraseStart){
+//					String tempStr = "";
+//					for(int j = phraseStart; j <= phraseEnd; j++){
+//						tempStr += returnList.get(j); 
+//					}
+//					for(int j = phraseStart + 1; j <= phraseEnd; j++){
+//						returnList.remove(j); 
+//					}
+//				}
+//			}
+//		}
+		return tempList;
 	}
 }

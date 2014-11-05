@@ -11,10 +11,11 @@ public class IndexContainer {
 	
 	public static TermMap kgramTermMap = new TermMap();
 	
-	public static Indexer termIndexer  = new Indexer(termTermMap, "_termIndex");
-	public static Indexer authorIndexer = new Indexer(authorTermMap, "_authorIndex");
-	public static Indexer categoryIndexer = new Indexer(categoryTermMap, "_categoryIndex");
-	public static Indexer placeIndexer = new Indexer(placeTermMap, "_placeIndex");
+	public static Indexer termIndexer  = new Indexer(termTermMap, "_termIndex", "termIndexer");
+	public static Indexer authorIndexer = new Indexer(authorTermMap, "_authorIndex", "authorIndexer");
+	public static Indexer categoryIndexer = new Indexer(categoryTermMap, "_categoryIndex", "categoryIndexer");
+	public static Indexer placeIndexer = new Indexer(placeTermMap, "_placeIndex", "placeIndexer");
+	
 	
 
 	
@@ -40,14 +41,14 @@ public class IndexContainer {
 		authorTermMap = su.deSerializeTermMap(authorTermMapFileName);
 		placeTermMap = su.deSerializeTermMap(placeTermMapFileName);
 		categoryTermMap = su.deSerializeTermMap(categoryTermMapFileName);
-		termIndexer  = new Indexer(termTermMap, "_termIndex");
-		authorIndexer = new Indexer(authorTermMap, "_authorIndex");
-		categoryIndexer = new Indexer(categoryTermMap, "_categoryIndex");
-		placeIndexer = new Indexer(placeTermMap, "_placeIndex");
+		termIndexer  = new Indexer(termTermMap, "_termIndex", "termIndexer");
+		authorIndexer = new Indexer(authorTermMap, "_authorIndex", "authorIndexer");
+		categoryIndexer = new Indexer(categoryTermMap, "_categoryIndex", "categoryIndexer");
+		placeIndexer = new Indexer(placeTermMap, "_placeIndex", "placeIndexer");
 		termIndexer.deSerializeAll(indexDir);
 		authorIndexer.deSerializeAll(indexDir);
 		placeIndexer.deSerializeAll(indexDir);
-		authorIndexer.deSerializeAll(indexDir);
+		categoryIndexer.deSerializeAll(indexDir);
 	}
 
 	//This is the k-gram indexer

@@ -97,7 +97,8 @@ public class BM25Scorer
 			i = IndexContainer.categoryIndexer;
 		else
 			i = IndexContainer.termIndexer;
-		List<Posting> postingList = i.getPostingList(combo[1]);
+		String termText = QueryUtils.getAnalyzedTerm(combo[1], combo[0]);
+		List<Posting> postingList = i.getPostingList(termText);
 		return postingList;
 	}
 	

@@ -9,6 +9,7 @@ import java.util.List;
 public class Index {
 	private HashMap<Integer, Term> indexMap = new HashMap<Integer, Term>();
 	//Construct function used for deserializeBucket
+	public char id;
 	public Index(HashMap<Integer, Term> IM)
 	{
 		indexMap = IM;
@@ -17,6 +18,10 @@ public class Index {
 	public Index()
 	{
 		//indexMap = null;
+	}
+	public Index(char id)
+	{
+		this.id = id;
 	}
 	//The term will need to be prepared earlier.
 	public void add(int termId, Posting posting){

@@ -35,7 +35,7 @@ public class BM25Scorer
 		double tempscore;
 		for(String queryterm : queryTerms)
 		{
-			postingslist = getPostingsList(queryterm);
+			postingslist = getPostingListForTerm(queryterm);
 			if(postingslist == null)
 				return null;
 			docFreq = postingslist.size();
@@ -103,7 +103,32 @@ public class BM25Scorer
 	
 	public ArrayList<String> getQueryTerms(String str)
 	{
-		str = str.replaceAll("[AND|OR|\\[|\\(|\\{|\\}|\\)|\\]|]", "").replaceAll("<[^>*]*>", "").replaceAll("\\s+", " ").trim();
+		str = str.replaceAll("<[^>]*>", " " ).replaceAll("[\\[\\(\\{\\}\\)\\]]", "").replaceAll("AND", "").replaceAll("OR", "").replaceAll("\\s+", " " ).trim();
 		return new ArrayList<String>(Arrays.asList(str.split(" ")));
+	}
+	
+	private List<Posting> getPostingListForTerm(String term){
+		if(term==null || term.equals(""))
+			return null;
+		String index = term.substring(0, term.indexOf(":"));
+		String termText = term.substring(term.indexOf(":") + 1);
+		termText = QueryUtils.getAnalyzedTerm(termText, index);
+		if(termText == null || termText.equals(""))
+			return null;
+		return getIndexer(index).getPostingList(termText);
+	}
+	
+	private Indexer getIndexer(String index){
+		if(index.equalsIgnoreCase("term")){
+			return IndexContainer.termIndexer;
+		}else if(index.equalsIgnoreCase("author")){
+			return IndexContainer.authorIndexer;
+		}else if(index.equalsIgnoreCase("place")){
+			return IndexContainer.placeIndexer;
+		}else if(index.equalsIgnoreCase("category")){
+			return IndexContainer.categoryIndexer;
+		}
+		
+		return null;
 	}
 }

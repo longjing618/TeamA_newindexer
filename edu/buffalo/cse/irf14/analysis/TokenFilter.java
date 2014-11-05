@@ -26,6 +26,9 @@ public abstract class TokenFilter implements Analyzer {
 		copy.reset();
 	}
 	public boolean isStreamEmpty(){
+		if(copy == null){ 
+			return true;
+		}
 		return copy.isEmpty();
 	}
 }

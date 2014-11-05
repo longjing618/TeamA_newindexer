@@ -8,6 +8,7 @@ public class IndexContainer {
 	public static TermMap authorTermMap = new TermMap();
 	public static TermMap placeTermMap = new TermMap();
 	public static TermMap categoryTermMap = new TermMap();
+	public static TermMap unstemmedTermMap = new TermMap();
 	
 	public static TermMap kgramTermMap = new TermMap();
 	
@@ -25,10 +26,12 @@ public class IndexContainer {
 		String authorTermMapFileName = indexDir + "_authorTermMap";
 		String placeTermMapFileName = indexDir + "_placeTermMap";
 		String categoryTermMapFileName = indexDir + "_categoryTermMap";
+		String unstemmedTermMapFileName = indexDir + "_unstemmedTermMap";
 		su.serializeTermMap(termTermMapFileName, termTermMap);
 		su.serializeTermMap(authorTermMapFileName, authorTermMap);
 		su.serializeTermMap(placeTermMapFileName, placeTermMap);
 		su.serializeTermMap(categoryTermMapFileName, categoryTermMap);
+		su.serializeTermMap(unstemmedTermMapFileName, unstemmedTermMap);
 	}
 	
 	public static void deserializeAll(String indexDir){
@@ -37,10 +40,12 @@ public class IndexContainer {
 		String authorTermMapFileName = indexDir + "_authorTermMap";
 		String placeTermMapFileName = indexDir + "_placeTermMap";
 		String categoryTermMapFileName = indexDir + "_categoryTermMap";
+		String unstemmedTermMapFileName = indexDir + "_unstemmedTermMap";
 		termTermMap = su.deSerializeTermMap(termTermMapFileName);
 		authorTermMap = su.deSerializeTermMap(authorTermMapFileName);
 		placeTermMap = su.deSerializeTermMap(placeTermMapFileName);
 		categoryTermMap = su.deSerializeTermMap(categoryTermMapFileName);
+		unstemmedTermMap = su.deSerializeTermMap(unstemmedTermMapFileName);
 		termIndexer  = new Indexer(termTermMap, "_termIndex", "termIndexer");
 		authorIndexer = new Indexer(authorTermMap, "_authorIndex", "authorIndexer");
 		categoryIndexer = new Indexer(categoryTermMap, "_categoryIndex", "categoryIndexer");

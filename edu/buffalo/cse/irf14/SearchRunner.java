@@ -61,11 +61,12 @@ public class SearchRunner {
 			}else{
 				this.indexDir = indexDir + File.separator;
 			}
-
+			long deserializeStartTime = System.currentTimeMillis();
 			IndexContainer.deserializeAll(indexDir);
 
 			IndexContainer.kgramIndexer.deSerializeAll(indexDir);
-
+			long deserializeEndTime = System.currentTimeMillis();
+			System.out.println(deserializeEndTime - deserializeStartTime);
 		}
 		if(corpusDir != null){
 			if(corpusDir.endsWith(File.separator)){
@@ -89,7 +90,7 @@ public class SearchRunner {
 		//TODO: IMPLEMENT THIS METHOD
 		try {
 			currentQueryList = new ArrayList<String>(Arrays.asList(userQuery.split(" ")));
-			//getCorrections();
+			getCorrections();
 			Query query = QueryParser.parse(userQuery, "OR");
 			long startTime = System.currentTimeMillis();
 			Set<Integer> docIdSet = query.getQueryDocIdSet();
@@ -149,6 +150,8 @@ public class SearchRunner {
 		} catch (ParserException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		} catch (Exception e){
+			
 		}
 	}
 	
@@ -185,11 +188,11 @@ public class SearchRunner {
 				Set<Integer> docIdSet = query.getQueryDocIdSet();
 				List<DocIdScorePair> docIdScoreList = null;
 				//if(mode == 'Q'){
-					TfIdfScorer scorer = new TfIdfScorer();
-					docIdScoreList = scorer.getLogTfIdfScores(query, docIdSet, docMap);
+//					TfIdfScorer scorer = new TfIdfScorer();
+//					docIdScoreList = scorer.getLogTfIdfScores(query, docIdSet, docMap);
 //				}else{
-//					BM25Scorer scorer = new BM25Scorer();
-//					docIdScoreList = scorer.getBM25Scores(query, docMap, docIdSet);
+					BM25Scorer scorer = new BM25Scorer();
+					docIdScoreList = scorer.getBM25Scores(query, docMap, docIdSet);
 //				}
 				if(docIdScoreList == null || docIdScoreList.isEmpty()){
 					continue;
@@ -227,7 +230,10 @@ public class SearchRunner {
 		} catch (QueryParserException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}finally{
+		} catch(Exception e){
+			e.printStackTrace();
+		}
+		finally{
 			try {
 				br.close();
 			} catch (IOException e) {
@@ -280,22 +286,41 @@ public class SearchRunner {
 	public List<String> getCorrections() {
 		//TODO: IMPLEMENT THIS METHOD IFF SPELLCHECK EXECUTED
 		
-		if(currentQueryList == null)
-			return null;
+//		if(currentQueryList == null)
+//			return null;
+//		
+//		TermMap tm = IndexContainer.termIndexer.getTermMap();
+//		String queryterm;
+//		for(int i=0;i<currentQueryList.size();i++)
+//		{
+//			queryterm = currentQueryList.get(i);
+//			if(tm.getTermIdWithoutAdding(queryterm) == -1)
+//			{
+//				//currentQueryList.remove(i);
+//				ArrayList<TermidClosenessPair> ret = QueryUtils.getSpellingCorrection(queryterm);
+//				queryterm = tm.getTermText(ret.get(0).getTermId());
+//				currentQueryList.set(i, queryterm);
+//			}
+//		}
 		
+		String userQuery = currentQueryList.get(0);
+		//userQuery = userQuery.toLowerCase();
 		TermMap tm = IndexContainer.termIndexer.getTermMap();
-		String queryterm;
-		for(int i=0;i<currentQueryList.size();i++)
-		{
-			queryterm = currentQueryList.get(i);
-			if(tm.getTermIdWithoutAdding(queryterm) == -1)
-			{
-				//currentQueryList.remove(i);
-				ArrayList<TermidClosenessPair> ret = QueryUtils.getSpellingCorrection(queryterm);
-				queryterm = tm.getTermText(ret.get(0).getTermId());
-				currentQueryList.set(i, queryterm);
+		String tempQuery = userQuery.replaceAll("Term:", "");
+		tempQuery = tempQuery.replaceAll("[{()}]", "");
+    	tempQuery = tempQuery.replaceAll("AND", "").replaceAll("OR", "").replaceAll("NOT", "").replaceAll("\\s+", " " );
+		currentQueryList.clear();
+		String [] queryTerms = tempQuery.split(" ");
+		for(String queryTerm : queryTerms){
+			if(queryTerm.startsWith("Author:")||queryTerm.startsWith("Place:")||queryTerm.startsWith("Category:")){
+				continue;
 			}
+			if(tm.isTermPresent(queryTerm));
+			String tempQueryTerm = queryTerm.toLowerCase();
+			ArrayList<TermidClosenessPair> ret = QueryUtils.getSpellingCorrection(tempQueryTerm);
+			String correctedQueryTerm = tm.getTermText(ret.get(0).getTermId());; 
 		}
+		
 		return currentQueryList;
 	}
 	

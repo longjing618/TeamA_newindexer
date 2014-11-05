@@ -55,4 +55,8 @@ public class TermMap implements Serializable{
 		Collections.sort(terms);
 		return terms;
 	}
+	
+	public boolean isTermPresent(String term){
+		return termMap.containsKey(term);
+	}
 }

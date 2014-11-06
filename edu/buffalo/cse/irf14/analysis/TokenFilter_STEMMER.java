@@ -28,10 +28,6 @@ public class TokenFilter_STEMMER extends TokenFilter{
 	
 	private void process(Token token){
 		if(token.getTermText().matches("[a-zA-Z]+")){
-			if(!SearchRunner.isQueryMode){
-				String termText = token.getTermText();
-				IndexContainer.unstemmedTermMap.add(termText);
-			}
 //			if(termText.equalsIgnoreCase("adobe")){
 //				System.out.println();
 //			}

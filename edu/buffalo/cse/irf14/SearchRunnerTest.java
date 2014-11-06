@@ -18,10 +18,10 @@ public class SearchRunnerTest {
 			String corpusDir = "F:\\IR-git_pvt_t\\TeamA_newindexer\\trainingFlat\\";
 			File queryFile  = new File("F:\\queries.txt");
 			SearchRunner sr = new SearchRunner(indexDir, corpusDir, 'E', ps);
-			sr.query(queryFile);
+			//sr.query(queryFile);
 			//sr.query("\"Adobe Resources\"", ScoringModel.TFIDF);
-			//ps1 = new PrintStream(new File("F:\\IR_pj2_out1"));
-			//ps1.println(IndexContainer.termTermMap.getSortedTerms());
+			ps1 = new PrintStream(new File("F:\\IR_pj2_out1"));
+			ps1.println(IndexContainer.unstemmedTermMap.getSortedTerms());
 		}catch(Exception e){
 			e.printStackTrace();
 		}finally{

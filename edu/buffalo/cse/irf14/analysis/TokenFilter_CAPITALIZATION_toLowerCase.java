@@ -1,5 +1,8 @@
 package edu.buffalo.cse.irf14.analysis;
 
+import edu.buffalo.cse.irf14.SearchRunner;
+import edu.buffalo.cse.irf14.index.IndexContainer;
+
 public class TokenFilter_CAPITALIZATION_toLowerCase extends TokenFilter{
 	int length;
 	int count = 0;
@@ -20,8 +23,11 @@ public class TokenFilter_CAPITALIZATION_toLowerCase extends TokenFilter{
 
 //		if(token.isStartOfSentence())
 //			isStartOfSentance = true;
-		
-		token.setTermText(token.getTermText().toLowerCase());
+		String termText = token.getTermText().toLowerCase();
+		token.setTermText(termText);
+		if(!SearchRunner.isQueryMode && termText.matches("[a-zA-Z]+")){
+			IndexContainer.unstemmedTermMap.add(termText);
+		}
 		return copy.hasNext();
 	}
 	public TokenStream getStream()

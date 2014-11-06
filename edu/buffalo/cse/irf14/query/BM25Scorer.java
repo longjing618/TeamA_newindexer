@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
@@ -63,7 +64,7 @@ public class BM25Scorer
 
 		for(int key : docids)
 			ret.add(new DocIdScorePair(key,temp.get(key)));
-
+		removeDuplicates(ret, docmap);
 		Collections.sort(ret);
 		return ret;
 	}
@@ -147,4 +148,20 @@ public class BM25Scorer
 		return null;
 	}
 	
+	private void removeDuplicates(List<DocIdScorePair> list, DocumentMap docMap){
+		if(list == null || list.isEmpty())
+			return;
+		Iterator<DocIdScorePair> iter = list.iterator();
+		Set<String> fileIds = new HashSet<String>();
+		while(iter.hasNext()){
+			DocIdScorePair docIdScorePair = iter.next();
+			String fileId = docMap.getFileId(docIdScorePair.getDocId());
+			if(fileIds.contains(fileId)){
+				iter.remove();
+			}else{
+				fileIds.add(fileId);
+			}
+		}
+		
+	}
 }

@@ -92,9 +92,12 @@ public class SearchRunner {
 		//TODO: IMPLEMENT THIS METHOD
 		try {
 			
-			currentQueryList = new ArrayList<String>(Arrays.asList(userQuery.split(" ")));
+			//currentQueryList = new ArrayList<String>(Arrays.asList(userQuery.split(" ")));
+			currentQueryList = new ArrayList<String>();
+			currentQueryList.add(userQuery);
 			getCorrections();
-
+			String correctedQuery = currentQueryList.get(0);
+			
 			Query query = QueryParser.parse(userQuery, "OR");
 			long startTime = System.currentTimeMillis();
 			Set<Integer> docIdSet = query.getQueryDocIdSet();
@@ -109,6 +112,10 @@ public class SearchRunner {
 			}
 			
 			ArrayList<String> result = new ArrayList<String>();
+			
+			if(!correctedQuery.equalsIgnoreCase(userQuery)){
+				result.add("Suggested spell correction: " + correctedQuery);
+			}
 			String firstLine = "Query: " + userQuery;
 			long endTime = System.currentTimeMillis();
 			long timeTaken = endTime - startTime;
@@ -333,14 +340,7 @@ public class SearchRunner {
 		return docMap;
 	}
 	
-	private void removeDuplicates(List<DocIdScorePair> list){
-		if(list == null || list.isEmpty())
-			return;
-		Iterator<DocIdScorePair> iter = list.iterator();
-		Set<String> fileIds = new HashSet<String>();
-		
-		
-	}
+	
 
 //	public void setDocMap(DocumentMap docMap) {
 //		this.docMap = docMap;

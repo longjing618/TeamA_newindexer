@@ -321,7 +321,7 @@ public class SearchRunner {
 		String userQuery = currentQueryList.get(0);
 		
 		//userQuery = userQuery.toLowerCase();
-		TermMap tm = IndexContainer.unstemmedTermMap;
+		TermMap tm = IndexContainer.termTermMap;
 		String tempQuery = userQuery.replaceAll("Term:", "");
 		tempQuery = tempQuery.replaceAll("[{()}]", "");
     	tempQuery = tempQuery.replaceAll("AND", "").replaceAll("OR", "").replaceAll("NOT", "").replaceAll("\\s+", " " );

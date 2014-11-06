@@ -60,7 +60,7 @@ public class IndexWriter {
 			docMap.addLengthToDoc(docId, Integer.parseInt(d.getField(FieldNames.DOCLENGTH)[0]));
 			addToIndex(docId, termMapArray, IndexContainer.termIndexer);
 			//build term k gram
-			addTokgramIndex(IndexContainer.unstemmedTermMap,termMapArray, IndexContainer.kgramIndexer);
+			addTokgramIndex(IndexContainer.termTermMap,termMapArray, IndexContainer.kgramIndexer);
 			
 			termMapArray = IndexWriterUtil.processDocumet(d, FieldNames.TITLE);
 			addToIndex(docId, termMapArray, IndexContainer.termIndexer);

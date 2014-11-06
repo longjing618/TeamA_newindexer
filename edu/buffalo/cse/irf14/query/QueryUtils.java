@@ -262,7 +262,7 @@ public class QueryUtils
 		
 		kgramindex indexer = IndexContainer.kgramIndexer;
 		LinkedList<Integer> postingList;
-		TermMap tm = IndexContainer.unstemmedTermMap;
+		TermMap tm = IndexContainer.termIndexer.getTermMap();
 		String suggestedWord;
 		int distance = 0;
 		HashSet<Integer> termIdSet = new HashSet<Integer>();
@@ -272,7 +272,7 @@ public class QueryUtils
 			if(termIdSet.size() == 0)
 				termIdSet = new HashSet(postingList);
 			else
-				termIdSet.retainAll(postingList);
+				termIdSet.addAll(postingList);
 		}
 		for(int termid : termIdSet)
 		{

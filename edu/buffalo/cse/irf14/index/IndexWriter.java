@@ -59,6 +59,8 @@ public class IndexWriter {
 					.processDocumet(d, FieldNames.CONTENT);
 			docMap.addLengthToDoc(docId, Integer.parseInt(d.getField(FieldNames.DOCLENGTH)[0]));
 			addToIndex(docId, termMapArray, IndexContainer.termIndexer);
+			//build term k gram
+			addTokgramIndex(IndexContainer.unstemmedTermMap,termMapArray, IndexContainer.kgramIndexer);
 			
 			termMapArray = IndexWriterUtil.processDocumet(d, FieldNames.TITLE);
 			addToIndex(docId, termMapArray, IndexContainer.termIndexer);
@@ -79,8 +81,8 @@ public class IndexWriter {
 			addToIndex(docId, termMapArray, IndexContainer.authorIndexer);
 			
 			//Building the k-gram index
-			termMapArray = IndexWriterUtil.processDocumet(d, FieldNames.CONTENT);
-			addTokgramIndex(IndexContainer.termIndexer.getTermMap(),termMapArray, IndexContainer.kgramIndexer);
+			//termMapArray = IndexWriterUtil.processDocumet(d, FieldNames.CONTENT);
+			//addTokgramIndex(IndexContainer.termIndexer.getTermMap(),termMapArray, IndexContainer.kgramIndexer);
 			
 			
 			// the part below can be multithreaded

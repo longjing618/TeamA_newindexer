@@ -329,7 +329,12 @@ public class QueryUtils
 		}
 		
 		Collections.sort(sc);
-		return ret + " " + sc.get(0).getsentence() + " " + sc.get(1).getsentence();
+		if(sc.size() > 1)
+			return ret + " " + sc.get(0).getsentence() + " " + sc.get(1).getsentence();
+		else if(sc.size() > 0)
+			return ret + " " + sc.get(0).getsentence();
+		else
+			return ret;
 	}
 	
 	public static int LCS(String sentence, String query)

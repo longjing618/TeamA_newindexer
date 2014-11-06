@@ -8,6 +8,8 @@ import java.io.IOException;
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -89,6 +91,7 @@ public class SearchRunner {
 	public void query(String userQuery, ScoringModel model) {
 		//TODO: IMPLEMENT THIS METHOD
 		try {
+			
 			currentQueryList = new ArrayList<String>(Arrays.asList(userQuery.split(" ")));
 			currentQueryList = getCorrections();
 System.out.println(currentQueryList.toString());
@@ -306,7 +309,7 @@ System.out.println(currentQueryList.toString());
 		
 		String userQuery = currentQueryList.get(0);
 		//userQuery = userQuery.toLowerCase();
-		TermMap tm = IndexContainer.termIndexer.getTermMap();
+		TermMap tm = IndexContainer.unstemmedTermMap;
 		String tempQuery = userQuery.replaceAll("Term:", "");
 		tempQuery = tempQuery.replaceAll("[{()}]", "");
     	tempQuery = tempQuery.replaceAll("AND", "").replaceAll("OR", "").replaceAll("NOT", "").replaceAll("\\s+", " " );
@@ -319,14 +322,24 @@ System.out.println(currentQueryList.toString());
 			if(tm.isTermPresent(queryTerm));
 			String tempQueryTerm = queryTerm.toLowerCase();
 			ArrayList<TermidClosenessPair> ret = QueryUtils.getSpellingCorrection(tempQueryTerm);
-			String correctedQueryTerm = tm.getTermText(ret.get(0).getTermId());; 
+			String correctedQueryTerm = tm.getTermText(ret.get(0).getTermId());
+			userQuery = userQuery.replace(queryTerm, correctedQueryTerm);
 		}
-		
+		currentQueryList.add(userQuery);
 		return currentQueryList;
 	}
 	
 	public DocumentMap getDocMap() {
 		return docMap;
+	}
+	
+	private void removeDuplicates(List<DocIdScorePair> list){
+		if(list == null || list.isEmpty())
+			return;
+		Iterator<DocIdScorePair> iter = list.iterator();
+		Set<String> fileIds = new HashSet<String>();
+		
+		
 	}
 
 //	public void setDocMap(DocumentMap docMap) {

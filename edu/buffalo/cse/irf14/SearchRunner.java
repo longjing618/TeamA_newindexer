@@ -67,7 +67,7 @@ public class SearchRunner {
 
 			IndexContainer.kgramIndexer.deSerializeAll(indexDir);
 			long deserializeEndTime = System.currentTimeMillis();
-			System.out.println(deserializeEndTime - deserializeStartTime);
+			//System.out.println(deserializeEndTime - deserializeStartTime);
 		}
 		if(corpusDir != null){
 			if(corpusDir.endsWith(File.separator)){
@@ -95,13 +95,9 @@ public class SearchRunner {
 			//currentQueryList = new ArrayList<String>(Arrays.asList(userQuery.split(" ")));
 			currentQueryList = new ArrayList<String>();
 			currentQueryList.add(userQuery);
-			getCorrections();
+			currentQueryList = getCorrections();
 			String correctedQuery = currentQueryList.get(0);
 			
-
-			currentQueryList = new ArrayList<String>(Arrays.asList(userQuery.split(" ")));
-			currentQueryList = getCorrections();
-			System.out.println(currentQueryList.toString());
 
 			Query query = QueryParser.parse(userQuery, "OR");
 			long startTime = System.currentTimeMillis();
@@ -323,22 +319,26 @@ public class SearchRunner {
 //		}
 		
 		String userQuery = currentQueryList.get(0);
+		
 		//userQuery = userQuery.toLowerCase();
 		TermMap tm = IndexContainer.unstemmedTermMap;
 		String tempQuery = userQuery.replaceAll("Term:", "");
 		tempQuery = tempQuery.replaceAll("[{()}]", "");
     	tempQuery = tempQuery.replaceAll("AND", "").replaceAll("OR", "").replaceAll("NOT", "").replaceAll("\\s+", " " );
-		currentQueryList.clear();
+    	currentQueryList.clear();
 		String [] queryTerms = tempQuery.split(" ");
 		for(String queryTerm : queryTerms){
 			if(queryTerm.startsWith("Author:")||queryTerm.startsWith("Place:")||queryTerm.startsWith("Category:")){
 				continue;
 			}
-			if(tm.isTermPresent(queryTerm));
-			String tempQueryTerm = queryTerm.toLowerCase();
-			ArrayList<TermidClosenessPair> ret = QueryUtils.getSpellingCorrection(tempQueryTerm);
-			String correctedQueryTerm = tm.getTermText(ret.get(0).getTermId());
-			userQuery = userQuery.replace(queryTerm, correctedQueryTerm);
+			
+			if(!tm.isTermPresent(queryTerm))
+			{
+				String tempQueryTerm = queryTerm.toLowerCase();
+				ArrayList<TermidClosenessPair> ret = QueryUtils.getSpellingCorrection(tempQueryTerm);
+				String correctedQueryTerm = tm.getTermText(ret.get(0).getTermId());
+				userQuery = userQuery.replace(queryTerm, correctedQueryTerm);
+			}
 		}
 		currentQueryList.add(userQuery);
 		return currentQueryList;

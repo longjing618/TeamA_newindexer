@@ -39,7 +39,7 @@ public class TfIdfScorer {
 //					DocIdScorePair docIdScorePair = new DocIdScorePair(posting.getDocId(), tfIdfScore);
 //					returnList.add(docIdScorePair);
 					if(docIdScoreMap.containsKey(posting.getDocId())){
-						double newTfIdfValues = docIdScoreMap.get(posting.getDocId()) + tfIdfScore;
+						double newTfIdfValues = docIdScoreMap.get(posting.getDocId()) + tfIdfScore + 1;
 						docIdScoreMap.put(posting.getDocId(), newTfIdfValues);
 					}else{
 						docIdScoreMap.put(posting.getDocId(), tfIdfScore);

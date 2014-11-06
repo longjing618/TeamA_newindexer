@@ -1,5 +1,6 @@
 package edu.buffalo.cse.irf14.analysis;
 
+import edu.buffalo.cse.irf14.SearchRunner;
 import edu.buffalo.cse.irf14.index.IndexContainer;
 
 public class TokenFilter_STEMMER extends TokenFilter{
@@ -27,7 +28,16 @@ public class TokenFilter_STEMMER extends TokenFilter{
 	
 	private void process(Token token){
 		if(token.getTermText().matches("[a-zA-Z]+")){
-			IndexContainer.unstemmedTermMap.add(token.getTermText());
+			if(!SearchRunner.isQueryMode){
+				String termText = token.getTermText();
+				IndexContainer.unstemmedTermMap.add(termText);
+			}
+//			if(termText.equalsIgnoreCase("adobe")){
+//				System.out.println();
+//			}
+//			if(IndexContainer.unstemmedTermMap.isTermPresent("adob")){
+//				System.out.println();
+//			}
 			Stemmer stemmer = new Stemmer();
 			stemmer.add(token.getTermBuffer(), token.getTermBuffer().length);
 			stemmer.stem();

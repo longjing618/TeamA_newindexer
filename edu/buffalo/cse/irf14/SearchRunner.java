@@ -8,8 +8,6 @@ import java.io.IOException;
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -46,6 +44,7 @@ public class SearchRunner {
 	private PrintStream stream;
 	private DocumentMap docMap;
 	private List<String> currentQueryList;
+	public static boolean isQueryMode = false;
 	
 	/**
 	 * Default (and only public) constuctor
@@ -92,7 +91,7 @@ public class SearchRunner {
 		//TODO: IMPLEMENT THIS METHOD
 		try {
 			
-
+			isQueryMode = true;
 			//currentQueryList = new ArrayList<String>(Arrays.asList(userQuery.split(" ")));
 			currentQueryList = new ArrayList<String>();
 			currentQueryList.add(userQuery);
@@ -161,6 +160,7 @@ public class SearchRunner {
 			for(String str:result){
 				stream.println(str);
 			}
+			isQueryMode = false;
 		} catch (QueryParserException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -178,6 +178,7 @@ public class SearchRunner {
 	 */
 	public void query(File queryFile) {
 		//TODO: IMPLEMENT THIS METHOD
+		isQueryMode = true;
 		BufferedReader br = null;
 		try {
 			br = new BufferedReader(new FileReader(queryFile));
@@ -258,6 +259,7 @@ public class SearchRunner {
 				e.printStackTrace();
 			}
 		}
+		isQueryMode = true;
 	}
 	
 	/**

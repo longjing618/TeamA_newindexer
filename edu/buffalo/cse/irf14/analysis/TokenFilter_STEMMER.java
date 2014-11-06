@@ -27,7 +27,7 @@ public class TokenFilter_STEMMER extends TokenFilter{
 	
 	private void process(Token token){
 		if(token.getTermText().matches("[a-zA-Z]+")){
-			IndexContainer.unstemmedTermMap.add(currentTokenString);
+			IndexContainer.unstemmedTermMap.add(token.getTermText());
 			Stemmer stemmer = new Stemmer();
 			stemmer.add(token.getTermBuffer(), token.getTermBuffer().length);
 			stemmer.stem();

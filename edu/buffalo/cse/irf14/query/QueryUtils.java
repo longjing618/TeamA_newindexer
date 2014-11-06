@@ -18,6 +18,7 @@ import edu.buffalo.cse.irf14.document.FieldNames;
 import edu.buffalo.cse.irf14.index.IndexContainer;
 import edu.buffalo.cse.irf14.index.Indexer;
 import edu.buffalo.cse.irf14.index.Posting;
+import edu.buffalo.cse.irf14.index.TermMap;
 import edu.buffalo.cse.irf14.index.kgramindex;
 
 public class QueryUtils 
@@ -258,8 +259,12 @@ public class QueryUtils
 	{
 		ArrayList<TermidClosenessPair> sc = new ArrayList<TermidClosenessPair>();
 		ArrayList<String> kgrams = convertToKgram(queryterm,3);
+		
 		kgramindex indexer = IndexContainer.kgramIndexer;
 		LinkedList<Integer> postingList;
+		TermMap tm = IndexContainer.termIndexer.getTermMap();
+		String suggestedWord;
+		int distance = 0;
 		HashSet<Integer> termIdSet = new HashSet<Integer>();
 		for(String kgram : kgrams)
 		{
@@ -271,7 +276,9 @@ public class QueryUtils
 		}
 		for(int termid : termIdSet)
 		{
-			sc.add(new TermidClosenessPair(termid,1));
+			suggestedWord = tm.getTermText(termid);
+			distance = QueryUtils.EditDistance(queryterm, suggestedWord);
+			sc.add(new TermidClosenessPair(termid,distance));
 		}
 		Collections.sort(sc);
 		return sc;
@@ -280,6 +287,7 @@ public class QueryUtils
 	public static ArrayList<String> convertToKgram(String str,int k)
 	{
 		String temp;
+		str = str.toLowerCase();
 		ArrayList<String> ret = new ArrayList<String>();
 		int m;
 		for(m=0;m<str.length()-k;m++)
@@ -388,5 +396,23 @@ public class QueryUtils
 		String index = termTextWithIndex.substring(0, termTextWithIndex.indexOf(":"));
 		String termText = termTextWithIndex.substring(termTextWithIndex.indexOf(":") + 1);
 		return getAnalyzedTerm(termText, index);
+	}
+	
+	public static int EditDistance(String s1, String s2)
+	{
+		int rows = s1.length()+1;
+		int columns = s2.length()+1;
+		int[][] distance = new int[rows][columns];
+		for(int i=0;i<rows;i++)
+			distance[i][0] = i;
+		for(int i=0;i<columns;i++)
+			distance[0][i]= i;
+		for(int m=1;m<rows;m++)
+			for(int n=1;n<columns;n++)
+			{
+				distance[m][n] = Math.min(distance[m-1][n]+1,Math.min(distance[m-1][n-1]+(s1.charAt(m-1)==s2.charAt(n-1)? 0:1), distance[m][n-1]+1));
+			}
+		
+		return distance[s1.length()][s2.length()];
 	}
 }

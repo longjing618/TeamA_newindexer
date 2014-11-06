@@ -16,7 +16,8 @@ public class IndexContainer {
 	public static Indexer categoryIndexer = new Indexer(categoryTermMap, "_categoryIndex");
 	public static Indexer placeIndexer = new Indexer(placeTermMap, "_placeIndex");
 	
-
+	//This is the k-gram indexer
+	public static kgramindex kgramIndexer = new kgramindex();
 	
 	public static void serializeTermMap(String indexDir){
 		SerializeUtil su = new SerializeUtil();
@@ -48,10 +49,9 @@ public class IndexContainer {
 		authorIndexer.deSerializeAll(indexDir);
 		placeIndexer.deSerializeAll(indexDir);
 		authorIndexer.deSerializeAll(indexDir);
+	
+		//This is for kgram index
+		kgramIndexer.deSerializeAll(indexDir);
 	}
-
-	//This is the k-gram indexer
-
-	public static kgramindex kgramIndexer = new kgramindex();
 
 }

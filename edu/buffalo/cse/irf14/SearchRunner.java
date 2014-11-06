@@ -89,7 +89,8 @@ public class SearchRunner {
 		//TODO: IMPLEMENT THIS METHOD
 		try {
 			currentQueryList = new ArrayList<String>(Arrays.asList(userQuery.split(" ")));
-			//getCorrections();
+			getCorrections();
+			System.out.print(currentQueryList.toString());
 			Query query = QueryParser.parse(userQuery, "OR");
 			long startTime = System.currentTimeMillis();
 			Set<Integer> docIdSet = query.getQueryDocIdSet();

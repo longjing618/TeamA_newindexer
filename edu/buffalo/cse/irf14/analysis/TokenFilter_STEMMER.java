@@ -1,5 +1,7 @@
 package edu.buffalo.cse.irf14.analysis;
 
+import edu.buffalo.cse.irf14.index.IndexContainer;
+
 public class TokenFilter_STEMMER extends TokenFilter{
 	int length;
 	int count = 0;
@@ -25,6 +27,7 @@ public class TokenFilter_STEMMER extends TokenFilter{
 	
 	private void process(Token token){
 		if(token.getTermText().matches("[a-zA-Z]+")){
+			IndexContainer.unstemmedTermMap.add(currentTokenString);
 			Stemmer stemmer = new Stemmer();
 			stemmer.add(token.getTermBuffer(), token.getTermBuffer().length);
 			stemmer.stem();

@@ -20,12 +20,12 @@ public class SearchRunnerTest {
 			SearchRunner sr = new SearchRunner(indexDir, corpusDir, 'E', ps);
 			sr.query(queryFile);
 			//sr.query("\"Adobe Resources\"", ScoringModel.TFIDF);
-			ps1 = new PrintStream(new File("F:\\IR_pj2_out1"));
-			ps1.println(IndexContainer.termTermMap.getSortedTerms());
+			//ps1 = new PrintStream(new File("F:\\IR_pj2_out1"));
+			//ps1.println(IndexContainer.termTermMap.getSortedTerms());
 		}catch(Exception e){
 			e.printStackTrace();
 		}finally{
-			ps1.close();
+			//ps1.close();
 		}
 	}
 

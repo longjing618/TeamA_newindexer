@@ -14,33 +14,34 @@ import java.util.List;
 
 public class Indexer {
 	// Index buckets
-	private Index aIndex = new Index();
-	private Index bIndex = new Index();
-	private Index cIndex = new Index();
-	private Index dIndex = new Index();
-	private Index eIndex = new Index();
-	private Index fIndex = new Index();
-	private Index gIndex = new Index();
-	private Index hIndex = new Index();
-	private Index iIndex = new Index();
-	private Index jIndex = new Index();
-	private Index kIndex = new Index();
-	private Index lIndex = new Index();
-	private Index mIndex = new Index();
-	private Index nIndex = new Index();
-	private Index oIndex = new Index();
-	private Index pIndex = new Index();
-	private Index qIndex = new Index();
-	private Index rIndex = new Index();
-	private Index sIndex = new Index();
-	private Index tIndex = new Index();
-	private Index uIndex = new Index();
-	private Index vIndex = new Index();
-	private Index wIndex = new Index();
-	private Index xIndex = new Index();
-	private Index yIndex = new Index();
-	private Index zIndex = new Index();
-	private Index otherIndex = new Index();
+	public String indexId;
+	private Index aIndex = new Index('a');
+	private Index bIndex = new Index('b');
+	private Index cIndex = new Index('c');
+	private Index dIndex = new Index('d');
+	private Index eIndex = new Index('e');
+	private Index fIndex = new Index('f');
+	private Index gIndex = new Index('g');
+	private Index hIndex = new Index('h');
+	private Index iIndex = new Index('i');
+	private Index jIndex = new Index('j');
+	private Index kIndex = new Index('h');
+	private Index lIndex = new Index('l');
+	private Index mIndex = new Index('m');
+	private Index nIndex = new Index('n');
+	private Index oIndex = new Index('o');
+	private Index pIndex = new Index('p');
+	private Index qIndex = new Index('q');
+	private Index rIndex = new Index('r');
+	private Index sIndex = new Index('s');
+	private Index tIndex = new Index('t');
+	private Index uIndex = new Index('u');
+	private Index vIndex = new Index('v');
+	private Index wIndex = new Index('w');
+	private Index xIndex = new Index('x');
+	private Index yIndex = new Index('y');
+	private Index zIndex = new Index('z');
+	private Index otherIndex = new Index('!');
 
 	private TermMap termMap;
 	private String fileNameSuffix;
@@ -48,10 +49,11 @@ public class Indexer {
 		return termMap;
 	}
 
-	public Indexer(TermMap termMap, String fileNameSuffix) {
+	public Indexer(TermMap termMap, String fileNameSuffix, String id) {
 		super();
 		this.termMap = termMap;
 		this.fileNameSuffix = fileNameSuffix;
+		this.indexId = id;
 	}
 
 	private Index getIndexBucket(String term) {

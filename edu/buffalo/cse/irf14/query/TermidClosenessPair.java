@@ -1,6 +1,6 @@
 package edu.buffalo.cse.irf14.query;
 
-public class TermidClosenessPair implements Comparable 
+public class TermidClosenessPair implements Comparable<TermidClosenessPair> 
 {
 	  private int termId;
 	  private int closeness;
@@ -31,11 +31,12 @@ public class TermidClosenessPair implements Comparable
 	    this.closeness = i;
 	  }
 
-	  public int compareTo(Object s) throws ClassCastException 
+	  public int compareTo(TermidClosenessPair s) 
 	  {
-	    if (!(s instanceof TermidClosenessPair))
-	      throw new ClassCastException("A TermidClosenessPair object expected.");
-	    int count = ((TermidClosenessPair)s).getCloseness();  
-	    return count - getCloseness();    
+//	    int count = ((TermidClosenessPair)s).getCloseness();  
+//	    return count - getCloseness();    
+		  Integer i1 = this.closeness;
+		  Integer i2 = s.closeness;
+		  return i1.compareTo(i2);
 	  }
 }

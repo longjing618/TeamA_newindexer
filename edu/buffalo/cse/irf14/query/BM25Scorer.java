@@ -97,14 +97,28 @@ public class BM25Scorer
 			i = IndexContainer.categoryIndexer;
 		else
 			i = IndexContainer.termIndexer;
-		List<Posting> postingList = i.getPostingList(combo[1]);
+		String termText = QueryUtils.getAnalyzedTerm(combo[1], combo[0]);
+		List<Posting> postingList = i.getPostingList(termText);
 		return postingList;
 	}
 	
-	public ArrayList<String> getQueryTerms(String str)
+	public ArrayList<String> getQueryTerms(String queryString)
 	{
-		str = str.replaceAll("<[^>]*>", " " ).replaceAll("[\\[\\(\\{\\}\\)\\]]", "").replaceAll("AND", "").replaceAll("OR", "").replaceAll("\\s+", " " ).trim();
-		return new ArrayList<String>(Arrays.asList(str.split(" ")));
+		String temp = queryString.replaceAll("<[^>]*>", " " ).replaceAll("[\\[\\(\\{\\}\\)\\]]", "").replaceAll("AND", "").replaceAll("OR", "").replaceAll("\\s+", " " ).trim();
+		ArrayList<String> returnList = new ArrayList<String>(Arrays.asList(temp.split(" ")));
+		ArrayList<String> tempList = new ArrayList<String>();
+		for(int i = 0; i < returnList.size(); i++){
+			String str = returnList.get(i);
+			String termText = str.substring(str.indexOf(":") + 1);
+			if(termText.startsWith("\"")){
+				String temp1 = returnList.get(i+1);
+				i++;
+				str = str + " " + temp1;
+			}
+			tempList.add(str);
+		}
+
+		return tempList;
 	}
 	
 	private List<Posting> getPostingListForTerm(String term){

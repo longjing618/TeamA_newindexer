@@ -305,7 +305,7 @@ public class SearchRunner {
 		
 		String userQuery = currentQueryList.get(0);
 		//userQuery = userQuery.toLowerCase();
-		TermMap tm = IndexContainer.termIndexer.getTermMap();
+		TermMap tm = IndexContainer.unstemmedTermMap;
 		String tempQuery = userQuery.replaceAll("Term:", "");
 		tempQuery = tempQuery.replaceAll("[{()}]", "");
     	tempQuery = tempQuery.replaceAll("AND", "").replaceAll("OR", "").replaceAll("NOT", "").replaceAll("\\s+", " " );
@@ -318,9 +318,10 @@ public class SearchRunner {
 			if(tm.isTermPresent(queryTerm));
 			String tempQueryTerm = queryTerm.toLowerCase();
 			ArrayList<TermidClosenessPair> ret = QueryUtils.getSpellingCorrection(tempQueryTerm);
-			String correctedQueryTerm = tm.getTermText(ret.get(0).getTermId());; 
+			String correctedQueryTerm = tm.getTermText(ret.get(0).getTermId());
+			userQuery = userQuery.replace(queryTerm, correctedQueryTerm);
 		}
-		
+		currentQueryList.add(userQuery);
 		return currentQueryList;
 	}
 	

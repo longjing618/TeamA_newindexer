@@ -8,6 +8,8 @@ import java.io.IOException;
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -89,6 +91,7 @@ public class SearchRunner {
 	public void query(String userQuery, ScoringModel model) {
 		//TODO: IMPLEMENT THIS METHOD
 		try {
+			
 			currentQueryList = new ArrayList<String>(Arrays.asList(userQuery.split(" ")));
 			getCorrections();
 			Query query = QueryParser.parse(userQuery, "OR");
@@ -327,6 +330,15 @@ public class SearchRunner {
 	
 	public DocumentMap getDocMap() {
 		return docMap;
+	}
+	
+	private void removeDuplicates(List<DocIdScorePair> list){
+		if(list == null || list.isEmpty())
+			return;
+		Iterator<DocIdScorePair> iter = list.iterator();
+		Set<String> fileIds = new HashSet<String>();
+		
+		
 	}
 
 //	public void setDocMap(DocumentMap docMap) {
